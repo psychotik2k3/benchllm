@@ -49,6 +49,13 @@ Phrase de synthèse.
 
 
 
+## 📁 Sortie des analyses
+
+Pour **chaque compétiteur**, écris un fichier d'analyse dédié dans le dossier `result_analysis/`.
+- Nom de fichier : `analyse_<nom_dossier_compétiteur>.md` (ex: `analyse_qwen3.6.md`, `analyse_claude-sonnet5-free.md`, etc.)
+- Le contenu du fichier doit être exactement le format de sortie décrit ci-dessous.
+- Les fichiers doivent être écrits directement sur le système de fichiers dans `result_analysis/`.
+
 ## À la fin, fournir un tableau récapitulatif trié par note décroissante avec :
 
 | Version | Note | ✅ Points positifs (résumé en 5-8 puces max) | ❌ Points négatifs (résumé en 5-8 puces max) |
