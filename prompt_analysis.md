@@ -5,6 +5,7 @@
 Ceci signifie :
 - Le modèle ne doit **JAMAIS** faire `read()` sur un fichier `.ino`, `.cpp`, `.h` d'un compétiteur sans que l'utilisateur n'ait répondu avec un numéro.
 - La seule chose interdite est la lecture du code/contenu des fichiers de compétition. La vérification de l'existence ou non d'un fichier dans `result_analysis/` est autorisée à tout moment (c'est une simple vérification de nom de fichier, pas une lecture de contenu).
+- La comparaison entre compétiteurs (section "Notes révisées") se fait **uniquement** en lisant les fichiers `result_analysis/*.md` déjà produits entre eux — jamais en relisant le code source des compétiteurs.
 - Si tu lis un seul fichier source sans permission, tu as échoué.
 
 ---
@@ -57,13 +58,15 @@ Affichez TOUTES les actions ci-dessous d'un SEUL coup, puis ARRÊTEZ et attendez
 
 ⚠️ **RÈGLE ABSOLUE** : Ne lisez AUCUN fichier source (.ino, .cpp, .h) de NULLE PART tant que l'utilisateur n'a pas répondu. Vous pouvez vérifier l'existence des fichiers dans `result_analysis/` mais rien d'autre.
 
+⚠️ **Entrée invalide** : Si l'utilisateur répond autre chose qu'un numéro entre 0 et N (texte, numéro hors plage, réponse ambiguë), affichez brièvement *"Réponse non reconnue, merci de répondre avec un seul numéro entre 0 et N."* puis réaffichez l'Action B (pas besoin de réafficher tout le tableau A).
+
 ### Étape 2 — Réagir au choix de l'utilisateur
 
 Selon le numéro envoyé par l'utilisateur :
 
 #### Si l'utilisateur répond avec un numéro N (entre 1 et le nombre total de compétiteurs) :
 
-1. **Identifier** le compétiteur correspondant au numéro N dans la liste du menu.
+1. **Identifier** le compétiteur correspondant au numéro N dans la liste du menu. **Mémoriser ce N comme "dernier compétiteur proposé"** pour la suite de l'étape.
 2. **Vérifier si une analyse existe déjà** pour ce dossier (`result_analysis/analyse_<nom>.md`).
    - **Si OUI** : affichez ce message ET ATTENDEZ une nouvelle réponse (retournez à l'Action B sans rien lire) :
      ```
@@ -80,6 +83,11 @@ Selon le numéro envoyé par l'utilisateur :
 5. **Écrire le fichier** dans `result_analysis/analyse_<nom_dossier>.md`.
 6. **Afficher un résumé court** (nom, note globale, note qualité code).
 7. **Retourner à l'Étape 1** (menu mis à jour avec le nouveau statut ✅ pour ce compétiteur).
+
+#### Si l'utilisateur répond avec `OUI` (confirmation d'écrasement) :
+
+- Ceci confirme l'écrasement du **dernier compétiteur proposé** (celui affiché dans l'avertissement juste avant). Passez directement à l'**étape 3** du bloc ci-dessus pour ce même compétiteur, sans redemander de numéro.
+- Si aucun avertissement d'écrasement n'a été affiché juste avant (l'utilisateur répond "OUI" hors contexte), traitez la réponse comme invalide : réaffichez l'Action B.
 
 #### Si l'utilisateur répond avec `0` :
 
@@ -115,8 +123,9 @@ Lorsque tu construis le tableau, il peut arriver que :
 - Les notes attribuées par les analyses existantes soient **subjectives**, et qu'une re-comparaison directe révèle une incohérence (ex : le nouveau concurrent méritait initialement une note supérieure à celle du leader actuel).
 
 Dans ce cas, tu es **autorisé à réajuster les notes** de tous les compétiteurs concernés après re-évaluation globale. Mais :
+- Cette ré-évaluation doit se baser **exclusivement sur la comparaison du texte des fichiers `result_analysis/*.md` déjà écrits entre eux** — jamais sur une nouvelle lecture du code source des compétiteurs, conformément à la Règle d'Or. Si l'incohérence ne peut pas être tranchée sans relire le code source, ne réajuste pas la note et signale-le plutôt comme "à vérifier lors d'une prochaine analyse manuelle".
 - Tu dois **ajouter un astérisque `*` derrière la note ajustée** (ex : `8* / 10`) pour signaler explicitement que cette note a été révisée postérieurement.
-- Tu dois **expliquer brièvement pourquoi** dans une section nommée « 🔍 Notes révisées et justification » juste avant le tableau.
+- Tu dois **expliquer brièvement pourquoi** dans une section nommée « 🔍 Notes révisées et justification » juste avant le tableau, en citant les passages précis des fichiers d'analyse comparés qui motivent l'ajustement.
 
 ### 4. Classements séparés
 
@@ -128,7 +137,7 @@ Rang. Version — Note qualité code X/10 — [mot-clé du verdict]
 
 ### 5. Recommandation de fusion
 Distingue explicitement :
-- **Fonctionnalités IoT à emprunter** : quelles versions ont les meilleures implémentations de temps-réel, WiFi, filtres, persistance, etc. (cite la version et l'extrait)
+- **Fonctionnalités IoT à emprunter** : quelles versions ont les meilleures implémentations de temps-réel, démarrage, protocole tachymétrique, WiFi, filtres, persistance, etc. (cite la version et l'extrait)
 - **Bonnes pratiques qualité code à intégrer** : quelles versions offrent la meilleure structure, le nommage, le DRY, la robustesse, etc. (cite la version et l'extrait)
 
 ---
@@ -140,28 +149,41 @@ Distingue explicitement :
 ### 1. Temps-réel / ISR
 - IRAM_ATTR sur les ISR, gestion de la Flash pendant pause WiFi, prédictibilité du timing
 
-### 2. Génération sortie / Timer1
+### 2. Démarrage / Boot readiness
+- **Temps entre power-on et premier signal tach de sortie valide**
+- Valeur de sortie envoyée **avant** qu'une première mesure RPM fiable soit disponible (ex : signal figé à 0, dernière valeur EEPROM/LittleFS restaurée, valeur par défaut sûre type "RPM nominal" en attendant la première mesure) — ce choix détermine si l'onduleur Deye risque de détecter un faux arrêt ventilateur pendant les premières secondes après un reboot/coupure de courant
+- Ordre d'initialisation des périphériques : le Timer1/GPIO de sortie est-il configuré et démarré **avant ou après** l'attente WiFi/EEPROM/LittleFS ? Une attente WiFi bloquante avant le premier signal de sortie est un risque
+- Présence d'un watchdog / gestion du brownout pendant la phase de boot
+
+### 3. Génération sortie / Timer1
 - Timer1 hardware vs software/ticker vs polling loop. Méthode de toggle GPIO (GPOS/GPOC registre direct vs digitalWrite). Jitter / drift. Architecture pulse scheduler ou autre.
 
-### 3. Filtres / Signal
+### 4. Fidélité au protocole tachymétrique / Fail-safe
+- Nombre d'impulsions par tour respecté (2 pulses/rev standard ventilateur PC) et cohérence du calcul RPM = fréquence × 60 / nb_pulses
+- Plage RPM plausible acceptée/générée (min/max réalistes pour les Noctua concernées)
+- Comportement en cas de perte du signal d'entrée (ventilateur réel calé ou débranché) : maintien de la dernière valeur valide vs signal figé à 0 vs extrapolation — et le délai avant bascule en mode dégradé
+- Réactivité du signal de sortie face à un changement brusque de RPM réel
+
+### 5. Filtres / Signal
 - Debounce, moyenne glissante, IIR, EMA exponentiel, validation plage de période, détection stall/timeout
 
-### 4. WiFi / Réseau
+### 6. WiFi / Réseau
 - ESPAsyncWebServer vs standard sync, OTA réseau (ArduinoOTA), mDNS/DNS-SD discovery, WIFI_NONE_SLEEP, overclock CPU 160 MHz, AP+STA simultané
+- Authentification de l'interface web (accès libre sur le réseau local vs protégé)
 
-### 5. Gestion mémoire / HEAP
+### 7. Gestion mémoire / HEAP
 - PROGMEM pour HTML, zero-alloc JSON (snprintf pile / ArduinoJson buffer) vs heap allocation String par requête, fragmentation à long terme
 
-### 6. Interface Web
+### 8. Interface Web
 - Dark theme, AJAX polling, focus protection champs de formulaire, badges visuels d'état, RESTful API
 
-### 7. Persistance / Stockage
+### 9. Persistance / Stockage
 - EEPROM (~100K écritures, pas de wear-leveling) vs LittleFS (wear-leveling natif), format JSON, checksum/CRC, backup
 
-### 8. Documentation hardware/code
+### 10. Documentation hardware/code
 - Schéma électronique ASCII avec BOM, calculs dimensionnement transistor/filtre/alimentation, explication circuit entrée et sortie
 
-### 9. Qualité de code générale
+### 11. Qualité de code générale
 - Voir critères détaillés ci-dessous (indépendant IoT)
 
 ---
@@ -194,7 +216,7 @@ Pour chaque catégorie technique ci-dessus qui présente un défaut dans le code
 
 # 📋 FORMAT DE SORTIE COMPLET — À PRODUIRE POUR CHAQUE COMPÉTITEUR
 
-Copie ce template et remplace chaque `[...]` par le contenu réel. Ne laisse AUCUN `[...]` littéral dans le fichier final :
+Copie ce template et remplace chaque `[...]` par le contenu réel. Ne laisse AUCUN `[...]` littéral dans le fichier final. **Limite les citations de code à des extraits de moins de 10 lignes ; au-delà, décris le comportement en prose plutôt que de citer**, pour garder les fichiers d'analyse légers à recharger :
 
 ```
 # Analyse — [NOM_DU_COMPÉTITEUR]
@@ -208,7 +230,13 @@ Copie ce template et remplace chaque `[...]` par le contenu réel. Ne laisse AUC
 ### Temps-réel / ISR
 [Observations concrètes tirées du code. Exemple : "ICACHE_RAM_ATTR appliqué sur handleTachEdge et isrTimer1..."]
 
+### Démarrage / Boot readiness
+[Observations concrètes tirées du code — temps avant premier signal valide, valeur par défaut, ordre d'init]
+
 ### Génération sortie / Timer1
+[Observations concrètes tirées du code]
+
+### Fidélité au protocole tachymétrique / Fail-safe
 [Observations concrètes tirées du code]
 
 ### Filtres / Signal
@@ -247,7 +275,7 @@ Copie ce template et remplace chaque `[...]` par le contenu réel. Ne laisse AUC
 ### Temps-réel / ISR (critique)
 - [critique] ou [majeur] ou [mineur] : [description du défaut] — impact : [mesure technique précise]
 
-[Autres sous-sections pour les catégories qui ont des défauts. Supprimer les catégories sans défaut.]
+[Autres sous-sections pour les catégories qui ont des défauts, y compris "Démarrage / Boot readiness" et "Fidélité au protocole tachymétrique" si applicable. Supprimer les catégories sans défaut.]
 
 ### Qualité de code générale (négatif)
 - [critique/majeur/mineur] : [description du défaut lié au critère, ex: DRY, conventions C++, etc.] — impact : [mesure technique précise]
