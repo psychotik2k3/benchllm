@@ -1,0 +1,1 @@
+- [anti-rebound-gpio-optimization](memory/anti_rebound_gpio_optimization.md) — Ajout de l'anti-rebond et optimisation GPIO au code QWEN3.5
