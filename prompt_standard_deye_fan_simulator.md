@@ -1,5 +1,5 @@
-sans regarder aucun autre fichier dans C:\dev\deye_fan_emulator ou ses sous dossiers, 
-dans ce dossier qwen3.6-turbollm tu vas creer le code demande par le prompt suivant:
+sans regarder aucun autre fichier dans competitors ou ses sous dossiers, 
+dans ce dossier XXXXX tu vas creer le code demande par le prompt suivant:
 
 Tu es un expert en électronique embarquée et en programmation Arduino/ESP8266.
 
