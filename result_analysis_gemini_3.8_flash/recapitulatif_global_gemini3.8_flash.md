@@ -1,9 +1,9 @@
 # Récapitulatif Global des Évaluations — Simulateur Tachymétrique Deye (ESP8266)
 
 **Évaluateur** : Gemini 3.8 Flash (Analyse comparative multicritères)  
-**Date** : Vendredi 4 septembre 2026  
+**Date** : Mardi 8 septembre 2026  
 **Dossier d'analyse** : `result_analysis_gemini_3.8_flash/`  
-**Échantillon évalué** : 15 compétiteurs (modèles LLM et architectures générées)
+**Échantillon évalué** : 16 compétiteurs (modèles LLM et architectures générées)
 
 ---
 
@@ -24,8 +24,9 @@
 | **11** | **gemini-free** | **4.0 / 10** | 5.0 / 10 | ❌ **Non viable** — Aucun schéma, `delay(50)` dans loop(), et bug mathématique fatal : horloge rechargée 16 fois trop lentement (1,25 kHz au lieu de 20 kHz). |
 | **12** | **composer 2.5** | **3.8 / 10** | 4.5 / 10 | ❌ **Dangereux** — Divisions flottantes en ISR, registres non atomiques, allocations String massives, et schéma préconisant d'injecter du 12V dans le Wemos. |
 | **13** | **qwen3.6** | **2.0 / 10** | 2.5 / 10 | ❌ **Ne compile pas** — API timer ESP32 sur ESP8266, formule de période inversée (multiplication au lieu de division), 12V direct sur VIN Wemos. |
-| **14** | **qwen35** | **1.2 / 10** | 1.8 / 10 | ❌ **Ne compile pas & halluciné** — Erreurs de syntaxe, GPIO flash SPI, transistor PNP qualifié de NPN, Ticker réglé à 4 minutes, YAML d'un onduleur Growatt. |
-| **15** | **gemma4** | **1.0 / 10** | 1.5 / 10 | ❌ **Projet factice** — Erreur de syntaxe, broches Flash SPI, sortie simulée jamais pilotée, RPM s'accumulant à l'infini, un seul canal. |
+| **14** | **qwen3.6-35b-fp8-freetoken** | **1.5 / 10** | 2.5 / 10 | ❌ **Non fonctionnel & ne compile pas** — API timer ESP8266 invalide (`timer1Write`), attachement en mode `LOW` provoquant un crash WDT immédiat, `loadVal` non transmis au timer, mesure RPM détruite toutes les 10 ms, canal 2 non généré, diviseur d'entrée plafonnant à 1,25 V. |
+| **15** | **qwen35** | **1.2 / 10** | 1.8 / 10 | ❌ **Ne compile pas & halluciné** — Erreurs de syntaxe, GPIO flash SPI, transistor PNP qualifié de NPN, Ticker réglé à 4 minutes, YAML d'un onduleur Growatt. |
+| **16** | **gemma4** | **1.0 / 10** | 1.5 / 10 | ❌ **Projet factice** — Erreur de syntaxe, broches Flash SPI, sortie simulée jamais pilotée, RPM s'accumulant à l'infini, un seul canal. |
 
 ---
 
@@ -46,6 +47,7 @@
 | **gemini-free** | **4.0** | **5.0** | Timer1 erroné (800 µs au lieu de 50 µs) | Inexistant (aucun schéma) | Non documenté | Anti-rebond 2 ms seul | LittleFS (sans check return) | AsyncWebServer + delay(50) dans loop |
 | **composer 2.5** | **3.8** | **4.5** | Périodique 10 µs, float math en ISR, RW GPIO | Dangereux (12V direct sur Wemos) | Aucun buck (destruction LDO) | Bornage simple (500 µs - 600 ms) | CRC16 | String churn massif (`<meta refresh>`) |
 | **qwen3.6** | **2.0** | **2.5** | Incompilable (API Timer ESP32 sur ESP8266) | Destructeur (12V direct sur VIN) | Aucun buck (destruction LDO) | Période simulée inversée (× ratio) | Aucun CRC | Formulaire basique |
+| **qwen3.6-35b-fp8-freetoken** | **1.5** | **2.5** | Faux FRC2, `LOW` interrupt (WDT crash), timer1Write non standard | Erreur critique : diviseur 1,25 V max, 4 fans // | Buck 3,3V vers VIN (brownout LDO) | Rejet borné seul, reset RPM si > 10 ms sans pulse | Aucun CRC/magic | HTML String concat, reload 5s |
 | **qwen35** | **1.2** | **1.8** | Incompilable (stray backtick, GPOS fonction) | Erroné (PNP SS8550 pris pour NPN) | Incohérent | Ticker 250s, broches Flash SPI | Aucun | Hallucination Growatt SPF YAML |
 | **gemma4** | **1.0** | **1.5** | Sortie jamais pilotée, compte à l'infini | Inexistant | Inexistant | Broches Flash SPI (crash boot) | Aucun | Formulaire factice |
 
@@ -68,8 +70,9 @@ Le barème d'évaluation a été calibré avec une exigence stricte portant sur 
 11. **gemini-free (4.0 / 10)** : Code inachevé sans documentation, comportant un `delay(50)` dans `loop()` et une minuterie Timer1 divisée par 16 par inadvertance (fréquence réelle de 1,25 kHz au lieu de 20 kHz).
 12. **composer 2.5 (3.8 / 10)** : Multiplie les non-sens : calculs flottants en interruption, registres GPIO non atomiques en lecture-modification-écriture, et schéma proposant d'alimenter directement la broche 5V du Wemos en 12V.
 13. **qwen3.6 (2.0 / 10)** : Code incompilable (API timer ESP32 injectée dans un projet ESP8266, syntaxe invalide) et formule mathématique inversée.
-14. **qwen35 (1.2 / 10)** : Incompilable, utilise les broches de la Flash SPI, confond un transistor PNP avec un NPN, et hallucine un script Home Assistant pour un onduleur Growatt.
-15. **gemma4 (1.0 / 10)** : Projet fantôme ne compilant pas, utilisant les broches interdites du bus Flash SPI et ne pilotant jamais aucune sortie physique.
+14. **qwen3.6-35b-fp8-freetoken (1.5 / 10)** : Projet lourdement défaillant qui accumule les fautes éliminatoires : fonctions timer non déclarées dans le core ESP8266 (`timer1Write`, `timer1AttachInterrupt`), `loadVal` calculé mais jamais écrit dans le timer (écrit `0` en dur), attachement d'interruption en mode `LOW` provoquant la saturation CPU et un WDT reset dès la première impulsion, arrêt du timer dès qu'aucune impulsion n'est reçue pendant 10 ms (signal tach haché en permanence), canal 2 jamais généré, pont diviseur d'entrée plafonnant à 1,25 V (seuil HIGH inaccessible), regroupement de 4 ventilateurs asynchrones sur une broche unique et buck 3,3V branché sur l'entrée VIN du régulateur du Wemos.
+15. **qwen35 (1.2 / 10)** : Incompilable, utilise les broches de la Flash SPI, confond un transistor PNP avec un NPN, et hallucine un script Home Assistant pour un onduleur Growatt.
+16. **gemma4 (1.0 / 10)** : Projet fantôme ne compilant pas, utilisant les broches interdites du bus Flash SPI et ne pilotant jamais aucune sortie physique.
 
 ---
 
@@ -90,8 +93,9 @@ Le barème d'évaluation a été calibré avec une exigence stricte portant sur 
 11. **gemini-free** — **4.0 / 10**
 12. **composer 2.5** — **3.8 / 10**
 13. **qwen3.6** — **2.0 / 10**
-14. **qwen35** — **1.2 / 10**
-15. **gemma4** — **1.0 / 10**
+14. **qwen3.6-35b-fp8-freetoken** — **1.5 / 10**
+15. **qwen35** — **1.2 / 10**
+16. **gemma4** — **1.0 / 10**
 
 ---
 
@@ -110,14 +114,15 @@ Le barème d'évaluation a été calibré avec une exigence stricte portant sur 
 11. **gemini-free** — **5.0 / 10** (Inachevé, présence de delay() bloquant)
 12. **composer 2.5** — **4.5 / 10** (Float en ISR, écriture de registre non atomique)
 13. **qwen3.6** — **2.5 / 10** (Mélange de plateformes incompatible, syntaxe invalide)
-14. **qwen35** — **1.8 / 10** (Erreurs C++ basiques, registres pris pour des fonctions)
-15. **gemma4** — **1.5 / 10** (Code factice non compilable)
+14. **qwen3.6-35b-fp8-freetoken** — **2.5 / 10** (Bonne mise en forme mais fonctions inexistantes et erreurs bas niveau critiques)
+15. **qwen35** — **1.8 / 10** (Erreurs C++ basiques, registres pris pour des fonctions)
+16. **gemma4** — **1.5 / 10** (Code factice non compilable)
 
 ---
 
 ## 5. Recommandation pour la fusion (Architecture cible idéale)
 
-L'analyse comparative approfondie des 15 livrables met en lumière les composants d'élite à retenir pour concevoir le **simulateur tachymétrique ultime** pour l'onduleur Deye SUN-8K :
+L'analyse comparative approfondie des 16 livrables met en lumière les composants d'élite à retenir pour concevoir le **simulateur tachymétrique ultime** pour l'onduleur Deye SUN-8K :
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
