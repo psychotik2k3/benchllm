@@ -2,13 +2,9 @@
 
 ## 1. Inventaire des analyses
 
-Les 15 dossiers présents sous `competitors/` ont tous un rapport correspondant sous `result_analysis_gpt5.6/`. Avant ce run, **0 analyse existait** ; les **15 analyses sont nouvelles** et **aucun compétiteur ne manque**.
+Les 16 dossiers présents sous `competitors/` ont tous un rapport correspondant sous `result_analysis_gpt5.6/`. Avant cette mise à jour, **15 analyses existaient** ; **1 nouvelle analyse** a été produite et **aucun compétiteur ne manque**.
 
-### Existantes avant run (0)
-
-- Aucune.
-
-### Nouvelles (15)
+### Existantes avant cette mise à jour (15)
 
 - `gpt-5.6 sol medium`
 - `claude opus 5 medium`
@@ -26,13 +22,17 @@ Les 15 dossiers présents sous `competitors/` ont tous un rapport correspondant 
 - `gemma4`
 - `qwen35`
 
+### Nouvelles (1)
+
+- `qwen3.6-35b-fp8-freetoken`
+
 ### Sans analyse (0)
 
 - Aucun compétiteur.
 
 ## 2. Notes révisées et justification
 
-Les notes annoncées ont été retrouvées dans les 15 rapports individuels. La calibration transversale conserve toutes les notes sauf celles de `glm5.3`. Un astérisque `*` signale ci-dessous, et dans tous les tableaux et classements, une note ajustée dans ce récapitulatif seulement ; les rapports individuels ne sont pas modifiés.
+Les notes annoncées ont été retrouvées dans les 16 rapports individuels. La calibration transversale conserve toutes les notes sauf celles de `glm5.3`. Un astérisque `*` signale ci-dessous, et dans tous les tableaux et classements, une note ajustée dans ce récapitulatif seulement ; les rapports individuels ne sont pas modifiés.
 
 ### Ajustement retenu
 
@@ -47,6 +47,7 @@ Les autres notes restent cohérentes après comparaison directe :
 - `grok 4.6 medium` mérite de rester à 7,1 malgré son architecture NMI crédible : tick permanent à 50 kHz, quantification de 20 µs, absence de filtre de période et mise à jour de fraîcheur avant validation limitent fortement le fail-safe.
 - `composer 2.5 prompt from claude` reste à 6,8 : il couvre bien l'ensemble fonctionnel et matériel, mais `now + half`, `digitalWrite()` dans l'ISR, le filtre alimenté plusieurs fois par la même mesure et la fraîcheur mise à jour avant validation empêchent de rejoindre le groupe supérieur.
 - `claude-sonnet5-free` conserve une qualité de code élevée mais une note globale basse : le firmware est lisible, cependant le schéma suppose à tort une pull-up interne 12 V du tach Noctua, ce qui rend l'entrée probablement inopérante.
+- Le nouveau `qwen3.6-35b-fp8-freetoken` entre à 1,0/10, au-dessus des deux livrables à 0,5 grâce à une interface et une documentation plus complètes, mais sous les solutions à 2,0 : absence d'`EEPROM.h`, API Timer1 étrangère/incomplète, valeur `loadVal` jamais appliquée, canal 2 jamais généré, sorties arrêtées entre les fronts et montage électrique dangereux interdisent tout fonctionnement réel.
 - Les solutions à 4,2 et moins ont chacune au moins un défaut rédhibitoire : hardware essentiel absent, build probablement cassé, mauvais prescaler/unité Timer1, API ESP32 sur ESP8266, absence de génération tach ou formule RPM invalide. Leur ordre initial reflète correctement la quantité de code récupérable.
 
 ## 3. Tableau récapitulatif
@@ -66,6 +67,7 @@ Les autres notes restent cohérentes après comparaison directe :
 | `gemini-free` | 2,7/10 | 3,6/10 | • Timer1 matériel visé<br>• Formule 2 PPR correcte<br>• Deux compteurs indépendants<br>• AP+STA et serveur asynchrone<br>• PROGMEM et documents JSON statiques<br>• `strlcpy` pour les identifiants<br>• Interface simple | • Prescaler DIV16 mal calculé : fréquence ≈ ÷16<br>• `.cpp` sans `Arduino.h`<br>• Premier front accepté comme période<br>• Ratio invalide conserve l'ancienne sortie<br>• Anti-rebond plafonne vers 6000 RPM<br>• Aucun filtre ni hardware sûr<br>• LittleFS non vérifié/non atomique<br>• API sans auth et AP trivial |
 | `composer 2.5` | 2,0/10 | 4,0/10 | • Intention Timer1 et deux canaux<br>• Formule 2 PPR correcte<br>• EEPROM avec CRC16<br>• AP+STA non bloquant<br>• Pull-up d'entrée 3,3 V correct<br>• Sorties collecteur ouvert prévues<br>• Code compact et lisible | • `0xDEYE` et symbole WiFi bloquent le build<br>• Timer1 reçoit 10 ticks, pas 10 µs : fréquence ×5<br>• Flottants dans ISR<br>• Fraîcheur mise à jour avant validation<br>• Timeout de 3 s<br>• Secret STA exposé, aucune auth<br>• Hardware conseille 12 V direct sur pin 5V<br>• Pas de pull-down de base ni tests |
 | `qwen3.6` | 2,0/10 | 3,0/10 | • Intention deux canaux et timeout<br>• Formule d'affichage 2 PPR correcte<br>• Ratios bornés<br>• AP+STA visé<br>• Documentation et BOM présentes<br>• NPN de sortie pertinent en principe | • API Timer ESP32 sur cible ESP8266<br>• Erreur syntaxique certaine<br>• Ratio multiplié au lieu d'être divisé<br>• Demi-période confondue avec période<br>• Canal ne redémarre pas après stall<br>• Polarité NPN inversée<br>• GPIO15 de strap risqué<br>• AP ouvert et alimentation 12 V directe |
+| `qwen3.6-35b-fp8-freetoken` | 1,0/10 | 2,0/10 | • Structure et nommage lisibles<br>• Formule d'affichage 2 PPR correcte<br>• ISR marquées IRAM<br>• Ratios HTTP bornés<br>• AP+STA et portail captif<br>• Nomenclature et schémas fournis | • Ne compile pas : EEPROM/API Timer1<br>• Timer jamais configuré, `loadVal` ignoré<br>• Canal 2 jamais généré<br>• Sorties stoppées entre chaque front<br>• Quatre tach asynchrones en parallèle<br>• Polarité fail-safe NPN inversée<br>• 3,3 V injectés sur la broche 5 V<br>• Diviseur/pull-up pouvant surtensionner le GPIO |
 | `gemma4` | 0,5/10 | 1,0/10 | • Interface Web compacte<br>• AP protégé au minimum WPA<br>• NPN open-collector mentionné<br>• Petit code facile à reprendre<br>• Endpoint d'observation simple | • Ne compile pas (`PIN_TACH_6m`, tokens Markdown)<br>• GPIO10/11 réservés à la flash<br>• Aucune génération tach ni Timer1<br>• Une sortie pour deux canaux<br>• Formule RPM fausse et compteurs jamais remis à zéro<br>• Aucune persistance ni STA réelle<br>• Aucun OR-ing/buck/hardware complet<br>• ISR non IRAM et aucun fail-safe |
 | `qwen35` | 0,5/10 | 1,0/10 | • Nombreuse documentation<br>• Interface responsive<br>• AP protégé<br>• Bornes de ratios côté serveur<br>• Avertissements haute tension | • Plusieurs erreurs de syntaxe/API<br>• GPIO10/11 de la flash<br>• Aucun Timer1 ni génération conforme<br>• Ticker exprimé en secondes, pas millisecondes<br>• RPM issu de compteurs cumulatifs<br>• Une sortie moyenne pour deux canaux<br>• Aucune persistance utile<br>• Schéma faux, PNP présenté comme NPN |
 
@@ -88,8 +90,9 @@ Les égalités sont départagées par l'autre note, puis par ordre alphabétique
 11. `gemini-free` — **2,7/10**
 12. `composer 2.5` — **2,0/10**
 13. `qwen3.6` — **2,0/10**
-14. `gemma4` — **0,5/10**
-15. `qwen35` — **0,5/10**
+14. `qwen3.6-35b-fp8-freetoken` — **1,0/10**
+15. `gemma4` — **0,5/10**
+16. `qwen35` — **0,5/10**
 
 ### Classement qualité de code
 
@@ -106,8 +109,9 @@ Les égalités sont départagées par l'autre note, puis par ordre alphabétique
 11. `gemini-free` — **3,6/10**
 12. `gemini 3.1 pro` — **3,0/10**
 13. `qwen3.6` — **3,0/10**
-14. `gemma4` — **1,0/10**
-15. `qwen35` — **1,0/10**
+14. `qwen3.6-35b-fp8-freetoken` — **2,0/10**
+15. `gemma4` — **1,0/10**
+16. `qwen35` — **1,0/10**
 
 ## 5. Recommandation de fusion
 
@@ -115,7 +119,7 @@ La meilleure base de fusion est `gpt-5.6 sol medium`, en important sélectivemen
 
 ### Fonctionnalités IoT à emprunter
 
-- **Timer1/scheduler — base `gpt-5.6 sol medium`.** Conserver `outputTimerIsr()`, `remainingTicks[]` et `requestedHalfTicks[]` : un Timer1 `TIM_SINGLE` est réarmé sur la prochaine échéance des deux canaux avec une résolution de 0,2 µs. Ajouter l'idée de phase absolue et de rattrapage borné de `claude opus 5 medium` (`nextEdgeCcy`, `ccyReached()`, garde à 16 itérations), mais seulement après validation du chemin NMI sur une toolchain figée. Écarter les ticks permanents de `grok 4.6 medium` et `composer 2.5 prompt from claude`, le mauvais prescaler de `gemini-free`, le mauvais `timer1_write()` de `composer 2.5`, et tout usage de `Ticker` pour fabriquer le tach.
+- **Timer1/scheduler — base `gpt-5.6 sol medium`.** Conserver `outputTimerIsr()`, `remainingTicks[]` et `requestedHalfTicks[]` : un Timer1 `TIM_SINGLE` est réarmé sur la prochaine échéance des deux canaux avec une résolution de 0,2 µs. Ajouter l'idée de phase absolue et de rattrapage borné de `claude opus 5 medium` (`nextEdgeCcy`, `ccyReached()`, garde à 16 itérations), mais seulement après validation du chemin NMI sur une toolchain figée. Écarter les ticks permanents de `grok 4.6 medium` et `composer 2.5 prompt from claude`, le mauvais prescaler de `gemini-free`, le mauvais `timer1_write()` de `composer 2.5`, les API inexistantes et le `loadVal` ignoré de `qwen3.6-35b-fp8-freetoken`, et tout usage de `Ticker` pour fabriquer le tach.
 - **Boot readiness — fonctionnalité à ajouter, absente de toutes les solutions.** Initialiser capture et Timer1 avant réseau comme dans `gpt-5.6 sol medium::setup()`/`claude opus 5 medium::engineBegin()`, mais ajouter un état explicite `BOOT_WAITING`, une fenêtre de grâce mesurée et, seulement si le comportement Deye l'exige, un tach provisoire borné et limité dans le temps. Ce mode doit être clairement signalé dans l'UI et s'arrêter dès que plusieurs périodes réelles cohérentes sont acquises. Si les rails ventilateur ne sont pas présents avant validation tach, prévoir une alimentation auxiliaire : le logiciel ne peut pas résoudre cette dépendance circulaire.
 - **Capture 2 PPR et fail-safe — combiner les deux leaders.** Reprendre la formule explicite de `gpt-5.6 sol medium::updateChannel()` (`30 000 000 / période_us`) et la configurabilité `inPpr/outPpr` de `claude opus 5 medium`. Exiger au moins trois périodes cohérentes avant activation, ne mettre à jour la fraîcheur qu'après validation, réduire le timeout à un multiple borné de la période plutôt qu'à 2–3 s fixes, puis relâcher immédiatement le collecteur par GPIO LOW en cas de faute. Réinitialiser filtre et phase après stall. Lire chaque ventilateur si la panne de chacun doit être détectée ; ne jamais utiliser `glm5.3::parallelFans`.
 - **Filtres — hybride validation + médiane + EMA.** Garder l'EMA de période réinitialisable de `gpt-5.6 sol medium` ou l'EMA entière de `claude opus 5 medium`, précédée d'une médiane courte sur trois périodes et d'un rejet relatif d'outlier. La validation sur trois échantillons de `claude opus 5 medium` est préférable à l'acceptation d'un seul intervalle. Éviter `composer 2.5 prompt from claude::smoothPeriod()` lorsqu'il réinsère la même mesure à chaque tour de boucle et les seuils qui mettent à jour le timestamp avant validation.
@@ -129,7 +133,7 @@ La meilleure base de fusion est `gpt-5.6 sol medium`, en important sélectivemen
 - **Formaliser les échanges ISR.** Utiliser snapshots/versionnement comme `claude opus 5 medium::engineReadInput()` ou une boîte aux lettres à publication atomique. Restaurer l'état précédent des interruptions au lieu d'appeler aveuglément `interrupts()`. Ne jamais supposer que `noInterrupts()` protège contre une NMI.
 - **Garder l'ISR minimale et entièrement auditée IRAM/DRAM.** Aucune allocation, `String`, flottant, `digitalWrite()`, accès réseau ou persistance. Figer le core ESP8266 et vérifier la map de liens des appels transitifs tels que `micros()`/`timer1_write()`.
 - **Réduire le heap dynamique.** Servir la page via `PROGMEM`/`send_P` comme `claude opus 5 medium`, `grok 4.6 medium` et `glm5.3`. Pour JSON, reprendre les buffers `char` bornés et l'échappement de `glm5.3`; éviter les pages de 7–9 ko assemblées en `String`.
-- **Rendre la compilation reproductible.** Ajouter `platformio.ini` ou une commande `arduino-cli`, verrouiller core et bibliothèques, puis compiler en CI. Des erreurs triviales comme `0xDEYE`, les API ESP32 dans `qwen3.6` ou la copie `volatile` de `deepseek4 flash` auraient alors été éliminées avant revue.
+- **Rendre la compilation reproductible.** Ajouter `platformio.ini` ou une commande `arduino-cli`, verrouiller core et bibliothèques, puis compiler en CI. Des erreurs triviales comme `0xDEYE`, les API ESP32 dans `qwen3.6`, `timer1Write()` et l'oubli d'`EEPROM.h` dans `qwen3.6-35b-fp8-freetoken`, ou la copie `volatile` de `deepseek4 flash` auraient alors été éliminées avant revue.
 - **Tester les invariants.** Tests hôte pour conversions PPR, demi-périodes, saturation, wraparound, CRC et filtres ; tests sur cible pour boot, stall, glitches et reconnexion ; mesures oscilloscope de fréquence/jitter sous trafic HTTP et écriture flash.
 - **Sécuriser les frontières.** Validation serveur stricte, longueurs bornées, `isfinite()`, terminaison NUL, échappement HTML/JSON, réponses HTTP d'erreur vérifiées côté UI, authentification et CSRF. Aucun mot de passe ne doit être relu par une API.
 - **Conserver les commentaires vérifiables.** Documenter unités, polarité du NPN et limites mesurées, sans promettre « zéro jitter » ni « indépendance WiFi » non démontrée.
