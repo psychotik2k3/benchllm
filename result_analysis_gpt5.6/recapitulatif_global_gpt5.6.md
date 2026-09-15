@@ -2,9 +2,9 @@
 
 ## 1. Inventaire des analyses
 
-Les 16 dossiers présents sous `competitors/` ont tous un rapport correspondant sous `result_analysis_gpt5.6/`. Avant cette mise à jour, **15 analyses existaient** ; **1 nouvelle analyse** a été produite et **aucun compétiteur ne manque**.
+Les 17 dossiers présents sous `competitors/` ont tous un rapport correspondant sous `result_analysis_gpt5.6/`. Avant cette mise à jour, **16 analyses existaient** ; **1 nouvelle analyse** a été produite et **aucun compétiteur ne manque**.
 
-### Existantes avant cette mise à jour (15)
+### Existantes avant cette mise à jour (16)
 
 - `gpt-5.6 sol medium`
 - `claude opus 5 medium`
@@ -19,12 +19,13 @@ Les 16 dossiers présents sous `competitors/` ont tous un rapport correspondant 
 - `gemini-free`
 - `composer 2.5`
 - `qwen3.6`
+- `qwen3.6-35b-fp8-freetoken`
 - `gemma4`
 - `qwen35`
 
 ### Nouvelles (1)
 
-- `qwen3.6-35b-fp8-freetoken`
+- `kimi k3`
 
 ### Sans analyse (0)
 
@@ -32,7 +33,7 @@ Les 16 dossiers présents sous `competitors/` ont tous un rapport correspondant 
 
 ## 2. Notes révisées et justification
 
-Les notes annoncées ont été retrouvées dans les 16 rapports individuels. La calibration transversale conserve toutes les notes sauf celles de `glm5.3`. Un astérisque `*` signale ci-dessous, et dans tous les tableaux et classements, une note ajustée dans ce récapitulatif seulement ; les rapports individuels ne sont pas modifiés.
+Les notes annoncées ont été retrouvées dans les 17 rapports individuels. La calibration transversale conserve toutes les notes sauf celles de `glm5.3`. Un astérisque `*` signale ci-dessous, et dans tous les tableaux et classements, une note ajustée dans ce récapitulatif seulement ; les rapports individuels ne sont pas modifiés.
 
 ### Ajustement retenu
 
@@ -44,6 +45,7 @@ Les notes annoncées ont été retrouvées dans les 16 rapports individuels. La 
 Les autres notes restent cohérentes après comparaison directe :
 
 - Le duo de tête est justifié : `gpt-5.6 sol medium` est le livrable global le plus équilibré (scheduler one-shot, 2 PPR, CRC32, schéma complet), tandis que `claude opus 5 medium` possède le moteur et la structure les plus sophistiqués mais dépend davantage d'API NMI internes et expose `apPass`.
+- Le nouveau `kimi k3` entre en troisième position à 7,6/10 : il associe deux canaux réels, Timer1 one-shot, échéances absolues, GPIO directs, EMA entière, PROGMEM, CRC16 et un schéma électrique cohérent. Il reste sous `claude opus 5 medium` en raison d'un réveil idle pouvant prendre presque une seconde, d'une première période calculée depuis le boot sans borne maximale et d'un timeout fixe de 1,5 seconde.
 - `grok 4.6 medium` mérite de rester à 7,1 malgré son architecture NMI crédible : tick permanent à 50 kHz, quantification de 20 µs, absence de filtre de période et mise à jour de fraîcheur avant validation limitent fortement le fail-safe.
 - `composer 2.5 prompt from claude` reste à 6,8 : il couvre bien l'ensemble fonctionnel et matériel, mais `now + half`, `digitalWrite()` dans l'ISR, le filtre alimenté plusieurs fois par la même mesure et la fraîcheur mise à jour avant validation empêchent de rejoindre le groupe supérieur.
 - `claude-sonnet5-free` conserve une qualité de code élevée mais une note globale basse : le firmware est lisible, cependant le schéma suppose à tort une pull-up interne 12 V du tach Noctua, ce qui rend l'entrée probablement inopérante.
@@ -56,6 +58,7 @@ Les autres notes restent cohérentes après comparaison directe :
 |---|---:|---:|---|---|
 | `gpt-5.6 sol medium` | 8,4/10 | 8,2/10 | • Timer1 one-shot partagé à prochaine échéance<br>• Écritures GPIO atomiques en ISR<br>• Formule 2 PPR et demi-période correctes<br>• IIR réinitialisé après perte<br>• AP+STA et secrets non réaffichés<br>• EEPROM versionnée avec CRC32<br>• OR-ing, buck-boost, TVS/PTC documentés | • Aucun tach synthétique de boot<br>• Timeout stall de 2 s<br>• Une période suffit à réactiver<br>• `micros()` en ISR dépend du core<br>• HTTP sans auth/CSRF/TLS<br>• Page HTML construite dans un gros `String`<br>• Saturation Timer1 non reflétée dans l'UI |
 | `claude opus 5 medium` | 8,0/10 | 8,5/10 | • Moteur NMI et CCOUNT très rigoureux<br>• Seqlock entre NMI et boucle<br>• Échéances absolues et rattrapage borné<br>• PPR entrée/sortie configurables<br>• Validation numérique sur trois échantillons<br>• Page en PROGMEM et heap exposé<br>• EEPROM CRC32/version<br>• Hardware et tests instrumentés détaillés | • API NMI privées et build non figé<br>• Charge NMI potentiellement agressive<br>• Aucun signal tach avant mesure<br>• Un seul tach lu par paire<br>• Secret `apPass` exposé par `/api/status`<br>• HTTP non authentifié et chaînes non échappées<br>• Valeurs RC contradictoires code/documentation |
+| `kimi k3` | 7,6/10 | 8,0/10 | • Timer1 one-shot à échéances absolues<br>• Deux canaux indépendants et GPIO directs<br>• Formules 2 PPR/demi-période correctes<br>• EMA entière réinitialisée au stall<br>• Page PROGMEM et JSON borné<br>• AP+STA, mDNS et CRC16<br>• OR-ing, buck 5 V et interfaces tach corrects | • Réveil après idle retardé jusqu'à 1 s<br>• Premier intervalle mesuré depuis le boot<br>• Reprise après stall contaminée par la pause<br>• Pas de borne maximale ni validation multi-périodes<br>• Timeout fixe de 1,5 s<br>• Pas d'auth/CSRF et AP partagé<br>• Pas de pull-down NPN, TVS ou PTC<br>• Saturation de sortie non affichée |
 | `grok 4.6 medium` | 7,1/10 | 7,3/10 | • NMI Timer1 et GPIO directs<br>• Deux canaux indépendants<br>• Formules 2 PPR exactes<br>• Timeout court de 400 ms<br>• PROGMEM et EEPROM CRC32<br>• AP+STA avec reconnexion<br>• Un seul tach par paire, sans parallèle<br>• OR-ing et sorties open-collector corrects | • Tick NMI permanent à 50 kHz<br>• Quantification de 20 µs sans fractionnaire<br>• Fraîcheur mise à jour avant validation<br>• Aucun filtre numérique de période<br>• État multi-champs non transactionnel<br>• Pas de tach de boot et alimentation circulaire possible<br>• Auth/CSRF absents et hardware de protection incomplet |
 | `glm5.3` | 6,9*/10 | 7,6*/10 | • Timer1 one-shot à échéances absolues<br>• Rattrapage ISR borné<br>• Buffers de timestamps fixes<br>• EMA et rejet de fronts rapides<br>• PROGMEM, `snprintf`, échappement JSON<br>• EEPROM CRC32/version<br>• AP+STA, portail captif, reconnexion<br>• Alimentation et collecteurs ouverts détaillés | • Modèle `parallelFans` physiquement faux<br>• Panne d'un ventilateur masquée<br>• Documentation contradictoire sur la fréquence envoyée<br>• Trou de cinq secondes du cache-panne<br>• EMA non réinitialisée après perte<br>• Aucun signal de boot immédiat<br>• Auth/CSRF absents et tach ancien gardé 2,5 s |
 | `composer 2.5 prompt from claude` | 6,8/10 | 6,5/10 | • Timer1 matériel et deux échéances<br>• Formule 2 PPR correcte<br>• Moyenne et limitation de pente prévues<br>• Page PROGMEM et JSON statique<br>• AP+STA non bloquant<br>• LittleFS adapté à une config évolutive<br>• OR-ing, buck et sorties NPN documentés | • ISR fixe 20 kHz avec `digitalWrite()`<br>• `now + half` accumule les retards<br>• Quantification jusqu'à plusieurs pourcents<br>• Fronts invalides repoussent le timeout<br>• Filtre réutilisant la même mesure<br>• Boot retardé par LittleFS<br>• Pas d'auth/CSRF ni reconnexion STA<br>• Persistance non atomique |
@@ -79,50 +82,52 @@ Les égalités sont départagées par l'autre note, puis par ordre alphabétique
 
 1. `gpt-5.6 sol medium` — **8,4/10**
 2. `claude opus 5 medium` — **8,0/10**
-3. `grok 4.6 medium` — **7,1/10**
-4. `glm5.3` — **6,9*/10**
-5. `composer 2.5 prompt from claude` — **6,8/10**
-6. `claude-sonnet5-free` — **4,5/10**
-7. `gpt-free` — **4,2/10**
-8. `gemini 3.1 pro` — **3,5/10**
-9. `deepseek4 flash` — **3,4/10**
-10. `qwen3.6_prompt_from_claude` — **3,0/10**
-11. `gemini-free` — **2,7/10**
-12. `composer 2.5` — **2,0/10**
-13. `qwen3.6` — **2,0/10**
-14. `qwen3.6-35b-fp8-freetoken` — **1,0/10**
-15. `gemma4` — **0,5/10**
-16. `qwen35` — **0,5/10**
+3. `kimi k3` — **7,6/10**
+4. `grok 4.6 medium` — **7,1/10**
+5. `glm5.3` — **6,9*/10**
+6. `composer 2.5 prompt from claude` — **6,8/10**
+7. `claude-sonnet5-free` — **4,5/10**
+8. `gpt-free` — **4,2/10**
+9. `gemini 3.1 pro` — **3,5/10**
+10. `deepseek4 flash` — **3,4/10**
+11. `qwen3.6_prompt_from_claude` — **3,0/10**
+12. `gemini-free` — **2,7/10**
+13. `composer 2.5` — **2,0/10**
+14. `qwen3.6` — **2,0/10**
+15. `qwen3.6-35b-fp8-freetoken` — **1,0/10**
+16. `gemma4` — **0,5/10**
+17. `qwen35` — **0,5/10**
 
 ### Classement qualité de code
 
 1. `claude opus 5 medium` — **8,5/10**
 2. `gpt-5.6 sol medium` — **8,2/10**
-3. `glm5.3` — **7,6*/10**
-4. `grok 4.6 medium` — **7,3/10**
-5. `claude-sonnet5-free` — **7,0/10**
-6. `composer 2.5 prompt from claude` — **6,5/10**
-7. `gpt-free` — **4,8/10**
-8. `qwen3.6_prompt_from_claude` — **4,0/10**
-9. `composer 2.5` — **4,0/10**
-10. `deepseek4 flash` — **3,9/10**
-11. `gemini-free` — **3,6/10**
-12. `gemini 3.1 pro` — **3,0/10**
-13. `qwen3.6` — **3,0/10**
-14. `qwen3.6-35b-fp8-freetoken` — **2,0/10**
-15. `gemma4` — **1,0/10**
-16. `qwen35` — **1,0/10**
+3. `kimi k3` — **8,0/10**
+4. `glm5.3` — **7,6*/10**
+5. `grok 4.6 medium` — **7,3/10**
+6. `claude-sonnet5-free` — **7,0/10**
+7. `composer 2.5 prompt from claude` — **6,5/10**
+8. `gpt-free` — **4,8/10**
+9. `qwen3.6_prompt_from_claude` — **4,0/10**
+10. `composer 2.5` — **4,0/10**
+11. `deepseek4 flash` — **3,9/10**
+12. `gemini-free` — **3,6/10**
+13. `gemini 3.1 pro` — **3,0/10**
+14. `qwen3.6` — **3,0/10**
+15. `qwen3.6-35b-fp8-freetoken` — **2,0/10**
+16. `gemma4` — **1,0/10**
+17. `qwen35` — **1,0/10**
 
 ## 5. Recommandation de fusion
 
-La meilleure base de fusion est `gpt-5.6 sol medium`, en important sélectivement l'instrumentation et certaines primitives de `claude opus 5 medium`, puis les buffers réseau de `glm5.3`. Il ne faut pas fusionner mécaniquement les moteurs Timer1 : choisir un seul ordonnanceur, formaliser ses invariants et le valider sur la version exacte du core ESP8266.
+La meilleure base de fusion est `gpt-5.6 sol medium`, en important sélectivement l'instrumentation et certaines primitives de `claude opus 5 medium`, la simplicité des deux canaux et du frontend en PROGMEM de `kimi k3`, puis les buffers réseau de `glm5.3`. Il ne faut pas fusionner mécaniquement les moteurs Timer1 : choisir un seul ordonnanceur, formaliser ses invariants et le valider sur la version exacte du core ESP8266.
 
 ### Fonctionnalités IoT à emprunter
 
 - **Timer1/scheduler — base `gpt-5.6 sol medium`.** Conserver `outputTimerIsr()`, `remainingTicks[]` et `requestedHalfTicks[]` : un Timer1 `TIM_SINGLE` est réarmé sur la prochaine échéance des deux canaux avec une résolution de 0,2 µs. Ajouter l'idée de phase absolue et de rattrapage borné de `claude opus 5 medium` (`nextEdgeCcy`, `ccyReached()`, garde à 16 itérations), mais seulement après validation du chemin NMI sur une toolchain figée. Écarter les ticks permanents de `grok 4.6 medium` et `composer 2.5 prompt from claude`, le mauvais prescaler de `gemini-free`, le mauvais `timer1_write()` de `composer 2.5`, les API inexistantes et le `loadVal` ignoré de `qwen3.6-35b-fp8-freetoken`, et tout usage de `Ticker` pour fabriquer le tach.
 - **Boot readiness — fonctionnalité à ajouter, absente de toutes les solutions.** Initialiser capture et Timer1 avant réseau comme dans `gpt-5.6 sol medium::setup()`/`claude opus 5 medium::engineBegin()`, mais ajouter un état explicite `BOOT_WAITING`, une fenêtre de grâce mesurée et, seulement si le comportement Deye l'exige, un tach provisoire borné et limité dans le temps. Ce mode doit être clairement signalé dans l'UI et s'arrêter dès que plusieurs périodes réelles cohérentes sont acquises. Si les rails ventilateur ne sont pas présents avant validation tach, prévoir une alimentation auxiliaire : le logiciel ne peut pas résoudre cette dépendance circulaire.
 - **Capture 2 PPR et fail-safe — combiner les deux leaders.** Reprendre la formule explicite de `gpt-5.6 sol medium::updateChannel()` (`30 000 000 / période_us`) et la configurabilité `inPpr/outPpr` de `claude opus 5 medium`. Exiger au moins trois périodes cohérentes avant activation, ne mettre à jour la fraîcheur qu'après validation, réduire le timeout à un multiple borné de la période plutôt qu'à 2–3 s fixes, puis relâcher immédiatement le collecteur par GPIO LOW en cas de faute. Réinitialiser filtre et phase après stall. Lire chaque ventilateur si la panne de chacun doit être détectée ; ne jamais utiliser `glm5.3::parallelFans`.
-- **Filtres — hybride validation + médiane + EMA.** Garder l'EMA de période réinitialisable de `gpt-5.6 sol medium` ou l'EMA entière de `claude opus 5 medium`, précédée d'une médiane courte sur trois périodes et d'un rejet relatif d'outlier. La validation sur trois échantillons de `claude opus 5 medium` est préférable à l'acceptation d'un seul intervalle. Éviter `composer 2.5 prompt from claude::smoothPeriod()` lorsqu'il réinsère la même mesure à chaque tour de boucle et les seuils qui mettent à jour le timestamp avant validation.
+- **Filtres — hybride validation + médiane + EMA.** Garder l'EMA de période réinitialisable de `gpt-5.6 sol medium` ou l'EMA entière compacte de `kimi k3`, précédée d'une médiane courte sur trois périodes et d'un rejet relatif d'outlier. La validation sur trois échantillons de `claude opus 5 medium` est préférable à l'acceptation d'un seul intervalle. Corriger impérativement chez `kimi k3` l'amorçage depuis zéro et la reprise après stall. Éviter `composer 2.5 prompt from claude::smoothPeriod()` lorsqu'il réinsère la même mesure à chaque tour de boucle et les seuils qui mettent à jour le timestamp avant validation.
 - **WiFi — reprendre le socle `glm5.3`, durci.** Conserver `WIFI_AP_STA`, `WiFi.persistent(false)`, reconnexion non bloquante, mDNS, portail captif et secrets non renvoyés. Ajouter une authentification applicative, un contrôle `Origin`/jeton CSRF, un mot de passe AP unique au premier boot, un débit limité sur les écritures et la possibilité de désactiver AP une fois STA validé. Ne jamais reproduire `claude opus 5 medium::handleStatus()` qui expose `apPass`, ni les endpoints GET mutatifs de plusieurs concurrents.
 - **Persistance — EEPROM binaire versionnée pour ce petit état.** Partir du `PersistedConfig` de `gpt-5.6 sol medium` ou du `Config` de `claude opus 5 medium` : `magic`, version, taille implicite/explicite, CRC32, validation `isfinite()` et bornes. Ajouter un double-slot avec compteur de génération et ne committer que si la valeur change. LittleFS n'est utile que si le schéma devient réellement extensible ; dans ce cas, imposer fichier temporaire, `flush`, renommage atomique, version et CRC.
 - **Observabilité IoT — emprunter `claude opus 5 medium`.** Exposer compteurs de fronts acceptés/rejetés, âge du dernier front valide, état de readiness, cause de faute, saturation de sortie, fréquence réellement générée, cadence/retard maximal ISR, uptime et heap. La télémétrie ne doit jamais inclure de secret.
@@ -132,7 +137,7 @@ La meilleure base de fusion est `gpt-5.6 sol medium`, en important sélectivemen
 - **Séparer les couches.** Extraire du sketch monolithique un moteur tach indépendant, un module capture/filtre, un stockage, un réseau et une interface Web. L'organisation logique de `claude opus 5 medium` est la meilleure référence ; conserver toutefois une abstraction stable devant les registres/API privées.
 - **Formaliser les échanges ISR.** Utiliser snapshots/versionnement comme `claude opus 5 medium::engineReadInput()` ou une boîte aux lettres à publication atomique. Restaurer l'état précédent des interruptions au lieu d'appeler aveuglément `interrupts()`. Ne jamais supposer que `noInterrupts()` protège contre une NMI.
 - **Garder l'ISR minimale et entièrement auditée IRAM/DRAM.** Aucune allocation, `String`, flottant, `digitalWrite()`, accès réseau ou persistance. Figer le core ESP8266 et vérifier la map de liens des appels transitifs tels que `micros()`/`timer1_write()`.
-- **Réduire le heap dynamique.** Servir la page via `PROGMEM`/`send_P` comme `claude opus 5 medium`, `grok 4.6 medium` et `glm5.3`. Pour JSON, reprendre les buffers `char` bornés et l'échappement de `glm5.3`; éviter les pages de 7–9 ko assemblées en `String`.
+- **Réduire le heap dynamique.** Servir la page via `PROGMEM`/`send_P` comme `claude opus 5 medium`, `kimi k3`, `grok 4.6 medium` et `glm5.3`. Pour JSON, reprendre les buffers `char` bornés de `kimi k3` et l'échappement de `glm5.3`; éviter les pages de 7–9 ko assemblées en `String`.
 - **Rendre la compilation reproductible.** Ajouter `platformio.ini` ou une commande `arduino-cli`, verrouiller core et bibliothèques, puis compiler en CI. Des erreurs triviales comme `0xDEYE`, les API ESP32 dans `qwen3.6`, `timer1Write()` et l'oubli d'`EEPROM.h` dans `qwen3.6-35b-fp8-freetoken`, ou la copie `volatile` de `deepseek4 flash` auraient alors été éliminées avant revue.
 - **Tester les invariants.** Tests hôte pour conversions PPR, demi-périodes, saturation, wraparound, CRC et filtres ; tests sur cible pour boot, stall, glitches et reconnexion ; mesures oscilloscope de fréquence/jitter sous trafic HTTP et écriture flash.
 - **Sécuriser les frontières.** Validation serveur stricte, longueurs bornées, `isfinite()`, terminaison NUL, échappement HTML/JSON, réponses HTTP d'erreur vérifiées côté UI, authentification et CSRF. Aucun mot de passe ne doit être relu par une API.
