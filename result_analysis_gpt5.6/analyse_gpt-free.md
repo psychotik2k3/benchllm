@@ -1,8 +1,10 @@
 # Analyse — gpt-free
 
-Sources analysées (liste exhaustive du dossier) :
+**Sources analysées** (liste exhaustive du dossier) :
 
 - `competitors/gpt-free/gpt_deye_fan.ino`
+
+---
 
 ## ✅ Points techniques positifs
 
@@ -180,10 +182,10 @@ json += "\"";
 - **Sécurité basique : [critique]** l’API sans auth expose explicitement tous les mots de passe.
 - **Testabilité : [majeur]** aucune suite de tests, aucun banc matériel et aucune capture de jitter/compilation de référence.
 
-## ⭐ Note globale : 4,2/10 — Architecture logicielle prometteuse, mais matériel incomplet, secrets exposés et readiness de boot non résolue sont rédhibitoires.
+## ⭐ Note globale : 4,1/10 — Architecture logicielle prometteuse, mais matériel incomplet, secrets exposés et readiness de boot non résolue sont rédhibitoires.
 
 Le générateur Timer1 du core et la formule 2-PPR sont pertinents, mais ne compensent pas les défauts électriques et de sûreté.
 
-## ⭐ Note qualité de code : 4,8/10 — Code lisible et abondamment commenté, mais fragile face aux versions, à la corruption et aux entrées réseau hostiles.
+## ⭐ Note qualité de code : 4,7/10 — Code lisible et abondamment commenté, mais fragile face aux versions, à la corruption et aux entrées réseau hostiles.
 
 La base est réutilisable après refonte de la persistance, de l’interface web, du schéma hardware et des garanties de timing.

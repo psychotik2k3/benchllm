@@ -1,5 +1,5 @@
-sans regarder aucun autre fichier dans competitors ou ses sous dossiers, 
-dans ce dossier XXXXX tu vas creer le code demande par le prompt suivant:
+sans regarder aucun autre fichier dans C:\dev\benchllm\competitors\ ou ses sous dossiers, 
+dans ce dossier C:\dev\benchllm\competitors\XXXXXXX (remplace XXXXX par le nom du modele et son niveau de reflexion et remplace tout espace par un _, si tu n'as pas l'information de nom de modele ou de niveau de reflexion demande les a l'utilisateur) tu vas creer le code demande par le prompt suivant:
 
 Tu es un expert en électronique embarquée et en programmation Arduino/ESP8266.
 

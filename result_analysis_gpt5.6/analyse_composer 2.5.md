@@ -1,8 +1,8 @@
 # Analyse — composer 2.5
 
 Sources analysées (liste exhaustive du dossier) :
-- `competitors\composer 2.5\deye_fan\deye_fan.ino`
-- `competitors\composer 2.5\deye_fan\schema_electronique.md`
+- `competitors/composer 2.5/deye_fan/deye_fan.ino`
+- `competitors/composer 2.5/deye_fan/schema_electronique.md`
 
 ## ✅ Points techniques positifs
 
@@ -80,7 +80,7 @@ Sources analysées (liste exhaustive du dossier) :
 #define AP_CHANNEL          6
 ```
 
-- [critique] `WiFi.setSleepMode(WIFI_NONE)` ne correspond vraisemblablement pas à l’énumération du core ESP8266, qui utilise `WIFI_NONE_SLEEP`. C’est un second bloqueur de compilation probable.
+- [majeur] `WiFi.setSleepMode(WIFI_NONE)` ne correspond pas à la constante attendue par cette API du core ESP8266 (`WIFI_NONE_SLEEP`). Selon les options permissives de la toolchain, cela produit une erreur de conversion d’énumération ou compile avec une valeur issue du mauvais enum ; dans les deux cas, la désactivation de veille annoncée n’est pas fiable.
 - [majeur] La séquence Timer1 omet `timer1_isr_init()`, normalement appelée avant `timer1_attachInterrupt()` sur les versions classiques du core ESP8266. Selon la version, cela peut empêcher l’initialisation correcte même après correction des erreurs de compilation.
 - [majeur] Aucune version de core, aucun projet reproductible et aucune CI ne sont fournis. La compilation réelle n’a pas pu être lancée localement faute d’`arduino-cli`, mais les deux erreurs précédentes sont visibles statiquement.
 
@@ -88,7 +88,7 @@ Sources analysées (liste exhaustive du dossier) :
 
 - [critique] `handleTachEdge()` exécute une division flottante dans une ISR GPIO. Sur ESP8266, cela peut appeler des helpers logiciels non garantis en IRAM et allonge fortement l’interruption ; sous accès flash/WiFi, le risque va du jitter au crash.
 
-```164:174:competitors/composer 2.5/deye_fan/deye_fan.ino
+```164:172:competitors/composer 2.5/deye_fan/deye_fan.ino
 float ratio = c->ratio;
 if (ratio < RATIO_MIN) ratio = RATIO_MIN;
 if (ratio > RATIO_MAX) ratio = RATIO_MAX;
@@ -165,7 +165,7 @@ void setupTimer1() {
 
 ### Documentation hardware/code
 
-- [critique] La documentation ordonne de connecter le nœud issu des Schottky, encore proche de 12 V, directement à la broche `5V` du Wemos et affirme que l’AMS1117 accepte cela. Une D1 mini ne doit pas recevoir 12 V sur `5V`; son régulateur et les composants du rail peuvent être détruits.
+- [critique] La documentation ordonne de connecter le nœud issu des Schottky, encore proche de 11,6 V, directement à la broche `5V` du Wemos et affirme que l’AMS1117 accepte cela. Une D1 mini ne doit pas recevoir cette tension sur `5V`; son régulateur et les composants du rail peuvent être détruits.
 
 ```61:68:competitors/composer 2.5/deye_fan/schema_electronique.md
 **Branchement Wemos :** connecter VIN+ au pin **5V** du Wemos D1 mini.

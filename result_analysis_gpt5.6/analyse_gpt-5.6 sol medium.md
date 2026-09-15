@@ -1,9 +1,11 @@
 # Analyse — gpt-5.6 sol medium
 
-Sources analysées (liste exhaustive du dossier) :
+**Sources analysées** (liste exhaustive du dossier) :
 
 - `competitors/gpt-5.6 sol medium/deye_fan.ino`
 - `competitors/gpt-5.6 sol medium/SCHEMA_ET_INSTALLATION.md`
+
+---
 
 ## ✅ Points techniques positifs
 

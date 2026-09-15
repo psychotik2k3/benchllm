@@ -36,8 +36,7 @@ Sources analysées (liste exhaustive du dossier) :
 
 ### Filtres / Signal
 
-- Une moyenne glissante sur quatre périodes réduit le bruit de mesure.
-- La limitation de variation à 15 % par mise à jour évite des sauts brusques de fréquence simulée.
+- Le code prévoit un tampon de moyenne sur quatre valeurs et une limitation de variation à 15 % par mise à jour. Ces mécanismes montrent une intention de stabiliser la sortie, mais leur déclenchement dans chaque tour de `loop()` au lieu de chaque nouveau front invalide leur comportement temporel annoncé, comme détaillé dans les défauts.
 - Le schéma ajoute un filtre RC léger de 4,7 kΩ/1 nF sur chaque entrée ; sa coupure, très supérieure aux fréquences tach utiles, limite les parasites rapides sans déformer sensiblement le signal.
 
 ### WiFi / Réseau
@@ -133,6 +132,7 @@ Sources analysées (liste exhaustive du dossier) :
 
 - [majeur] Le slew limiter est exécuté à chaque tour de `loop()` sans cadence fixe. Sa constante temporelle dépend donc fortement de la charge CPU et réseau ; impact : réponse du signal non déterministe et accélération artificiellement lente ou rapide.
 - [majeur] La moyenne réinsère continuellement la même valeur `g_rawPeriodUs` à chaque passage de boucle, même sans nouveau front ; impact : les quatre échantillons ne représentent pas quatre périodes distinctes et le filtre converge presque instantanément vers la dernière mesure.
+- [mineur] Le commentaire de `MIN_INPUT_PERIOD_US = 2500` annonce environ 7 200 RPM maximum, alors que `30 000 000 / 2 500` vaut 12 000 RPM à 2 PPR ; impact : les limites documentées ne correspondent pas à celles réellement acceptées.
 - [mineur] Une moyenne simple est sensible à un outlier valide ; impact : excursion temporaire des RPM simulés malgré la limitation de pente.
 
 ### WiFi / Réseau
@@ -140,6 +140,7 @@ Sources analysées (liste exhaustive du dossier) :
 - [critique] Aucune authentification HTTP ni protection CSRF n’est présente. Tout client AP ou STA peut modifier ratios et identifiants puis redémarrer l’ESP ; impact : sabotage du signal tach, déni de service et prise de contrôle de la configuration.
 - [majeur] Les identifiants AP par défaut sont publics et constants ; impact : accès immédiat à l’interface si l’utilisateur ne les change pas.
 - [majeur] Longueur et règles WPA du SSID/mot de passe AP ne sont pas validées ; impact : `WiFi.softAP()` peut échouer au redémarrage et supprimer le canal de récupération local.
+- [majeur] Le modem-sleep n’est pas explicitement désactivé ; impact : réveils radio et sections critiques ajoutent une source de gigue à une ISR Timer1 niveau 1 déjà cadencée à 20 kHz.
 - [mineur] Après l’échec STA à 20 s, aucune reconnexion périodique n’est tentée ; impact : perte durable du mode STA après une indisponibilité transitoire.
 
 ### Gestion mémoire / HEAP
@@ -179,10 +180,10 @@ Sources analysées (liste exhaustive du dossier) :
 - **Sécurité basique :** absence d’authentification, validation incomplète et secret AP par défaut ; [critique], impact : modification distante de la fonction de sûreté.
 - **Testabilité :** aucun test, simulateur de fronts, mesure de jitter ou procédure de validation automatisée ; [majeur], impact : les propriétés temps-réel annoncées ne sont pas démontrées.
 
-## ⭐ Note globale : 6,8/10 — Bonne architecture matérielle et fonctionnelle, mais le fail-safe sur fronts invalides et le jitter du scheduler doivent être corrigés avant usage fiable.
+## ⭐ Note globale : 6,2/10 — Bonne base matérielle, mais fail-safe et filtrage non déterministes à corriger
 
 Le projet couvre bien Timer1, AP+STA, deux impulsions/tour, collecteur ouvert et alimentation anti-backfeed, mais une entrée parasitée peut maintenir à tort une sortie tach active.
 
-## ⭐ Note qualité de code : 6,5/10 — Code clair et bien découpé, pénalisé par des garanties temps-réel surestimées, des chaînes non sûres et l’absence de sécurité Web.
+## ⭐ Note qualité de code : 6,3/10 — Code clair, mais invariants temps-réel insuffisamment respectés
 
 La base est maintenable, mais elle exige des corrections de concurrence, de validation, de persistance atomique et des tests reproductibles.

@@ -1,9 +1,11 @@
 # Analyse — grok 4.6 medium
 
-Sources analysées (liste exhaustive du dossier) :
+**Sources analysées** (liste exhaustive du dossier) :
 
 - `competitors/grok 4.6 medium/deye_fan/deye_fan.ino`
 - `competitors/grok 4.6 medium/SCHEMA_ELECTRONIQUE.md`
+
+---
 
 ## ✅ Points techniques positifs
 
@@ -116,7 +118,7 @@ uint32_t half = (uint32_t)(num / den);
 
 ### Démarrage / Boot readiness
 
-- **[critique]** Malgré le commentaire « Timer1 NMI AVANT le Wi-Fi », aucune sortie n’est activée avant une période valide. Il faut deux fronts puis un passage de `loop()` ; si le Deye contrôle le tach avant la montée du ventilateur, une alarme boot reste probable.
+- **[majeur]** Malgré le commentaire « Timer1 NMI AVANT le Wi-Fi », aucune sortie n’est activée avant une période valide. Il faut deux fronts puis un passage de `loop()` ; impact : fenêtre initiale sans tach, non bornée si le ventilateur tarde, mais ce fail-safe honnête n’est pas à lui seul une panne certaine.
 - **[majeur]** Le contrôleur est alimenté par les rails ventilateur eux-mêmes. Si les deux sont coupés au boot ou pilotés après validation tach, le montage est dans une dépendance circulaire et ne peut produire le signal attendu.
 - **[mineur]** Aucun mode temporaire « boot RPM » borné ni délai de grâce configurable n’est proposé pour couvrir la première mesure.
 
@@ -205,10 +207,10 @@ if (dt < MIN_EDGE_CYCLES) {
 - **Sécurité basique : [majeur]** API de commande sans auth/CSRF sur AP permanent.
 - **Testabilité : [majeur]** aucun test automatisé de la formule, du wrap, des glitches, du stall ou de la concurrence NMI ; aucune capture de jitter réel n’est fournie.
 
-## ⭐ Note globale : 7,1/10 — Bonne architecture NMI et excellent schéma de principe, mais le fail-safe contournable par glitches et la quantification de sortie doivent être corrigés.
+## ⭐ Note globale : 7,0/10 — Bonne architecture NMI et excellent schéma de principe, mais le fail-safe contournable par glitches et la quantification de sortie doivent être corrigés.
 
 Le montage est crédible après durcissement, sans atteindre encore le niveau de sûreté requis autour d’un onduleur.
 
-## ⭐ Note qualité de code : 7,3/10 — Implémentation claire et économe en heap, pénalisée par les API bas niveau fragiles, la concurrence NMI et l’absence de tests.
+## ⭐ Note qualité de code : 7,2/10 — Implémentation claire et économe en heap, pénalisée par les API bas niveau fragiles, la concurrence NMI et l’absence de tests.
 
 Le code montre une bonne maîtrise ESP8266, mais plusieurs invariants critiques sont affirmés plutôt que prouvés.

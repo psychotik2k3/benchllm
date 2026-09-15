@@ -1,26 +1,23 @@
 # Analyse — claude opus 5 medium
 
 Sources analysées (liste exhaustive du dossier) :
-- `competitors\claude opus 5 medium\deye_fan\deye_fan.ino`
-- `competitors\claude opus 5 medium\SCHEMA.md`
+- `competitors/claude opus 5 medium/deye_fan/deye_fan.ino`
+- `competitors/claude opus 5 medium/SCHEMA.md`
 
 ## ✅ Points techniques positifs
 
 ### Temps-réel / ISR
 
 - Le moteur affecte Timer1 au vecteur NMI de niveau 3, donc il peut préempter la pile WiFi de niveau 1 et n’est pas bloqué par `noInterrupts()`. C’est l’architecture la plus rigoureuse des trois dossiers pour limiter la gigue ESP8266.
-- Toutes les fonctions appelées depuis la NMI sont annotées `IRAM_ATTR`, les données sont en DRAM, et l’ISR évite flottants, allocation, `Serial`, SDK réseau et constantes flash.
+- Toutes les fonctions applicatives appelées depuis la NMI sont annotées `IRAM_ATTR`, les données sont en DRAM, et l’ISR évite flottants, allocation, `Serial`, SDK réseau et constantes flash. L’appel externe `timer1_write()` reste toutefois dépendant du core, comme relevé dans les défauts.
 - La lecture des entrées et l’écriture des sorties se font directement par `GPI`, `GPOS` et `GPOC`, sans `digitalRead()`/`digitalWrite()` dans le moteur.
 - Le partage NMI → `loop()` utilise un seqlock et le sens inverse des mots 32 bits alignés atomiques, choix cohérent puisque la NMI n’est pas masquable.
 
-```232:247:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
+```232:237:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
 static inline uint32_t IRAM_ATTR ccyNow() {
   uint32_t c;
   __asm__ __volatile__("rsr %0,ccount" : "=a"(c));
   return c;
-}
-static inline bool IRAM_ATTR ccyReached(uint32_t now, uint32_t deadline) {
-  return (int32_t)(now - deadline) >= 0;
 }
 ```
 
@@ -36,16 +33,12 @@ static inline bool IRAM_ATTR ccyReached(uint32_t now, uint32_t deadline) {
 - Le changement de fréquence n’est adopté qu’à une frontière de front, évitant les impulsions tronquées.
 - Le plafond de fréquence et `maxSimRpm` bornent les commandes aberrantes.
 
-```350:365:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
+```352:359:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
 const uint32_t h = oc->cmdHalfCcy;
 if (h != 0 && h != oc->halfCcy) {
   oc->halfCcy = h;
 }
 oc->nextEdgeCcy += oc->halfCcy;
-if (++iter >= 16u) {
-  oc->nextEdgeCcy = now + oc->halfCcy;
-  break;
-}
 ```
 
 ### Fidélité protocole tachymétrique / Fail-safe
@@ -119,7 +112,7 @@ if (++iter >= 16u) {
 ### Démarrage / Boot readiness
 
 - [majeur] « Le moteur démarre avant le WiFi » ne signifie pas qu’un tach est immédiatement émis : il faut que le ventilateur démarre, puis deux fronts descendants valides, puis un passage de `updateChannel()`. Il n’existe pas de signal de boot provisoire ni de délai d’alarme Deye vérifié.
-- [mineur] `lastEdgeMs` est initialisé après WiFi, serveur et mDNS. Cela reste sûr car `periodCcy` doit être non nul, mais le commentaire « premières centaines de millisecondes » ne quantifie ni spin-up ventilateur ni fenêtre d’alarme.
+- [mineur] `lastEdgeMs` est initialisé après WiFi, serveur et mDNS. Cela reste sûr car `periodCcy` doit être non nul, mais le délai réel comprend le spin-up, deux périodes tach et jusqu’à 20 ms avant `updateChannel()` ; l’affirmation « premières centaines de millisecondes » n’est pas démontrée face à la fenêtre d’alarme Deye.
 
 ### Génération sortie / Timer1
 
@@ -142,7 +135,7 @@ if (++iter >= 16u) {
 - [critique] Aucun endpoint HTTP n’est authentifié. Tout client sur l’AP ou le LAN STA peut modifier ratios/PPR/limites, changer le réseau ou redémarrer le module ; l’impact est une falsification du tach ou une indisponibilité.
 - [critique] `/api/status` renvoie en clair `apPass` avec le SSID et les informations réseau.
 
-```924:934:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
+```925:930:competitors/claude opus 5 medium/deye_fan/deye_fan.ino
 j += F("],\"wifi\":{");
 j += F("\"apSsid\":\""); j += g_cfg.apSsid;
 j += F("\",\"apPass\":\""); j += g_cfg.apPass;

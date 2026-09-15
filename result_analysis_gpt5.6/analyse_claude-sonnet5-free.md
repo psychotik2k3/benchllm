@@ -1,8 +1,8 @@
 # Analyse — claude-sonnet5-free
 
 Sources analysées (liste exhaustive du dossier) :
-- `competitors\claude-sonnet5-free\deye_fan.ino`
-- `competitors\claude-sonnet5-free\schema_electronique.md`
+- `competitors/claude-sonnet5-free/deye_fan.ino`
+- `competitors/claude-sonnet5-free/schema_electronique.md`
 
 ## ✅ Points techniques positifs
 
@@ -11,7 +11,7 @@ Sources analysées (liste exhaustive du dossier) :
 - Les trois ISR sont explicitement placées en IRAM via `ICACHE_RAM_ATTR`. L’ISR Timer1 est courte, sans allocation ni `digitalWrite()`, et la copie des mesures multioctets vers `loop()` est protégée par `noInterrupts()`.
 - La génération est indépendante de `loop()` et du serveur HTTP : Timer1 tourne à 10 kHz avec un pas annoncé et effectivement configuré à 100 µs (`TIM_DIV16`, 500 ticks à 5 MHz).
 
-```215:228:competitors/claude-sonnet5-free/deye_fan.ino
+```215:223:competitors/claude-sonnet5-free/deye_fan.ino
 void ICACHE_RAM_ATTR onTimer1ISR() {
   for (uint8_t ch = 0; ch < NUM_CHANNELS; ch++) {
     if (!chOutputActive[ch]) continue;
@@ -19,10 +19,14 @@ void ICACHE_RAM_ATTR onTimer1ISR() {
       uint8_t pin = (ch == CH_A) ? PIN_TACH_OUT_A : PIN_TACH_OUT_B;
       chPinState[ch] ^= 1;
       if (chPinState[ch]) {
-        GPOS = (1UL << pin);
 ```
 
 - La veille modem est désactivée et le CPU est réglé à 160 MHz. Cela réduit la gigue, sans toutefois rendre une interruption Timer1 de niveau 1 non masquable.
+
+### Démarrage / Boot readiness
+
+- Les GPIO de sortie sont placés à LOW avant le lancement du Timer1 et avant le WiFi ; avec les résistances base-émetteur documentées, les NPN restent bloqués et les lignes Deye sont relâchées.
+- Timer1 et les interruptions d’entrée sont installés avant l’initialisation AP+STA et du serveur HTTP. Le chemin de signal ne dépend donc pas d’une association WiFi réussie, même si aucune cadence provisoire n’est émise avant la première mesure.
 
 ### Génération sortie / Timer1
 
@@ -104,7 +108,7 @@ if (delta >= TACH_MIN_PERIOD_US) {
 }
 ```
 
-  Impact : au démarrage, le Deye peut recevoir pendant environ 150 ms une cadence liée au temps de boot plutôt qu’au ventilateur. Inversement, avant ce premier front la sortie reste absente ; aucune fenêtre de grâce coordonnée avec le délai d’alarme Deye n’est documentée.
+  Impact : au démarrage, après le prochain passage de la tâche périodique (0 à 150 ms), le Deye peut recevoir une cadence calculée sur le temps écoulé depuis le boot plutôt que sur une révolution du ventilateur. Avant ce premier front, la sortie reste absente ; aucune fenêtre de grâce coordonnée avec le délai d’alarme Deye n’est documentée.
 
 ### Génération sortie / Timer1
 
@@ -116,13 +120,9 @@ if (delta >= TACH_MIN_PERIOD_US) {
 
 - [critique] Le schéma d’entrée suppose à tort que le tach Noctua open-collector est tiré en interne vers 12 V. Une sortie open-collector nécessite normalement un pull-up externe ; ici, lorsque le transistor du ventilateur est ouvert, la base de Q1 n’a aucune source de courant, et lorsqu’il conduit elle est à 0 V. Q1 reste donc bloqué dans les deux états.
 
-```107:116:competitors/claude-sonnet5-free/schema_electronique.md
+```107:110:competitors/claude-sonnet5-free/schema_electronique.md
 Le tach Noctua est un signal **collecteur ouvert**, tiré au niveau haut par
 une résistance interne du ventilateur vers son propre +12V
-...
-TACH Noctua (repos ~12V, impulsions vers 0V)
-        |
-      [Rb 10k]
 ```
 
   Impact : dans le câblage documenté, les GPIO risquent de ne voir aucun front et le simulateur de ne jamais produire de tach. Il faut tirer le tach vers 3,3 V ou concevoir explicitement un étage adapté à une vraie source 12 V vérifiée.
@@ -173,7 +173,7 @@ TACH Noctua (repos ~12V, impulsions vers 0V)
 - **Sécurité basique :** contrôle Web totalement non authentifié sur AP et STA.
 - **Testabilité :** aucun test unitaire, test de compilation automatisé, mesure de jitter ou procédure instrumentée.
 
-## ⭐ Note globale : 4,5/10 — Bonne architecture firmware, mais entrée tach probablement inopérante
+## ⭐ Note globale : 4,4/10 — Bonne architecture firmware, mais entrée tach probablement inopérante
 
 La génération Timer1 et le collecteur ouvert sont bien pensés, mais l’absence de vrai pull-up d’entrée et les défauts d’amorçage/temporisation empêchent de considérer la solution fiable telle quelle.
 

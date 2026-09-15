@@ -1,6 +1,6 @@
 # Analyse — qwen35
 
-Sources analysées (liste exacte) :
+**Sources analysées** :
 - `competitors/qwen35/firmware_main.cpp`
 - `competitors/qwen35/schematic.md`
 - `competitors/qwen35/README.md`
@@ -137,10 +137,10 @@ void updateSmoothedRPM() {
 - [critique] **Sécurité basique :** HTTP sans authentification, GET mutatif et secret AP publié.
 - [critique] **Testabilité :** aucun test de compilation, formule, fréquence, stall, boot ou hardware; un simple build aurait détecté plusieurs défauts.
 
-## ⭐ Note globale : 0,5/10 — Livrable non compilable, mesure RPM invalide et absence totale de génération tach conforme.
+## ⭐ Note globale : 0,5/10 — Non exploitable
 
 La présence d'une interface et de documentation ne compense ni les GPIO flash, ni le schéma non sûr, ni l'absence de Timer1, fail-safe, alimentation et deux sorties.
 
-## ⭐ Note qualité de code : 1,0/10 — Présentation abondante, mais code incohérent, non constructible et non testable.
+## ⭐ Note qualité de code : 1,0/10 — Très insuffisante
 
 Les erreurs syntaxiques et d'API, les commentaires infidèles et le contenu hors sujet rendent la base impropre à la maintenance.

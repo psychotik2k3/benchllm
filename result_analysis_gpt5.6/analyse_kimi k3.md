@@ -1,6 +1,6 @@
-# Analyse — kimi k3
+# Analyse — kimi k3 (variante Kimi distincte)
 
-**Sources analysées** : `deye_fan.ino`, `schema_electronique.md`
+**Sources analysées** : `competitors/kimi k3/deye_fan.ino`, `competitors/kimi k3/schema_electronique.md`
 
 ---
 

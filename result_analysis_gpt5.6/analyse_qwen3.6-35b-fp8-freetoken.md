@@ -1,6 +1,9 @@
 # Analyse — qwen3.6-35b-fp8-freetoken
 
-**Sources analysées** : `deye_fan.ino`, `circuit.h`, `README.md`
+**Sources analysées** :
+- `competitors/qwen3.6-35b-fp8-freetoken/deye_fan.ino`
+- `competitors/qwen3.6-35b-fp8-freetoken/circuit.h`
+- `competitors/qwen3.6-35b-fp8-freetoken/README.md`
 
 ---
 
@@ -132,10 +135,10 @@ Le livrable contient une nomenclature, des schémas ASCII, un guide d'installati
 
 ---
 
-## ⭐ Note globale : 1,0/10 — Livrable non fonctionnel et matériellement dangereux
+## ⭐ Note globale : 1,0/10 — Non fonctionnel et dangereux
 
 L'intention couvre presque toutes les fonctions demandées, mais le sketch ne compile pas, ne configure aucun Timer1 valide, ne produit pas le second canal et repose sur un câblage tach/alimentation incorrect.
 
-## ⭐ Note qualité de code : 2,0/10 — Présentation soignée, logique fondamentale incohérente
+## ⭐ Note qualité de code : 2,0/10 — Logique fondamentale incohérente
 
 Le découpage et le nommage sont lisibles, mais les contradictions entre commentaires, API, comportement réel et schéma rendent le code difficile à corriger en confiance.

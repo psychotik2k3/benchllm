@@ -1,6 +1,6 @@
 # Analyse — qwen3.6
 
-Sources analysées (liste exacte) :
+**Sources analysées** :
 - `competitors/qwen3.6/deye_fan.ino`
 - `competitors/qwen3.6/SCHÉMA_CIRCUIT.md`
 
@@ -59,15 +59,12 @@ Sources analysées (liste exacte) :
 - [critique] Le fichier ne compile probablement pas pour une Wemos D1 Mini ESP8266 : `hw_timer_t`, `timerBegin(1, prescaler, true)`, `timerRead`, `timerWrite` et cette forme de `timerAttachInterrupt` sont des API ESP32, pas l'API Timer1 ESP8266. **Impact : firmware non constructible pour la cible annoncée.**
 - [critique] `eepromLoadRatios()` ferme sa fonction avant `EEPROM.end();`, qui se retrouve au niveau global, suivi d'une accolade surnuméraire. **Impact : erreur syntaxique certaine.**
 
-```295:303:competitors/qwen3.6/deye_fan.ino
-static void IRAM_ATTR fan1TachISR() {
-    uint32_t now = micros();
-    
-    // Anti-rebond / validation de période minimale
-    if (lastFan1IRQ_us == 0) {
-        lastFan1IRQ_us = now;
-        return;
-    }
+```215:220:competitors/qwen3.6/deye_fan.ino
+    fan1RatioInt10 = (int16_t)(fan1Ratio * 10 + 0.5f);
+    fan2RatioInt10 = (int16_t)(fan2Ratio * 10 + 0.5f);
+}
+    EEPROM.end();
+}
 ```
 
 ### Temps-réel / ISR
@@ -139,10 +136,10 @@ uint32_t simPeriodU32 =
 - [critique] **Sécurité basique :** AP/HTTP sans authentification et secrets via GET.
 - [majeur] **Testabilité :** aucun test unitaire, test de timing, mesure de jitter ou scénario de boot/stall automatisé.
 
-## ⭐ Note globale : 2,0/10 — Architecture annoncée pertinente, mais firmware non compilable et plusieurs inversions critiques rendent le montage inutilisable.
+## ⭐ Note globale : 1,5/10 — Inutilisable sans refonte
 
 La note technique reste basse malgré une documentation riche, car compilation, génération de fréquence, redémarrage après stall, boot et alimentation ne sont pas sûrs.
 
-## ⭐ Note qualité de code : 3,0/10 — Présentation soignée, mais exactitude, cohérence et robustesse sont insuffisantes.
+## ⭐ Note qualité de code : 2,5/10 — Lisible mais non fiable
 
 Le découpage aide la lecture, sans compenser les erreurs d'API, les commentaires trompeurs, la duplication et l'absence de tests.

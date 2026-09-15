@@ -1,6 +1,6 @@
 # Analyse — qwen3.6_prompt_from_claude
 
-Sources analysées (liste exacte) :
+**Sources analysées** :
 - `competitors/qwen3.6_prompt_from_claude/deye_fan.ino`
 - `competitors/qwen3.6_prompt_from_claude/SCHEMATIC.md`
 
@@ -145,10 +145,10 @@ scheduler.attach(
 - [critique] **Sécurité basique :** HTTP non authentifié, secrets fixes/en clair et AP password exposé.
 - [majeur] **Testabilité :** aucune mesure automatique de jitter, aucun test de débordement, stall, boot ou corruption.
 
-## ⭐ Note globale : 3,0/10 — Conception ambitieuse et mieux ciblée, mais non compilable et non sûre en temps-réel comme en alimentation.
+## ⭐ Note globale : 2,5/10 — Ambitieux mais inexécutable
 
 La bonne formule tach, les filtres et l'usage des registres ne compensent pas le faux Timer1, le Ticker détruit, le fail-safe inversé et le faux buck MT3608.
 
-## ⭐ Note qualité de code : 4,0/10 — Organisation solide en surface, exactitude d'API et assertions techniques insuffisantes.
+## ⭐ Note qualité de code : 3,5/10 — Structuré mais non fiable
 
 Le code est lisible et documenté, mais ses erreurs de portée, de types, de sécurité et de concurrence empêchent une maintenance fiable.

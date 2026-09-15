@@ -1,9 +1,11 @@
 # Analyse — deepseek4 flash
 
-Sources analysées (liste exhaustive du dossier) :
+**Sources analysées** (liste exhaustive du dossier) :
 - `competitors/deepseek4 flash/deye_fan.ino`
 - `competitors/deepseek4 flash/README.md`
 - `competitors/deepseek4 flash/SCHEMA_ELECTRONIQUE.md`
+
+---
 
 ## ✅ Points techniques positifs
 
@@ -199,10 +201,10 @@ static void handleState()
 - **Sécurité basique :** exposition des mots de passe et API sans authentification ; [critique], impact : compromission réseau et fonctionnelle.
 - **Testabilité :** aucun test unitaire, build CI, test de course NMI ou capture de jitter ; [majeur], impact : propriétés centrales non prouvées.
 
-## ⭐ Note globale : 3,4/10 — Excellente intention temps-réel et hardware complet, mais le réveil FRC1 désynchronise le calendrier, le build est probablement cassé et les secrets sont exposés.
+## ⭐ Note globale : 3,3/10 — Excellente intention temps-réel et hardware complet, mais le réveil FRC1 désynchronise le calendrier, le build est probablement cassé et les secrets sont exposés.
 
 L’event-calendar sur registres est techniquement intéressant, mais son passage idle→actif est fonctionnellement incorrect et doit être reconçu, compilé puis validé sur oscilloscope.
 
-## ⭐ Note qualité de code : 3,9/10 — Code très documenté mais trop dépendant d’internals, avec une erreur C++ probable, une course NMI centrale et des défauts critiques de sécurité.
+## ⭐ Note qualité de code : 3,8/10 — Code très documenté mais trop dépendant d’internals, avec une erreur C++ probable, une course NMI centrale et des défauts critiques de sécurité.
 
 La présentation est soignée, toutefois robustesse, conventions de concurrence, reproductibilité et testabilité restent insuffisantes.
