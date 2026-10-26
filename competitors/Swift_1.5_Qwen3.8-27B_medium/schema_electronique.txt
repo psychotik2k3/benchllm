@@ -1,0 +1,122 @@
+================================================================================
+SCHÉMA ÉLECTRONIQUE — Simulateur tach Deye / Wemos D1 Mini
+================================================================================
+Légitime : 2x NMB 6 cm + 2x NMB 9 cm (12 V) → 2x Noctua NF-A6x25-FLX +
+2x NF-A9-FLX. Le Wemos lit les tach Noctua et ré-émet un tach "boosté"
+vers l'onduleur Deye.
+
+Connecteur ventilateur Deye (4 broches) :  1 = +12V,  2 = tach,  3 = tach,  4 = GND
+(les 2 broches tach forment une sortie open-drain avec pull-up interne Deye,
+à 3,3 V / 5 V / 12 V — tension inconnue, d'où le montage ci-dessous.)
+
+--------------------------------------------------------------------------------
+1. ALIMENTATION  (gère les 2 connecteurs non alimentés en même temps)
+--------------------------------------------------------------------------------
+
+  J1 (vent. 9 cm)                J2 (vent. 6 cm)
+  pin 1  +12V ──┐                pin 1  +12V ──┐
+               [D1]               [D2]
+              1N5819             1N5819   (diodes Schottky : évite le
+                │                   │      backfeed d'un connecteur vers
+                ├─── BUSE 12V ─────┤      l'autre quand un seul est alimenté)
+                │                   │
+              [C1]                [C2]
+            470 µF/25 V         (partagée)   ← réserve : le Wemos survit
+                │                   │          aux écarts de coupure/
+                └───────────────────┘          redémarrage entre les 2
+                         │                      connecteurs (~quelques s)
+                       [R1] 100 kΩ
+                         │            (décharge lente quand tout est éteint)
+                    ┌────┴────┐
+                    │ AP2112-3.3│  (LDO 3,3 V, 1 A — ou AMS1117-3.3)
+                    └────┬────┘
+                         │
+                      BUSE 3V3 ──────► Wemos pin "3.3V" (et "VIN" si besoin)
+                         │
+                        [C3] 10 µF/16V   + 0,1 µF céramique au plus près
+                         │
+                      GND commun ── J1 pin 4, J2 pin 4, Wemos GND
+
+  Note : on alimente le Wemos sur 3V3 (pas sur VIN) car le bus est déjà
+  régulé à 3,3 V ; la LED D7 et les GPIO sont alors dans leurs spécifications.
+
+--------------------------------------------------------------------------------
+2. CIRCUITS D'ENTRÉE  (tach Noctua → Wemos)  — identique pour les 2 canaux
+--------------------------------------------------------------------------------
+  Le tach Noctua sort 2 pulses/tour, open-collector, tiré à GND. Le Wemos
+  ne doit jamais voir plus de 3,3 V → transistors de conversion de niveau.
+
+  Canal 1 (vent. 9 cm → D1/GPIO5)          Canal 2 (vent. 6 cm → D2/GPIO4)
+
+  TACH Noctua 9 cm ──[R2] 100 kΩ──┬──► base  Q1 (BC547, NPN)
+                                   │          émetteur ── GND
+                                   │          collecteur ──┬──► Wemos D1
+                                [R3] 10 kΩ  │
+                                3V3 ────────┘   (pull-up : ligne à 3,3 V au repos,
+                                                 tirée à 0 V par Q1 pendant le pulse)
+
+  TACH Noctua 6 cm ──[R4] 100 kΩ──┬──► base  Q2 (BC547, NPN)
+                                   │          émetteur ── GND
+                                   │          collecteur ──┬──► Wemos D2
+                                [R5] 10 kΩ  │
+                                3V3 ────────┘
+
+  Fonctionnement : le tach étant open-drain, la ligne monte au niveau du
+  pull-up Deye (3,3/5/12 V). R2/R4 limitent le courant de base à < 100 µA
+  même à 12 V → Q1/Q2 conduisent quand la ligne est haute, et le GPIO voit
+  un 0/3,3 V propre quelle que soit la tension Deye.
+  (Le code met aussi INPUT_PULLUP côté Wemos : redondant mais sans risque,
+   le collecteur de Q1/Q2 pilote la ligne.)
+
+--------------------------------------------------------------------------------
+3. CIRCUITS DE SORTIE  (Wemos → broche tach Deye)  — identique pour les 2 canaux
+--------------------------------------------------------------------------------
+  Le Wemos ne doit sourdre qu'un courant : ondulée en open-collector, la
+  ligne est tirée par le pull-up interne Deye (à sa propre tension, ≤ 12 V).
+  Transistors 150 V (C945 / 2N5551) pour tolérer 12 V au collecteur.
+
+  Canal 1 (Wemos D5/GPIO14 → tach Deye 9 cm)
+  Canal 2 (Wemos D6/GPIO12 → tach Deye 6 cm)
+
+  Wemos D5 ──[R6] 1 kΩ──► base   Q3 (C945, NPN 150 V)
+                            émetteur ── GND
+                            collecteur ──► broche TACH (vent. 9 cm) du Deye
+                                   ──[D3] 1N4007 (anode sur la ligne,
+                                      cathode au GND)  ← flyback/parafoudre
+                                   ──[R7] 10 kΩ à GND  (décharge la ligne
+                                      si le Deye n'a pas de pull-up interne)
+
+  Wemos D6 ──[R8] 1 kΩ──► base   Q4 (C945, NPN 150 V)
+                            émetteur ── GND
+                            collecteur ──► broche TACH (vent. 6 cm) du Deye
+                                   ──[D4] 1N4007 (anode sur la ligne,
+                                      cathode au GND)
+                                   ──[R9] 10 kΩ à GND
+
+  Fonctionnement : GPIO à 3,3 V → Ibase ≈ 3,3 mA via 1 kΩ → saturation
+  (hFE typ. 200) → la ligne tach est tirée à ≈ 0,2 V, même si le Deye la
+  pull-up à 12 V. GPIO à 0 V → Q3/Q4 bloqués → ligne haute (pull-up Deye).
+  Signal tach = 2 pulses/tour, période = 60/(2 × RPM simulés), pulse ≈ 5 %.
+
+--------------------------------------------------------------------------------
+4. RÉCAPitulatif des composants discrets
+--------------------------------------------------------------------------------
+  R1  100 kΩ     R2, R4  100 kΩ     R3, R5, R7, R9  10 kΩ
+  R6, R8  1 kΩ   C1  470 µF/25 V   C3  10 µF/16 V + 0,1 µF céramique
+  D1, D2  1N5819 (Schottky)        D3, D4  1N4007
+  Q1, Q2  BC547 (NPN 45 V)        Q3, Q4  C945 (NPN 150 V)
+  U1  AP2112-3.3 (ou AMS1117-3.3)
+  J1, J2  connecteurs ventilateur 4 broches (Molex 443870 type)
+
+  Tous les transistors sont dans la liste fournie (BC547, C945).
+
+--------------------------------------------------------------------------------
+5. VÉRIFICATIONS
+--------------------------------------------------------------------------------
+  • Un seul connecteur alimenté : la diode Schottky opposée bloque le
+    backfeed ; le Wemos tourne sur C1 (quelques secondes de réserve).
+  • Tension tach Deye = 3,3 / 5 / 12 V : entrées et sorties passent par
+    des transistors, aucune broche ESP8266 n'est jamais exposée > 3,3 V.
+  • Jitter : génération et horodatage pilotés par le Timer0 matériel
+    (10 kHz), le WiFi/HTTP n'intervient pas dans la boucle de signal.
+================================================================================
