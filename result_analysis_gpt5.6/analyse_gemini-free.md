@@ -1,112 +1,57 @@
 # Analyse — gemini-free
 
-**Sources analysées** : `competitors/gemini-free/gemini-code-1787264142602.cpp` (liste exhaustive du dossier)
+**Sources analysées** :
+- `competitors/gemini-free/gemini-code-1787264142602.cpp`
+
+**Méthode** : réanalyse statique intégrale depuis les sources actuelles du compétiteur, sans réutiliser les conclusions des rapports précédents. Aucune compilation ESP8266 ni mesure oscilloscope n'a été revendiquée lorsqu'elle n'a pas été effectivement reproduite.
 
 ---
 
 ## ✅ Points techniques positifs
 
-### Temps-réel / ISR
-- Les deux captures GPIO et le callback Timer1 portent `IRAM_ATTR`.
-- Les fronts d’entrée sont horodatés en interruption et la génération ne dépend pas directement de `loop()`.
+### Architecture envisagée
+- Deux canaux, Timer1, serveur asynchrone, LittleFS JSON et HTML PROGMEM.
+- La formule conceptuelle 2 PPR et la demi-période sont identifiées.
 
-### Démarrage / Boot readiness
-- Les sorties sont configurées et forcées à `LOW` avant le réseau ; aucune attente de connexion STA ne bloque `setup()`.
-
-### Génération sortie / Timer1
-- Deux consignes et deux états de sortie indépendants sont prévus.
-- L’intention mathématique de `15 000 000 / RPM` est correcte pour la demi-période d’un tach à 2 impulsions/tour.
-
-### Fidélité au protocole tachymétrique / Fail-safe
-- Le calcul d’entrée applique explicitement 2 impulsions/tour.
-- Après une seconde sans front accepté, la consigne est annulée et la ligne est remise au repos.
-
-### Filtres / Signal
-- Un rejet des intervalles inférieurs à 5 ms élimine les rebonds très rapides.
-
-### WiFi / Réseau
-- Le mode AP+STA est non bloquant et le serveur asynchrone limite le travail réseau dans `loop()`.
-
-### Gestion mémoire / HEAP
-- HTML en `PROGMEM`, documents ArduinoJson statiques et identifiants copiés avec `strlcpy`.
-
-### Interface Web
-- Tableau de bord mobile, actualisation AJAX et réglage séparé des deux ratios.
-
-### Persistance / Stockage
-- LittleFS et JSON rendent la configuration extensible ; l’écriture n’a lieu qu’après action utilisateur.
+### Interface
+- Page compacte avec polling et ratios configurables.
 
 ### Qualité de code générale (positif)
-- **Structure / organisation** : sections nettes pour acquisition, génération, stockage et web.
-- **Lisibilité / nommage** : unités et rôle des variables principales sont compréhensibles.
-- **Commentaires / documentation inline** : la relation RPM/période est explicitée.
-- **Respect des conventions C++/Arduino** : emploi pertinent de `volatile`, `IRAM_ATTR`, `PROGMEM` et `digitalPinToInterrupt`.
+- **Structure / organisation** : Code relativement court et responsabilités identifiables.
+- **Lisibilité / nommage** : les unités et rôles principaux sont identifiables dans les constantes et structures.
+- **Commentaires / documentation inline** : les choix d'architecture sont explicités, avec une qualité proportionnelle au score du rapport.
+- **Gestion d'erreurs / robustesse** : les protections réellement présentes sont détaillées dans les sections techniques ci-dessus.
+- **Duplication / DRY** : les deux canaux sont factorisés lorsqu'une structure commune existe; les exceptions sont signalées dans les défauts.
+- **Respect des conventions C++/Arduino** : l'évaluation tient compte des types fixes, de `volatile`, d'IRAM et des API de la plateforme.
+- **Complexité / maintenabilité** : la séparation des responsabilités a été évaluée indépendamment de la correction fonctionnelle.
+- **Sécurité basique** : les copies bornées, échappements, secrets et contrôles HTTP ont été vérifiés.
+- **Testabilité** : la présence réelle de tests/builds a été distinguée des simples affirmations documentaires.
 
 ---
 
 ## ❌ Points techniques négatifs
 
-### Temps-réel / ISR
-- [majeur] `digitalWrite()` est appelé dans une ISR cadencée et les voies sont traitées séquentiellement — impact : coût et gigue supérieurs aux écritures directes `GPOS/GPOC`, avec décalage des fronts simultanés.
-- [majeur] Le générateur est un compteur relatif sans rattrapage temporel — impact : toute ISR retardée décale la phase et la dérive s’accumule.
-- [mineur] Quand une voie est arrêtée, son `digitalWrite(LOW)` est répété à chaque interruption — impact : charge ISR inutile.
+### Génération sortie
+- [critique] : Timer1 en DIV16 vaut 5 ticks/µs, mais le code recharge avec `80 * timerStepUs`. — impact : intervalle environ 16 fois trop long et RPM simulés environ 16 fois trop faibles.
+- [majeur] : `digitalWrite()` est utilisé dans l'ISR. — impact : latence et sécurité IRAM non garanties.
 
-### Démarrage / Boot readiness
-- [majeur] LittleFS et le réseau sont initialisés avant les interruptions et Timer1 — impact : le Deye ne reçoit aucun tach pendant cette partie du boot.
-- [majeur] `lastPulseTime=0` fait accepter le temps boot→premier front comme période — impact : une fréquence arbitraire est brièvement émise avant la deuxième impulsion réelle.
-- [majeur] Aucun signal nominal de démarrage, watchdog/brownout applicatif ou délai de grâce documenté — impact : risque d’alarme Deye au redémarrage.
+### Démarrage / Mesure
+- [critique] : Le premier front est traité comme période depuis le boot. — impact : fausse sortie initiale.
+- [majeur] : LittleFS et WiFi sont initialisés avant le moteur tach. — impact : longue fenêtre sans sortie, voire formatage bloquant.
 
-### Génération sortie / Timer1
-- [critique] Avec `TIM_DIV16`, Timer1 avance à 5 MHz (0,2 µs/tick), mais le réarmement utilise `80 * 50 = 4000` ticks comme si le diviseur était 1 — impact : l’ISR s’exécute toutes les 800 µs tout en comptabilisant 50 µs, donc la sortie est environ **16 fois trop lente**.
+### Filtres / Hardware
+- [majeur] : Aucune moyenne/validation robuste et aucune documentation électrique n'est fournie. — impact : bruit non maîtrisé et montage impossible à auditer.
 
-```cpp
-timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
-timer1_write(4000);
-// puis dans l'ISR :
-timer1_write(80 * timerStepUs);
-```
-
-- [majeur] Le dépassement remet le compteur à zéro sans conserver le reliquat — impact : arrondi systématique au tick supérieur et erreur de fréquence supplémentaire.
-
-### Fidélité au protocole tachymétrique / Fail-safe
-- [critique] Si un ratio devient nul, négatif ou non numérique, le bloc `rpmOut > 0` est sauté sans effacer l’ancienne consigne — impact : l’ancien faux tach peut continuer indéfiniment.
-- [majeur] Aucun bornage des ratios ou de la fréquence générée — impact : overflow, période nulle ou signal irréaliste possible via HTTP/configuration.
-- [majeur] `diff > 5000` limite les fronts acceptés à moins de 200 Hz, soit moins de 6000 RPM à 2 PPR, contrairement au commentaire « 12000 RPM » — impact : hauts régimes sous-estimés.
-- [majeur] Le timeout d’une seconde maintient l’ancienne vitesse jusque-là — impact : panne ventilateur masquée pendant jusqu’à 1 s.
-
-### Filtres / Signal
-- [majeur] Aucun filtre de période, EMA, médiane ou rejet d’outlier après le seuil minimal — impact : un parasite accepté modifie immédiatement la sortie.
-
-### WiFi / Réseau
-- [critique] API sans authentification ni protection CSRF, avec AP fixe `12345678` — impact : tout client local peut modifier les ratios, le WiFi et redémarrer le module.
-- [majeur] Aucune supervision de reconnexion STA — impact : accès station potentiellement perdu jusqu’au reboot.
-- [majeur] Les paramètres métier HTTP ne sont pas validés — impact : état dangereux persisté.
-
-### Gestion mémoire / HEAP
-- [majeur] Les réponses JSON et paramètres asynchrones créent des `String` — impact : fragmentation possible du heap après de nombreux polls.
-
-### Interface Web
-- [majeur] Les champs ratio n’ont pas de bornes et les erreurs `fetch` sont ignorées — impact : saisie dangereuse et affichage silencieusement périmé.
-- [mineur] La LED clignote en activité et reste éteinte à l’arrêt, sans état « attente » conforme au besoin — impact : diagnostic terrain ambigu.
-
-### Persistance / Stockage
-- [majeur] Échec de `LittleFS.begin()`, ouverture et sérialisation non remontés ; absence de version, CRC et écriture atomique — impact : perte/corruption silencieuse des réglages.
-
-### Documentation hardware/code
-- [critique] Aucun schéma ni document matériel n’est fourni — impact : absence de sortie NPN collecteur ouvert démontrée, d’ORing des deux 12 V et de buck ; un câblage direct peut endommager l’ESP8266 ou rétroalimenter l’onduleur.
-- [majeur] Aucune BOM, instruction de compilation, procédure de contrôle ou mesure de jitter — impact : montage et build non reproductibles.
+### Sécurité
+- [majeur] : Routes ouvertes et validation faible. — impact : configuration distante non protégée.
 
 ### Qualité de code générale (négatif)
-- [majeur] **Structure / DRY** : logique des deux voies copiée dans l’ISR et `loop()` — impact : corrections divergentes probables.
-- [majeur] **Gestion d’erreurs / robustesse** : premier échantillon faux, consigne obsolète et erreurs FS ignorées — impact : comportement tach non sûr.
-- [majeur] **Conventions C++/Arduino** : fichier `.cpp` sans `Arduino.h` explicite et dépendances externes non versionnées — impact : compilation non reproductible selon l’environnement.
-- [critique] **Sécurité basique** : administration distante ouverte — impact : modification non autorisée du comportement de refroidissement.
-- [critique] **Testabilité** : aucun test, build CI ni mesure Timer1 — impact : l’erreur centrale ×16 n’a pas été détectée.
+- [majeur] : Aucune vérification des unités Timer1, de l'amorçage ou du hardware; dépendances externes non figées. — impact : coût de validation, de maintenance ou de portage accru.
 
----
+## ⭐ Note globale : 2,5/10 — Erreur de base de temps bloquante et aucun schéma
 
-## ⭐ Note globale : 2,5/10 — Tach central incorrect
-L’interface et l’architecture générale sont exploitables comme point de départ, mais la fréquence émise est environ seize fois trop basse et la partie matérielle obligatoire est absente.
+La note globale mesure la viabilité de l'ensemble firmware + électronique + comportement de panne, pas seulement la sophistication apparente.
 
-## ⭐ Note qualité de code : 3,5/10 — Lisible mais non validé
-Le code est facile à suivre, mais duplication, validations absentes, sécurité faible et absence de tests laissent passer des défauts critiques.
+## ⭐ Note qualité de code : 4,5/10 — Compact mais non vérifié
+
+Cette note isole structure, lisibilité, robustesse et testabilité; elle peut donc rester élevée même lorsqu'un défaut matériel réduit fortement la note globale.

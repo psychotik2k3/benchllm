@@ -1,156 +1,145 @@
-# Récapitulatif global — GPT-5.6
+# Récapitulatif global — réanalyse GPT-5.6 depuis zéro
 
-## 1. Inventaire des analyses
+Cette synthèse a été reconstruite directement à partir des fichiers actuels des 25 compétiteurs. Les anciens rapports n'ont pas servi de preuve. Toutes les variantes de modèle et de niveau de raisonnement restent des compétiteurs distincts.
 
-Le disque contient **22 dossiers** sous `competitors`, tous couverts par une analyse. `kimi k3` désigne ici la **variante thinking high** analysée depuis `competitors/kimi k3`; `kimi_k3_max` est la **variante Max**, conservée comme concurrent distinct.
+## 1. Inventaire
 
-### ✅ Analyses existantes avant ce run (19)
+- Dossiers compétiteurs : **25**
+- Rapports individuels régénérés : **25**
+- Compétiteurs sans rapport : **aucun**
 
-- `claude opus 5 medium` — `analyse_claude opus 5 medium.md`
-- `claude-sonnet5-free` — `analyse_claude-sonnet5-free.md`
-- `composer 2.5` — `analyse_composer 2.5.md`
-- `composer 2.5 prompt from claude` — `analyse_composer 2.5 prompt from claude.md`
-- `deepseek4 flash` — `analyse_deepseek4 flash.md`
-- `gemini 3.1 pro` — `analyse_gemini 3.1 pro.md`
-- `gemini-free` — `analyse_gemini-free.md`
-- `gemma4` — `analyse_gemma4.md`
-- `glm5.3` — `analyse_glm5.3.md`
-- `gpt-5.6 sol medium` — `analyse_gpt-5.6 sol medium.md`
-- `gpt-free` — `analyse_gpt-free.md`
-- `grok 4.6 medium` — `analyse_grok 4.6 medium.md`
-- `Grok_4.7_medium` — `analyse_Grok_4.7_medium.md`
-- `kimi k3` (**thinking high**) — `analyse_kimi k3.md`
-- `kimi_k3_max` (**variante Max**) — `analyse_kimi_k3_max.md`
-- `qwen3.6` — `analyse_qwen3.6.md`
-- `qwen3.6-35b-fp8-freetoken` — `analyse_qwen3.6-35b-fp8-freetoken.md`
-- `qwen3.6_prompt_from_claude` — `analyse_qwen3.6_prompt_from_claude.md`
-- `qwen35` — `analyse_qwen35.md`
+## 2. Correction méthodologique majeure
 
-### 🆕 Nouvelles analyses produites lors de ce run (3)
+La nouvelle lecture invalide plusieurs évaluations antérieures. Le cas le plus net est **Gemini_4_Argon_medium** : son timeout NMI ne supprime ni l'ancienne demi-période cible ni `hasSignal`; le premier front après stall rafraîchit l'âge et réactive donc l'ancienne fréquence avant une nouvelle période. La reprise n'est pas une reprise sûre sur deux fronts. Sa note globale est ramenée à **5,7/10**.
 
-- `Gemini_4_Argon_medium` — `analyse_Gemini_4_Argon_medium.md`
-- `glm_5.2_high` — `analyse_glm_5.2_high.md`
-- `muse_wonder_1.0_medium` — `analyse_muse_wonder_1.0_medium.md`
-
-### ⚠️ Compétiteurs sans analyse disponible
-
-- Aucun parmi les 22 compétiteurs du run.
-
-## 2. 🔍 Notes révisées et justification
-
-**Aucune révision postérieure n'est nécessaire.** La comparaison directe des 22 rapports ne démontre pas d'incohérence substantielle justifiant de modifier une note antérieure ou nouvelle. Les écarts restent expliqués par des défauts bloquants documentés :
-
-- `muse_wonder_1.0_medium` mérite **7,7/10** au global et **8,1/10** en qualité grâce à son build ESP8266 3.1.2 réellement réussi, son Timer1/NMI événementiel, sa formule 2 PPR et son filtrage; il reste sous le trio à 8,0–8,4 car le calcul CRC inclut son propre champ à cause du padding et rejette presque toute configuration au reboot.
-- `Gemini_4_Argon_medium` reste cohérent à **6,0/10** et **7,8/10** : sa NMI, ses échéances absolues et ses buffers bornés sont solides, mais un premier front après stall réactive l'ancienne période, tandis que l'alimentation discrète est sous-dimensionnée à 7 V et surcharge ses résistances aux pointes.
-- `glm_5.2_high` reste cohérent à **1,8/10** malgré **4,8/10** en qualité apparente : il ne compile pas, son produit 32 bits ramène toutes les périodes calculées sous 1 000 µs et les fait rejeter, et son schéma relie contradictoirement les rails avant l'OR-ing tout en recommandant un LM2596 incapable de maintenir 5 V depuis 5 V.
-
-Le trio de tête reste donc inchangé : équilibre global pour `gpt-5.6 sol medium`, qualité structurelle maximale pour `claude opus 5 medium`, et réveil Timer1 immédiat dans `kimi_k3_max`. Aucune note ne porte d'astérisque.
+La même discipline a été appliquée à tous : compilation statique, unités Timer1, premier front, stall/reprise, validité IRAM transitive, électronique d'entrée/sortie, alimentation, persistance et sécurité Web.
 
 ## 3. Tableau récapitulatif
 
-Tableau trié par note globale décroissante. Chaque cellule contient au plus huit points fidèles au rapport individuel.
+| Rang | Version | Note globale | Qualité code | Points forts | Défauts déterminants |
+|---:|---|---:|---:|---|---|
+| 1 | **claude opus 5 medium** | **8,8/10** | **9,0/10** | • Moteur Timer1 réellement routé en NMI, entièrement pensé pour IRAM/DRAM, sans flottant ni allocation.<br>• Échantillonnage d'entrée et sorties utilisent CCOUNT, des échéances absolues et un seqlock NMI→loop.<br>• Sorties relâchées avant leur passage en OUTPUT et moteur lancé avant le WiFi.<br>• Le premier front amorce la mesure; un second front cohérent est nécessaire avant émission. | • Aucun tach provisoire n'est émis avant l'acquisition validée.<br>• Le moteur dépend de macros, registres et conventions NMI internes au core ESP8266.<br>• Le placement IRAM transitif n'est pas prouvé par un map file livré.<br>• L'API de configuration n'est pas authentifiée et l'état JSON renvoie le mot de passe AP. |
+| 2 | **Claude_Opus_5.5_xhigh** | **8,7/10** | **8,8/10** | • La chaîne tach est traitée dans une NMI FRC1 avec CCOUNT, helpers inline IRAM et accès GPIO direct.<br>• Les échéances absolues, la mise à jour en fin de cycle et les diagnostics de retard limitent jitter et dérive.<br>• Les collecteurs ouverts sont relâchés avant le réseau; l'AP/STA ne bloque pas l'acquisition.<br>• Le premier niveau d'entrée est échantillonné sans fabriquer de faux front. | • La sortie reste relâchée jusqu'à une mesure tach fiable.<br>• Les API NMI et détails Timer1 sont privés au core ESP8266.<br>• La NMI peut terminer une phase en cours après timeout avant relâchement complet.<br>• Le mot de passe administrateur est vide par défaut. |
+| 3 | **GPT-5.6_Sol_xhigh** | **8,0/10** | **8,4/10** | • Capture CCOUNT sur deux ISR et génération via le moteur `startWaveform()` du core, isolée de loop.<br>• Premier front utilisé uniquement comme référence et calculs de ratio/2 PPR cohérents.<br>• Configuration magie/version/taille/CRC32 avec `offsetof`, parsing strict et échappement JSON.<br>• AP+STA, WIFI_NONE_SLEEP et capture démarrée avant le WiFi. | • La waveform ne démarre qu'après plusieurs mesures et une mise à jour de loop toutes les 200 ms.<br>• Le timeout d'entrée est de 2 s.<br>• `startWaveform()`/`startWaveformClockCycles()` est une API du core dont la compatibilité cible n'est pas démontrée par un build livré.<br>• Les tests ne couvrent ni ISR, ni moteur waveform, ni reprise après stall. |
+| 4 | **gpt-5.6 sol medium** | **7,8/10** | **8,3/10** | • Timer1 one-shot partagé entre deux sorties, échéances en cycles absolus et accès GPIO direct.<br>• Boîte aux lettres 32 bits et publication seqlock NMI/loop correctement raisonnées.<br>• Premier front seulement comme référence, périodes bornées, glitches qui ne rafraîchissent pas `lastGood` et reprise sur deux fronts.<br>• Deux PPR, IIR entier et relâchement complet au stall à 350 ms. | • `timer1_attachInterrupt` utilise une interruption masquable plutôt qu'une NMI explicite.<br>• Les garanties transitives IRAM ne sont pas vérifiées par linker map.<br>• Aucune consigne provisoire avant deux fronts valides.<br>• Un seul ventilateur est surveillé par paire. |
+| 5 | **muse_wonder_1.0_medium** | **6,6/10** | **7,7/10** | • Anneaux de timestamps ISR, traitement hors ISR et sortie NMI one-shot par échéances absolues.<br>• GPIO directs, buffers fixes pour le statut et deux canaux indépendants.<br>• Validation de période, moyenne, IIR, slew et interface qui évite d'écraser les champs en édition.<br>• AP+STA, WIFI_NONE_SLEEP et pages en PROGMEM. | • `sizeof(cfg)-sizeof(cfg.crc)` vaut 214 alors que `crc` commence à l'offset 212; les deux octets CRC sont inclus à cause du padding final.<br>• L'anneau écrase silencieusement des entrées non consommées sans indicateur full/overflow.<br>• Le slew de 2 % est appliqué à chaque tour de loop, pas à chaque nouvelle mesure.<br>• Le timeout de 1,2 s est décidé dans loop alors que la sortie est en NMI. |
+| 6 | **kimi_k3_max** | **6,1/10** | **7,1/10** | • Timer1 one-shot avec échéances absolues, deux sorties, GPIO directs et sections critiques courtes.<br>• Filtrage EMA, ratios bornés, EEPROM CRC16 et serveur AP+STA.<br>• OR-ing Schottky, buck, pull-ups 3,3 V, NPN open-collector et pull-downs sont correctement documentés.<br>• UI claire, structures de canal et fonctions communes; formules 2 PPR cohérentes. | • `captureEdge` accepte le tout premier front car il ne distingue pas l'absence de référence.<br>• Aucune borne maximale de période n'est appliquée après un stall.<br>• Le stall est traité dans loop toutes les 100 ms et non dans le moteur Timer1.<br>• L'IRQ Timer1 standard n'établit pas l'isolation NMI annoncée. |
+| 7 | **kimi k3** | **5,9/10** | **6,8/10** | • Timer1 one-shot commun à deux sorties, GPIO directs et resynchronisation d'échéance.<br>• Deux PPR et calcul de demi-période corrects.<br>• EMA d'entrée, timeout, CRC16 et AP+STA.<br>• Un seul tach par paire et schéma avec Schottky, buck et NPN. | • La première ISR calcule `dt = now - 0` et l'accepte si elle tombe dans la large plage.<br>• Après stall, la première période très longue n'a pas de borne maximale suffisamment stricte et peut amorcer le filtre.<br>• `timer1_attachInterrupt` n'est pas une preuve de NMI et l'ISR appelle `micros()`.<br>• Une nouvelle période est recalée sur `now` après retard. |
+| 8 | **grok 4.6 medium** | **5,8/10** | **7,0/10** | • NMI périodique à 20 µs, accès GPIO direct et calcul de demi-période entier correct.<br>• Deux canaux indépendants et moteur démarré avant le WiFi.<br>• EEPROM avec CRC32, AP+STA, formulaire de ratios et validation de plage.<br>• Un seul tach par paire, OR-ing Schottky, buck et sorties NPN avec pull-down sont cohérents. | • Le timeout désactive seulement `nmiEnabled`; `havePeriod` et `periodCycles` restent valides.<br>• Le premier front de reprise actualise `lastEdgeUs` avant validation et loop réactive immédiatement la période ancienne.<br>• Un glitch actualise `lastCycle`, `lastEdgeUs` et le compteur avant contrôle de période.<br>• Appel de `micros()` depuis l'ISR et NMI fixe à 50 kHz. |
+| 9 | **Gemini_4_Argon_medium** | **5,7/10** | **7,8/10** | • Timer1 NMI one-shot, CCOUNT, Q16, GPIO directs et watchdog NMI à 500 ms.<br>• Deux canaux indépendants, buffers fixes, HTML PROGMEM et statut JSON borné.<br>• Deux PPR, périodes plausibles et moyenne multi-échantillons.<br>• La sortie est relâchée par la NMI sans dépendre de loop. | • Au timeout, la NMI ne réinitialise ni `targetHalfCycles` ni `hasSignal`; elle ne met que `active` à zéro.<br>• Le premier front de reprise rafraîchit `lastEdgeCycle`, remet `hasSignal=1` et retourne sans invalider la consigne.<br>• Une multiplication 64 bits dans l'ISR GPIO peut appeler un helper libgcc hors IRAM.<br>• La détection CPU/APB lit le registre non documenté `0x3FF00014`. |
+| 10 | **composer 2.5 prompt from claude** | **5,2/10** | **6,3/10** | • Deux entrées ISR, Timer1 périodique, ratios par canal et sortie initialisée avant le réseau.<br>• La direction du ratio, les 2 PPR et le calcul de demi-période sont corrects.<br>• Serveur asynchrone, LittleFS JSON, HTML PROGMEM et interface de statut compacte.<br>• AP+STA non bloquant et valeurs par défaut explicites. | • `micros()` et `digitalWrite()` sont appelés dans l'ISR Timer1 à 20 kHz.<br>• La génération recale chaque front sur `now + half`.<br>• L'ISR met `lastEdgeUs` à jour avant de rejeter une période invalide.<br>• Après timeout, le filtre et la période brute restent mémorisés; le premier front de reprise rafraîchit l'âge. |
+| 11 | **deepseek4 flash** | **4,8/10** | **6,5/10** | • Event-calendar FRC1/NMI à deux voies, GPIO directs et ratio Q16 évitent les calculs flottants dans le moteur.<br>• Échéances relatives bornées et sorties relâchées au stall.<br>• Deux PPR, EMA et timeout adaptatif max(2 s, 4 périodes) sont cohérents en intention.<br>• AP+STA, mDNS, HTML PROGMEM et buffers statiques pour le statut. | • Le premier front valide une période depuis `g_inLastUs == 0` car la borne maximale vaut 120 s.<br>• Les fronts invalides mettent malgré tout à jour le timestamp et le compteur.<br>• La CRC est calculée sur `sizeof(CfgT)-1`, qui inclut un octet du champ CRC à cause de l'alignement.<br>• Le code programme directement FRC1/NMI et suppose des bits/adresses sans preuve de version. |
+| 12 | **claude-sonnet5-free** | **4,8/10** | **6,2/10** | • Timer1 périodique à 10 kHz, GPIO directs et deux compteurs de demi-période indépendants.<br>• Le calcul 2 PPR et la multiplication de fréquence sont cohérents en régime établi.<br>• AP+STA, WIFI_NONE_SLEEP, serveur standard et checksum sur la configuration.<br>• HTML PROGMEM et statut JSON construit dans un tampon fixe. | • Le premier front est accepté comme une période calculée depuis zéro, sans état « non amorcé ».<br>• Après stall, le premier front très long est de nouveau accepté faute de borne maximale.<br>• L'étage d'entrée NPN documenté n'ajoute pas de pull-up au tach open-collector et suppose à tort un repos à 12 V fourni par le Noctua.<br>• Le document mélange tach Noctua open-collector et prétendue tension interne 12 V. |
+| 13 | **gpt-free** | **4,6/10** | **6,2/10** | • Deux captures CCOUNT courtes, IIR 1/8 et deux waveforms continues via le core ESP8266.<br>• Traitement factorisé par canal, premier front correctement ignoré et timeout à 500 ms.<br>• AP+STA, page sombre, statut AJAX et ratios appliqués immédiatement.<br>• Magie EEPROM, défauts explicites et bornage des ratios. | • Le commentaire de câblage montre un diviseur vers la masse mais aucun pull-up alimentant le tach open-collector.<br>• Aucun fichier de schéma/BOM séparé n'est livré.<br>• Les seuils de cycles sont commentés pour 160 MHz alors que la fréquence CPU n'est pas imposée.<br>• L'API waveform privée et sa signature ne sont pas validées. |
+| 14 | **Grok_4.7_medium** | **4,4/10** | **8,2/10** | • NMI one-shot à 32 µs pour échantillonner les entrées et planifier deux sorties par CCOUNT.<br>• GPIO directs, division 32 bits seulement, seqlock NMI→loop et resynchronisation sans rafale.<br>• Les glitches n'actualisent pas `lastGood`; le stall efface filtre, amorçage et sortie.<br>• Deux vrais fronts sont requis pour redémarrer après une perte. | • L'OR-ing relie le +12 V au collecteur d'un SS8050 et VRAW à sa base, émetteur ouvert.<br>• Le régulateur discret VBE/ballast dépend fortement de température et charge.<br>• La NMI se réveille au moins 31 250 fois/s même sans signal.<br>• Timer1 NMI et appel bas niveau dépendent du core sans build/map livré. |
+| 15 | **glm5.3** | **2,8/10** | **6,5/10** | • Capture dans un anneau de 128 timestamps, mesure multi-fronts, EMA et ordonnanceur à échéances absolues.<br>• Deux sorties, boîte aux lettres loop→ISR et resynchronisation sans rafale.<br>• Portail captif, mDNS, scan asynchrone, AP+STA et interface complète.<br>• CRC32 via `offsetof`, validation et JSON échappé. | • `0xDEYEF001UL` contient la lettre Y.<br>• Les deux sorties tach open-collector de chaque paire sont mises en parallèle puis la fréquence est divisée par le nombre de ventilateurs.<br>• Le code et la documentation traitent cette division comme une correction d'affichage alors qu'elle influence la consigne.<br>• Le mode `timer1_attachInterrupt` n'établit pas la priorité NMI revendiquée. |
+| 16 | **gemini-free** | **2,5/10** | **4,5/10** | • Deux canaux, Timer1, serveur asynchrone, LittleFS JSON et HTML PROGMEM.<br>• La formule conceptuelle 2 PPR et la demi-période sont identifiées.<br>• Page compacte avec polling et ratios configurables. | • Timer1 en DIV16 vaut 5 ticks/µs, mais le code recharge avec `80 * timerStepUs`.<br>• `digitalWrite()` est utilisé dans l'ISR.<br>• Le premier front est traité comme période depuis le boot.<br>• LittleFS et WiFi sont initialisés avant le moteur tach. |
+| 17 | **gemini 3.1 pro** | **2,3/10** | **3,8/10** | • Deux canaux, Timer1 avant le WiFi, GPIO directs et page AJAX sont présents.<br>• Le calcul 2 PPR est compris et les sorties collecteur ouvert sont identifiées.<br>• AP+STA non bloquant et interface de réglage des ratios. | • `0xDEYE0001` n'est pas un littéral hexadécimal valide.<br>• Les impulsions sont comptées sur une cadence supposée d'une seconde sans utiliser le temps réellement écoulé.<br>• Aucun vrai filtre de période ni état d'amorçage/reprise.<br>• Timer1 interrompt à 20 kHz en continu. |
+| 18 | **glm_5.2_high** | **2,0/10** | **4,0/10** | • Deux `startWaveform()` indépendants, timeout et moyenne de quatre périodes.<br>• LittleFS, AP+STA et traitement factorisé par canal.<br>• Schéma avec OR-ing Schottky, buck, pull-ups 3,3 V et collecteurs ouverts. | • Trois concaténations HTML contiennent une parenthèse fermante surnuméraire.<br>• `deltaCycles * 1000000UL` déborde en 32 bits pour pratiquement toute période tach réaliste.<br>• Le test `c1 > c0` rejette le wrap CCOUNT.<br>• Les deux tach d'une paire sont recommandés en parallèle. |
+| 19 | **composer 2.5** | **1,2/10** | **4,0/10** | • Deux canaux, Timer1, sorties par registres et timeout d'entrée sont prévus.<br>• Le code utilise une structure par canal, une CRC16 et une interface de configuration.<br>• La formule 2 PPR et la direction du ratio sont correctes en intention. | • Le littéral `0xDEYE` contient la lettre Y et n'est pas un entier hexadécimal C++.<br>• Avec TIM_DIV16, `timer1_write(10)` programme environ 2 µs et non 10 µs.<br>• Le calcul flottant de ratio est exécuté dans l'ISR GPIO.<br>• Le premier front est mesuré depuis zéro. |
+| 20 | **qwen3.6_prompt_from_claude** | **1,0/10** | **3,5/10** | • Deux captures, filtrage glissant/EMA, serveur async, OTA et LittleFS sont prévus.<br>• Le ratio `période/ratio` et les 2 PPR sont compris.<br>• Le schéma prévoit pull-ups 3,3 V et sorties collecteur ouvert. | • La signature du handler POST Async, `request->getString`, certaines surcharges `send` et la portée de `restartTime` sont invalides.<br>• Le `Ticker scheduler` est local à `setup()`.<br>• Ticker logiciel à 20 kHz n'offre pas l'isolation Timer1/NMI revendiquée.<br>• Les sorties sont initialisées HIGH alors que HIGH active le NPN. |
+| 21 | **Swift_1.5_Qwen3.8-27B_medium-IQ3S** | **0,6/10** | **2,5/10** | • Deux canaux, EMA, bornes de période, AP+STA et endpoints séparés.<br>• OR-ing et collecteur ouvert sont au moins identifiés comme besoins. | • Le code utilise `ESP8266HTTPServer.h`, `Preferences`, `ESP8266TimerInterrupt` et `WiFi.connect`, API inexistantes ou incompatibles.<br>• Les fonctions ISR ne sont pas placées en IRAM et les champs partagés sont insuffisamment `volatile`.<br>• La configuration Timer0 est invalide et non réarmée.<br>• L'état pulse/période produit une fréquence erronée et la période stale maintient `ok` vrai. |
+| 22 | **qwen3.6** | **0,5/10** | **2,5/10** | • Deux canaux, interface Web, EEPROM et collecteurs ouverts sont envisagés.<br>• La formule d'affichage RPM à 2 PPR est connue. | • Le code emploie `hw_timer_t`, `timerBegin`, `timerRead`, `timerWrite` et autres API ESP32 sur ESP8266.<br>• Une accolade surnuméraire suit `eepromLoadRatios`.<br>• La période est multipliée par le ratio puis utilisée comme demi-période.<br>• GPIO15/D8 est utilisé comme entrée avec un circuit susceptible d'altérer le strap boot. |
+| 23 | **qwen3.6-35b-fp8-freetoken** | **0,3/10** | **2,0/10** | • AP+STA, portail captif, EEPROM et interface riche sont envisagés.<br>• Le principe d'un collecteur ouvert de sortie est mentionné. | • Une accolade/`EEPROM.end()` est hors fonction et les API `hw_timer_t`/timer sont celles d'ESP32.<br>• L'interruption est attachée en mode `LOW` plutôt que `FALLING`.<br>• Un seul tach d'entrée est partagé par les quatre ventilateurs et un seul timer/pin courant sert deux sorties.<br>• La période simulée est multipliée par le ratio et employée comme demi-période. |
+| 24 | **gemma4** | **0,2/10** | **1,2/10** | • AP protégé et page de statut simples.<br>• Quelques handlers HTTP sont séparés. | • Le fichier contient un identifiant de broche erroné et se termine avec une clôture Markdown.<br>• Aucun générateur de waveform tach n'est implémenté.<br>• Un seul pin de sortie est prévu pour deux canaux.<br>• Les compteurs de fronts ne sont jamais remis à zéro ni rapportés à une durée. |
+| 25 | **qwen35** | **0,1/10** | **1,0/10** | • Interface responsive, guide de calibration et intention de moyenne glissante.<br>• AP protégé par mot de passe. | • `samples9[`]` est une erreur syntaxique; `GPOS(pin,state)` et `WiFi.transmitting()` n'existent pas; SPIFFS/File ne sont pas déclarés.<br>• Deux fonctions `loop()` sont définies.<br>• Aucun Timer1 ne génère une fréquence liée aux RPM; la seule sortie bascule toutes les 500 ms.<br>• Les compteurs cumulés sont directement présentés comme RPM et jamais remis à zéro sur une fenêtre. |
 
-| Version | Note globale | Note qualité code | ✅ Points positifs (5–8) | ❌ Points négatifs (5–8) |
-|---|---:|---:|---|---|
-| `gpt-5.6 sol medium` | **8,4/10** | **8,2/10** | • Timer1 one-shot à prochaine échéance<br>• GPIO atomiques en ISR<br>• Formule 2 PPR exacte<br>• IIR réinitialisé au stall<br>• AP+STA non bloquant<br>• EEPROM versionnée avec CRC32<br>• OR-ing, buck-boost, PTC/TVS détaillés | • Aucun tach provisoire au boot<br>• Timeout stall de 2 s<br>• Une période suffit à réactiver<br>• Dépendance IRAM de `micros()` non figée<br>• HTTP sans auth/CSRF/TLS<br>• Gros `String` HTML sur le heap<br>• Saturation non reflétée dans l'UI |
-| `kimi_k3_max` — Max | **8,1/10** | **8,3/10** | • Timer1 one-shot à échéances absolues<br>• Réveil immédiat depuis l'état idle<br>• Deux canaux réellement indépendants<br>• GPIO directs et ISR sobres<br>• EMA hors ISR réinitialisée<br>• PROGMEM et JSON borné<br>• CRC16 et reconnexion STA<br>• Hardware open-collector documenté | • Aucun tach provisoire au boot<br>• Premier intervalle calculé depuis zéro<br>• Pas de borne haute de période<br>• Une période suffit à activer<br>• Timeout stall de 1,5 s<br>• HTTP sans auth/CSRF<br>• Saturation 2 kHz peu observable<br>• Buck simple vulnérable à rail bas |
-| `claude opus 5 medium` | **8,0/10** | **8,5/10** | • NMI/CCOUNT très rigoureux<br>• Seqlock NMI-vers-boucle<br>• Échéances absolues et rattrapage borné<br>• PPR entrée/sortie configurables<br>• Validation puis EMA entière<br>• PROGMEM et diagnostics riches<br>• EEPROM CRC32/version<br>• Hardware et tests détaillés | • API NMI privées non figées<br>• Charge NMI potentiellement agressive<br>• Aucun tach avant mesure réelle<br>• Un seul tach lu par paire<br>• `apPass` exposé par l'API<br>• HTTP non authentifié<br>• Chaînes réseau non échappées<br>• Valeurs RC contradictoires |
-| `muse_wonder_1.0_medium` | **7,7/10** | **8,1/10** | • Build ESP8266 3.1.2 vérifié<br>• NMI événementielle placée en IRAM<br>• GPIO directs et deux phases indépendantes<br>• Formule 2 PPR exacte<br>• Rejet relatif, confirmation et EMA<br>• Glitches rejetés sans rafraîchir le timeout<br>• PROGMEM et JSON `snprintf`<br>• OR-ing, PTC/TVS et NPN détaillés | • CRC incluant son propre champ<br>• Réglages rejetés à chaque reboot<br>• Anneau ISR sans détection de saturation<br>• Aucun tach provisoire au boot<br>• Slew exécuté par tour de `loop()`<br>• Un seul tach surveillé par paire<br>• HTTP sans auth/CSRF<br>• Buck fragile sur rail bas/PWM |
-| `kimi k3` — thinking high | **7,6/10** | **8,0/10** | • Timer1 one-shot à phase absolue<br>• Deux canaux et GPIO directs<br>• Formule 2 PPR correcte<br>• EMA entière et timeout<br>• PROGMEM et `snprintf` borné<br>• AP+STA, mDNS et CRC16<br>• OR-ing et buck 5 V corrects | • Réveil idle retardé jusqu'à 1 s<br>• Premier intervalle depuis le boot<br>• Reprise contaminée par la pause<br>• Pas de borne maximale de période<br>• Pas de validation multi-périodes<br>• Timeout de 1,5 s<br>• Pas d'auth/CSRF<br>• Pull-down NPN et protections absents |
-| `glm5.3` | **7,2/10** | **8,0/10** | • Timer1 one-shot à échéances absolues<br>• Rattrapage borné<br>• Mesure par timestamps et EMA<br>• AP+STA, portail DNS et mDNS<br>• PROGMEM, buffers fixes, JSON échappé<br>• EEPROM CRC32/version<br>• Web et diagnostics complets<br>• Hardware et procédure de test détaillés | • Modèle de tach parallèles physiquement faux<br>• Panne d'un ventilateur masquée<br>• Longue section critique de snapshot<br>• Cache-panne avec trou d'environ 5 s<br>• EMA non réinitialisée après perte<br>• Tach ancien maintenu 2,5 s<br>• HTTP sans auth/CSRF<br>• Documentation contradictoire |
-| `grok 4.6 medium` | **7,0/10** | **7,2/10** | • NMI Timer1 et GPIO directs<br>• Deux canaux indépendants<br>• Conversion 2 PPR exacte<br>• Timeout court de 400 ms<br>• PROGMEM et CRC32<br>• AP+STA avec reconnexion<br>• Un tach par paire sans mise en parallèle<br>• OR-ing et collecteurs ouverts cohérents | • NMI permanente à 50 kHz<br>• Quantification de 20 µs<br>• Fraîcheur mise à jour avant validation<br>• Aucun filtre numérique de période<br>• Publication multi-champs non transactionnelle<br>• CPU 80 MHz codé en dur<br>• Aucun tach de boot<br>• HTTP sans auth/CSRF |
-| `composer 2.5 prompt from claude` | **6,2/10** | **6,3/10** | • Timer1 matériel et deux échéances<br>• Formule 2 PPR correcte<br>• Moyenne et limitation de pente prévues<br>• Serveur asynchrone AP+STA<br>• PROGMEM et documents JSON statiques<br>• LittleFS évolutif<br>• OR-ing, buck et NPN documentés | • ISR fixe 20 kHz avec `digitalWrite()`<br>• `now + half` accumule la dérive<br>• Quantification mesurable<br>• Front invalide repousse le timeout<br>• Filtre réutilisant la même mesure<br>• Boot retardé par LittleFS<br>• Pas d'auth/CSRF<br>• Persistance non atomique |
-| `Gemini_4_Argon_medium` | **6,0/10** | **7,8/10** | • Bonne NMI FRC1 et GPIO directs<br>• Échéances absolues sans rafale<br>• Formule 2 PPR et Q16.16 correctes<br>• Timeout court de 500 ms<br>• Moyenne de quatre périodes<br>• PROGMEM et JSON borné<br>• EEPROM CRC32/version<br>• AP+STA et reconnexion non bloquants | • Reprise sur ancienne période au premier front<br>• État partagé non transactionnel<br>• Multiplication 64 bits ISR non auditée<br>• Aucun tach provisoire au boot<br>• API HTTP sans auth/CSRF<br>• Alimentation insuffisante à 7 V<br>• Résistances surchargées aux pointes<br>• OR-ing NPN proche du VEBO maximal |
-| `claude-sonnet5-free` | **4,4/10** | **7,0/10** | • Timer1 matériel et GPIO directs<br>• Deux canaux factorisés<br>• Formule 2 PPR correcte<br>• PROGMEM et buffers `char`<br>• EEPROM avec contrôle d'intégrité<br>• AP+STA non bloquant<br>• Sorties open-collector bien conçues | • Entrée fondée sur une fausse pull-up 12 V<br>• Premier front pris comme période<br>• Compteur `N+1`<br>• Dérive cumulative<br>• Résolution de 100 µs<br>• Timeout de 3 s<br>• Aucun filtre de période<br>• HTTP non authentifié |
-| `gpt-free` | **4,1/10** | **4,7/10** | • Capture CCOUNT en ISR courte<br>• Générateur waveform hors `loop()`<br>• Formule 2 PPR correcte<br>• IIR entier 7/8–1/8<br>• AP+STA et interface complète<br>• Structures statiques<br>• Code lisible et factorisé | • API waveform interne non versionnée<br>• Constantes dépendantes de 160 MHz<br>• Aucun tach anticipé au boot<br>• Hardware d'entrée/alimentation incomplet<br>• Secrets renvoyés en clair<br>• EEPROM sans CRC/version<br>• Page de 9 ko construite sur le heap<br>• Phase des réarmements non garantie |
-| `Grok_4.7_medium` | **4,0/10** | **8,0/10** | • NMI/CCOUNT et GPIO directs<br>• Seqlock NMI-vers-boucle<br>• Échéances absolues en cycles<br>• Formule 2 PPR exacte<br>• IIR réinitialisé au stall<br>• Fraîcheur fondée sur période valide<br>• PROGMEM, JSON borné et CRC32<br>• Deux canaux factorisés | • Q1–Q4 C-B polarisés en inverse<br>• VRAW ne reçoit aucun courant utile<br>• Régulateur linéaire discret fragile<br>• NMI permanente à 31,25 kHz<br>• Divisions NMI non auditées IRAM<br>• Aucun tach provisoire au boot<br>• Une période suffit à activer<br>• HTTP sans auth/CSRF |
-| `deepseek4 flash` | **3,3/10** | **3,8/10** | • Event-calendar one-shot ambitieux<br>• NMI et GPIO atomiques<br>• Formule 2 PPR correcte<br>• Timeout adaptatif<br>• EMA entière<br>• PROGMEM et buffer JSON fixe<br>• EEPROM versionnée<br>• OR-ing, buck et NPN | • Copie de `volatile SnapT` probablement non compilable<br>• `noInterrupts()` inefficace contre NMI<br>• Réveil idle désynchronisé<br>• Course sur registres FRC1<br>• Premier front accepté comme période<br>• Parasites repoussent le timeout<br>• Secrets exposés<br>• API privées non verrouillées |
-| `gemini 3.1 pro` | **2,8/10** | **2,8/10** | • Timer1 matériel et GPIO directs<br>• Intention 2 PPR correcte<br>• Deux sorties indépendantes<br>• AP+STA<br>• HTML en PROGMEM<br>• OR-ing, buck et NPN décrits | • `0xDEYE0001` empêche le build<br>• Comptage suppose une fenêtre exacte de 1 s<br>• Tick 20 kHz et dérive cumulative<br>• Ratios sans maximum<br>• `strcpy` HTTP non borné<br>• Mot de passe STA exposé<br>• Aucun vrai filtre<br>• Conseil électrique dangereux |
-| `gemini-free` | **2,5/10** | **3,5/10** | • Timer1 matériel visé<br>• Formule 2 PPR correcte<br>• Deux consignes indépendantes<br>• AP+STA asynchrone<br>• PROGMEM et JSON statique<br>• `strlcpy` pour les identifiants<br>• Interface simple | • Timer DIV16 environ 16 fois trop lent<br>• `.cpp` sans `Arduino.h` explicite<br>• Premier front accepté comme période<br>• Ratio invalide conserve l'ancienne sortie<br>• Plage d'entrée incohérente<br>• Aucun filtre robuste<br>• Aucun schéma matériel complet<br>• API sans auth |
-| `qwen3.6_prompt_from_claude` | **2,5/10** | **3,5/10** | • Bonne formule 2 PPR<br>• GPIO directs prévus<br>• Moyenne et lissage envisagés<br>• PROGMEM et buffers bornés<br>• AP+STA, OTA et interface riches<br>• LittleFS évolutif<br>• Schéma fonctionnel assez complet | • Plusieurs erreurs de compilation<br>• `Ticker` local détruit après `setup()`<br>• `Ticker` n'est pas Timer1<br>• Polarité/fail-safe NPN inversés<br>• Sortie non relâchée au stall<br>• MT3608 n'est pas un buck<br>• AP/OTA fixes et HTTP ouvert<br>• LittleFS non atomique |
-| `composer 2.5` | **2,0/10** | **4,0/10** | • Intention Timer1 à deux canaux<br>• Formule 2 PPR correcte<br>• EEPROM avec CRC16<br>• AP+STA non bloquant<br>• Pull-up d'entrée 3,3 V correct<br>• Sorties collecteur ouvert prévues<br>• Code compact et lisible | • `0xDEYE` bloque la compilation<br>• Symbole WiFi probablement invalide<br>• Timer1 environ cinq fois trop rapide<br>• Flottants dans ISR<br>• Timeout repoussé par parasites<br>• Secrets STA exposés<br>• 12 V conseillé sur pin 5 V<br>• Pas de pull-down ni tests |
-| `glm_5.2_high` | **1,8/10** | **4,8/10** | • API waveform adaptée au core 3.1.2<br>• Deux voies prévues séparément<br>• Intention 2 PPR correcte<br>• Moyenne de quatre périodes<br>• AP+STA non bloquant<br>• LittleFS et copies réseau bornées<br>• Sorties NPN collecteur ouvert | • Parenthèses surnuméraires : build cassé<br>• Symboles `GPIOxx` inexistants<br>• Overflow 32 bits rejetant toute période<br>• Aucune sortie ne peut démarrer<br>• Deux tach parallèles recommandés<br>• Secrets WiFi affichés et API ouverte<br>• Rails reliés avant les diodes<br>• LM2596 incapable de réguler 5 V depuis 5 V |
-| `qwen3.6` | **1,5/10** | **2,5/10** | • Intention de deux canaux<br>• Formule d'affichage 2 PPR correcte<br>• Timeout prévu<br>• Ratios bornés<br>• AP+STA visé<br>• Documentation et BOM présentes<br>• NPN de sortie pertinent en principe | • API ESP32 sur ESP8266<br>• Erreur syntaxique certaine<br>• Ratio multiplié au lieu d'être divisé<br>• Demi-période confondue avec période<br>• Canal incapable de redémarrer<br>• Polarité NPN inversée<br>• GPIO15 de strap risqué<br>• AP ouvert et 12 V direct |
-| `qwen3.6-35b-fp8-freetoken` | **1,0/10** | **2,0/10** | • Structure lisible<br>• Formule d'affichage 2 PPR correcte<br>• ISR marquées IRAM<br>• Ratios HTTP bornés<br>• AP+STA et portail captif<br>• Nomenclature et schémas fournis | • Ne compile pas : EEPROM/API Timer1<br>• Timer jamais configuré<br>• Canal 2 jamais généré<br>• Sorties stoppées entre fronts<br>• Quatre tach parallélisés<br>• Fail-safe NPN inversé<br>• 3,3 V injecté sur pin 5 V<br>• Entrée pouvant surtensionner le GPIO |
-| `qwen35` | **0,5/10** | **1,0/10** | • Documentation abondante<br>• Interface responsive<br>• AP protégé<br>• Ratios bornés côté serveur<br>• Avertissements haute tension | • Erreurs de syntaxe et d'API<br>• GPIO10/11 liés à la flash<br>• Aucun Timer1 conforme<br>• `Ticker` en secondes<br>• RPM issu de compteurs cumulatifs<br>• Une sortie moyenne<br>• Aucune persistance utile<br>• Schéma incohérent |
-| `gemma4` | **0,3/10** | **0,8/10** | • Interface compacte<br>• AP protégé au minimum<br>• NPN open-collector mentionné<br>• Petit code facile à lire<br>• Endpoint d'observation simple | • Ne compile pas<br>• GPIO10/11 réservés à la flash<br>• Aucune génération tach/Timer1<br>• Une sortie pour deux canaux<br>• Formule RPM fausse<br>• Aucun fail-safe<br>• Aucune persistance/STA réelle<br>• Aucun OR-ing/buck complet |
+## 4. Classement global
 
-## 4. Classements séparés
+1. **claude opus 5 medium** — **8,8/10** — Meilleure proposition globale, à valider sur la toolchain cible
+2. **Claude_Opus_5.5_xhigh** — **8,7/10** — Référence très complète, légèrement pénalisée par sécurité et validation
+3. **GPT-5.6_Sol_xhigh** — **8,0/10** — Très bonne base officielle, vérification temps réel encore partielle
+4. **gpt-5.6 sol medium** — **7,8/10** — Solution solide et prudente, sans NMI ni tests
+5. **muse_wonder_1.0_medium** — **6,6/10** — Très bon temps réel, persistance cassée et dynamiques dépendantes de loop
+6. **kimi_k3_max** — **6,1/10** — Architecture solide en régime, reprise après stall incorrecte
+7. **kimi k3** — **5,9/10** — Base fonctionnelle, faux premier échantillon et timer non NMI
+8. **grok 4.6 medium** — **5,8/10** — Bon moteur NMI, reprise stale et mesure à durcir
+9. **Gemini_4_Argon_medium** — **5,7/10** — Moteur sophistiqué, mais reprise stale et alimentation critiques
+10. **composer 2.5 prompt from claude** — **5,2/10** — Bonne ossature, fail-safe et reprise à corriger
+11. **deepseek4 flash** — **4,8/10** — Architecture ambitieuse, persistence et bas niveau fragiles
+12. **claude-sonnet5-free** — **4,8/10** — Firmware plausible, mais reprise et entrée matérielle insuffisantes
+13. **gpt-free** — **4,6/10** — Firmware raisonnable, montage d'entrée incomplet et secrets exposés
+14. **Grok_4.7_medium** — **4,4/10** — Excellent firmware, alimentation non fonctionnelle
+15. **glm5.3** — **2,8/10** — Très ambitieux, bloqué par compilation et conception tach parallèle
+16. **gemini-free** — **2,5/10** — Erreur de base de temps bloquante et aucun schéma
+17. **gemini 3.1 pro** — **2,3/10** — Ne compile pas et mesure les RPM de façon trop grossière
+18. **glm_5.2_high** — **2,0/10** — Non compilable et mesure de période cassée
+19. **composer 2.5** — **1,2/10** — Non compilable et alimentation dangereuse
+20. **qwen3.6_prompt_from_claude** — **1,0/10** — Non compilable, scheduler détruit et alimentation mal choisie
+21. **Swift_1.5_Qwen3.8-27B_medium-IQ3S** — **0,6/10** — Incompatible ESP8266 et matériel dangereux
+22. **qwen3.6** — **0,5/10** — Mauvaise plateforme, syntaxe et mathématiques inversées
+23. **qwen3.6-35b-fp8-freetoken** — **0,3/10** — Code non compilable et architecture incapable de produire deux tach
+24. **gemma4** — **0,2/10** — Ébauche non compilable sans simulateur tach
+25. **qwen35** — **0,1/10** — Aucun firmware compilable ni simulateur tach réel
 
-Les égalités sont départagées par l'autre note, puis alphabétiquement.
+## 5. Classement qualité de code
 
-### Classement par note globale — candidat IoT
+1. **claude opus 5 medium** — **9,0/10** — Invariants temps réel remarquablement maîtrisés
+2. **Claude_Opus_5.5_xhigh** — **8,8/10** — Très rigoureux mais volumineux
+3. **GPT-5.6_Sol_xhigh** — **8,4/10** — Meilleure modularité et testabilité du lot
+4. **gpt-5.6 sol medium** — **8,3/10** — Propre, défensive et maintenable
+5. **Grok_4.7_medium** — **8,2/10** — Moteur temps réel parmi les meilleurs
+6. **Gemini_4_Argon_medium** — **7,8/10** — Très structuré, avec un défaut d'état déterminant
+7. **muse_wonder_1.0_medium** — **7,7/10** — Soigné, avec plusieurs invariants manqués
+8. **kimi_k3_max** — **7,1/10** — Bien structuré mais fail-safe incomplet
+9. **grok 4.6 medium** — **7,0/10** — Compact et lisible, machine d'état incomplète
+10. **kimi k3** — **6,8/10** — Lisible mais trop confiant
+11. **deepseek4 flash** — **6,5/10** — Bien commenté mais trop affirmatif
+12. **glm5.3** — **6,5/10** — Architecture soignée mais non validée
+13. **composer 2.5 prompt from claude** — **6,3/10** — Structuré mais insuffisamment déterministe
+14. **claude-sonnet5-free** — **6,2/10** — Lisible, avec plusieurs hypothèses non vérifiées
+15. **gpt-free** — **6,2/10** — Clair mais surdimensionné
+16. **gemini-free** — **4,5/10** — Compact mais non vérifié
+17. **glm_5.2_high** — **4,0/10** — Bien présenté mais non testé
+18. **composer 2.5** — **4,0/10** — Présentation correcte, validation technique insuffisante
+19. **gemini 3.1 pro** — **3,8/10** — Intention lisible, robustesse faible
+20. **qwen3.6_prompt_from_claude** — **3,5/10** — Ambitieux mais non intégré
+21. **Swift_1.5_Qwen3.8-27B_medium-IQ3S** — **2,5/10** — Structure apparente, fondations incorrectes
+22. **qwen3.6** — **2,5/10** — Long et explicatif, mais techniquement non viable
+23. **qwen3.6-35b-fp8-freetoken** — **2,0/10** — Très volumineux pour une logique non viable
+24. **gemma4** — **1,2/10** — Code incomplet et incohérent
+25. **qwen35** — **1,0/10** — Artefact généré incohérent
 
-1. `gpt-5.6 sol medium` — **8,4/10** — meilleur équilibre
-2. `kimi_k3_max` (Max) — **8,1/10** — temps-réel très solide
-3. `claude opus 5 medium` — **8,0/10** — moteur le plus sophistiqué
-4. `muse_wonder_1.0_medium` — **7,7/10** — excellent moteur, persistance cassée
-5. `kimi k3` (thinking high) — **7,6/10** — très bonne base
-6. `glm5.3` — **7,2/10** — avancé, hypothèse tach critique
-7. `grok 4.6 medium` — **7,0/10** — NMI crédible, fail-safe fragile
-8. `composer 2.5 prompt from claude` — **6,2/10** — complet mais non déterministe
-9. `Gemini_4_Argon_medium` — **6,0/10** — bonne NMI, reprise et alimentation fragiles
-10. `claude-sonnet5-free` — **4,4/10** — firmware propre, entrée invalide
-11. `gpt-free` — **4,1/10** — logiciel prometteur, hardware incomplet
-12. `Grok_4.7_medium` — **4,0/10** — firmware solide, alimentation bloquée
-13. `deepseek4 flash` — **3,3/10** — architecture ambitieuse cassée
-14. `gemini 3.1 pro` — **2,8/10** — non compilable
-15. `gemini-free` — **2,5/10** — timing central faux
-16. `qwen3.6_prompt_from_claude` — **2,5/10** — ambitieux mais inexécutable
-17. `composer 2.5` — **2,0/10** — dangereux et non compilable
-18. `glm_5.2_high` — **1,8/10** — non compilable, aucune période valide
-19. `qwen3.6` — **1,5/10** — refonte nécessaire
-20. `qwen3.6-35b-fp8-freetoken` — **1,0/10** — non fonctionnel
-21. `qwen35` — **0,5/10** — non exploitable
-22. `gemma4` — **0,3/10** — fonctionnalité absente
+## 6. Comparaison des méthodes et architectures
 
-### Classement par note qualité de code
+### Meilleurs moteurs temps réel
 
-1. `claude opus 5 medium` — **8,5/10** — rigueur structurelle
-2. `kimi_k3_max` (Max) — **8,3/10** — rigoureux et factorisé
-3. `gpt-5.6 sol medium` — **8,2/10** — structuré et défensif
-4. `muse_wonder_1.0_medium` — **8,1/10** — rigoureux, CRC non testé
-5. `kimi k3` (thinking high) — **8,0/10** — clair et compact
-6. `glm5.3` — **8,0/10** — maintenable mais métier erroné
-7. `Grok_4.7_medium` — **8,0/10** — rigoureux, hardware invalidant
-8. `Gemini_4_Argon_medium` — **7,8/10** — ambitieux, invariants de reprise fragiles
-9. `grok 4.6 medium` — **7,2/10** — clair, bas niveau fragile
-10. `claude-sonnet5-free` — **7,0/10** — lisible, insuffisamment validé
-11. `composer 2.5 prompt from claude` — **6,3/10** — clair, invariants faibles
-12. `glm_5.2_high` — **4,8/10** — structuré, vérification élémentaire absente
-13. `gpt-free` — **4,7/10** — lisible mais fragile
-14. `composer 2.5` — **4,0/10** — ordonné, erreurs fondamentales
-15. `deepseek4 flash` — **3,8/10** — documenté, concurrence incorrecte
-16. `gemini-free` — **3,5/10** — lisible, non validé
-17. `qwen3.6_prompt_from_claude` — **3,5/10** — structuré, non fiable
-18. `gemini 3.1 pro` — **2,8/10** — clair, non livrable
-19. `qwen3.6` — **2,5/10** — lisible, incohérent
-20. `qwen3.6-35b-fp8-freetoken` — **2,0/10** — moteur incomplet
-21. `qwen35` — **1,0/10** — erreurs multiples
-22. `gemma4` — **0,8/10** — prototype incohérent
+- **claude opus 5 medium** : meilleure machine d'état d'entrée et meilleure cohérence NMI/CCOUNT. Les périodes invalides réamorcent le filtre, la reprise exige réellement deux fronts et les snapshots utilisent un seqlock.
+- **Claude_Opus_5.5_xhigh** : chaîne NMI la plus complète en fonctionnalités, avec filtrage avancé, diagnostics de retard et fail-safe NMI rapide.
+- **Grok_4.7_medium** : firmware temps réel excellent et reprise correcte, mais inutilisable tel quel parce que son OR-ing collecteur-base est polarisé dans le sens bloquant.
+- **GPT-5.6_Sol_xhigh** : approche moins bas niveau avec le moteur waveform du core et meilleure modularité/testabilité, au prix d'une validation cible encore nécessaire.
 
-## 5. Recommandation de fusion
+### Erreurs récurrentes
 
-La base recommandée reste `gpt-5.6 sol medium`, complétée par le réveil Timer1 immédiat et le frontend sobre de `kimi_k3_max`, puis par les invariants et diagnostics de `claude opus 5 medium`. Le build réellement validé de `muse_wonder_1.0_medium` confirme qu'une NMI FRC1 événementielle, `GPOS/GPOC` et un partage par mots atomiques sont viables sur le core ESP8266 3.1.2, mais son stockage CRC ne doit pas être repris. Il faut choisir **un seul** ordonnanceur, pas fusionner plusieurs moteurs concurrents.
+- Confondre le premier front avec une période (`kimi k3`, `kimi_k3_max`, `composer 2.5`, `deepseek4 flash`).
+- Couper seulement la sortie au stall sans invalider période/consigne (`Gemini_4_Argon_medium`, `grok 4.6 medium`).
+- Appliquer filtre ou slew à chaque tour de loop au lieu de chaque nouvelle mesure (`muse_wonder_1.0_medium`, `composer 2.5 prompt from claude`).
+- Paralléliser deux tach asynchrones et prétendre additionner/diviser leurs fréquences (`glm5.3`, `glm_5.2_high`, `qwen3.6-35b-fp8-freetoken`).
+- Utiliser des API ESP32 sur ESP8266 (`qwen3.6`, `qwen3.6-35b-fp8-freetoken`, `Swift_1.5_Qwen3.8-27B_medium-IQ3S`).
+- Dimensionner l'alimentation sans headroom ou avec une topologie qui ne conduit pas (`Gemini_4_Argon_medium`, `Grok_4.7_medium`, plusieurs Qwen).
 
-### Fonctionnalités IoT à emprunter
+## 7. Recommandation de fusion
 
-- **Temps-réel et génération :** conserver l'ordonnanceur one-shot de `gpt-5.6 sol medium`, décrit comme « *le temps armé est soustrait aux deux compteurs, puis la prochaine échéance minimale est programmée* ». Y intégrer le réarmement de `kimi_k3_max`, où « *`setOutput()` réarme Timer1 dès l'activation d'un canal* », afin d'éviter la seconde d'attente observée dans `kimi k3`. `muse_wonder_1.0_medium` apporte une preuve de compilation sur ESP8266 3.1.2 et une résolution de 0,2 µs; reprendre son principe événementiel, mais ajouter un compteur de saturation à l'anneau de capture.
-- **Phase et publication ISR :** reprendre de `claude opus 5 medium` l'adoption de fréquence « *à une frontière de front* », le `nextEdge += halfPeriod` et le seqlock. `Grok_4.7_medium` confirme l'intérêt d'un snapshot pair/impair et améliore Grok 4.6 en ne rafraîchissant le fail-safe qu'après une période valide. `Gemini_4_Argon_medium` confirme l'intérêt des échéances absolues, mais son partage de `lastEdgeCycle`, période et consigne n'est pas transactionnel. Figer le core, inspecter la map IRAM et interdire toute reprise sur une vieille consigne.
-- **Boot readiness :** aucune proposition ne couvre complètement le démarrage. Ajouter les états `BOOT_WAITING`, `VALIDATING`, `RUNNING`, `STALE` et `FAULT`, une fenêtre de grâce mesurée, puis éventuellement un tach nominal strictement borné. Le constat commun est explicite : chez `kimi_k3_max`, « *aucun signal nominal provisoire n’est produit avant deux fronts réels* ».
-- **Protocole et fail-safe :** garder le calcul de `gpt-5.6 sol medium`, « *`RPM = 30 000 000 / période_us`* », et la règle démontrée par `Grok_4.7_medium` : « *`lastGood` n'est mis à jour qu'après validation d'une période* ». Exiger trois périodes cohérentes avant activation, invalider période/consigne au stall et utiliser un timeout adaptatif court. Cette invalidation évite précisément le défaut de `Gemini_4_Argon_medium`, où le premier front de reprise relance l'ancienne fréquence. Ne jamais reprendre les tach parallèles de `glm5.3` ou `glm_5.2_high`.
-- **Filtres :** combiner médiane courte, rejet relatif d'outlier et EMA réinitialisée. Le rejet relatif puis confirmation de `muse_wonder_1.0_medium` est intéressant, mais son slew de 2 % doit être déclenché par **nouvelle période**, pas par tour de `loop()`. L'EMA 75/25 hors ISR de `kimi_k3_max` reste préférable aux filtres de `composer 2.5 prompt from claude`, qui « *réinsère continuellement la même valeur* » à chaque tour de boucle.
-- **WiFi et Web :** retenir AP+STA non bloquant, `WiFi.persistent(false)`, reconnexion, mDNS, page `PROGMEM` et statut par buffer borné. Ajouter authentification, CSRF, secret AP unique et débit limité. Ne jamais reproduire `claude opus 5 medium`, où « *`/api/status` renvoie en clair `apPass`* ».
-- **Persistance :** utiliser `magic`, version, taille, CRC32 et validation `isfinite()` de `gpt-5.6 sol medium`, puis ajouter double-slot et compteur de génération. Calculer la couverture avec `offsetof(Config, crc)`, jamais avec `sizeof(Config)-sizeof(crc)` : `muse_wonder_1.0_medium` démontre qu'un padding terminal peut sinon inclure le CRC lui-même et invalider chaque reboot. N'écrire que lors d'un changement.
-- **Hardware :** partir de l'OR-ing Schottky ou MOSFET, du buck-boost qualifié, des entrées 3,3 V et des sorties NPN des leaders. Ne jamais reprendre Q1–Q4 de `Grok_4.7_medium`, le pré-régulateur résistif de `Gemini_4_Argon_medium`, ni le dessin de `glm_5.2_high` qui relie les deux rails avant ses diodes et suppose qu'un LM2596 maintient 5 V depuis environ 5 V. Conserver aussi l'instruction de `gpt-5.6 sol medium` selon laquelle « *les deux fils tach ne doivent jamais être reliés* » et qualifier précisément PTC, TVS, transistor et convertisseur.
+### Base recommandée
 
-### Bonnes pratiques de qualité code à intégrer
+**Prendre `claude opus 5 medium` comme base temps réel et `Claude_Opus_5.5_xhigh` comme référence fonctionnelle/hardware.** Le premier gère le mieux l'amorçage, les périodes invalides et la reprise; le second apporte le réseau, les diagnostics et le dossier électrique les plus complets.
 
-- **Architecture modulaire :** reprendre la séparation logique de `claude opus 5 medium` entre « *primitives bas niveau, moteur, état partagé, application, stockage, Web et réseau* », puis sortir HTML/CSS/JS du fichier principal.
-- **Concurrence explicite :** utiliser snapshots versionnés ou le seqlock pair/impair bien appliqué par `Grok_4.7_medium`; restaurer l'état d'interruption précédent et ne jamais supposer que `noInterrupts()` protège une NMI.
-- **ISR minimales :** aucune allocation, chaîne, flottant, `digitalWrite()`, persistance ou opération réseau. Les accès transitifs `micros()` et `timer1_write()` doivent être validés sur la toolchain verrouillée.
-- **Heap maîtrisé :** retenir `PROGMEM`/`send_P` et les buffers `char` bornés de `kimi_k3_max`, dont le statut est « *produit dans un buffer `char` borné avec `snprintf`* ». Exposer heap courant et minimum historique.
-- **Frontières sûres :** validation serveur stricte, `isfinite()`, longueurs, terminaison NUL, échappement HTML/JSON, erreurs HTTP visibles, authentification et CSRF; aucun secret ne doit être relu par API.
-- **Build reproductible :** ajouter `platformio.ini` ou une commande `arduino-cli`, verrouiller core et bibliothèques et compiler en CI. Le build concluant de `muse_wonder_1.0_medium` sur `esp8266:esp8266:d1_mini` 3.1.2 montre le niveau de preuve attendu; la même étape aurait bloqué les parenthèses et GPIO inexistants de `glm_5.2_high`, les littéraux `0xDEYE`, les API ESP32 et les appels Timer1 inexistants.
-- **Tests :** couvrir PPR, demi-période, saturation, wraparound, overflow 32 bits, taille/padding de structure, CRC après sauvegarde-rechargement, premier front, reprise, glitches, anneau plein et stall. Un test de round-trip aurait détecté le CRC de Muse; un test de période nominale aurait montré que GLM 5.2 rejette tous ses échantillons. Mesurer fréquence et jitter au scope sous trafic WiFi et écriture flash.
-- **Documentation vérifiable :** documenter unités, polarité NPN, limites et résultats mesurés; bannir les promesses « zéro jitter » ou « totalement isolé » sans captures ni protocole reproductible.
+### Éléments à emprunter
+
+1. **Moteur et état d'entrée** — `claude opus 5 medium` : NMI one-shot, CCOUNT absolu, seqlock, `primed`, invalidation sur période incohérente et reprise sur deux fronts.
+2. **Fail-safe indépendant de loop** — `Claude_Opus_5.5_xhigh` : timeout NMI court, en veillant à effacer période, consigne, filtres et état de validation.
+3. **Mathématiques/tests** — `GPT-5.6_Sol_xhigh` : conserver `tach_math.h`, puis étendre les tests à boot, wrap, bruit, stall, reprise et calendrier de fronts.
+4. **Hardware** — utiliser Schottky qualifiées, TVS/PTC, vrai buck-boost si la rail descend près de 5 V, pull-up tach Noctua à 3,3 V et BC337/2N2222 open-collector avec pull-down base-émetteur.
+5. **Sécurité Web** — rendre l'authentification obligatoire, ajouter protection CSRF/origin, ne jamais renvoyer les secrets et limiter les écritures flash.
+6. **Persistance** — magie + version + taille + CRC avec `offsetof(Config, crc)`, double slot ou écriture transactionnelle et tests save/reload.
+
+### Corrections obligatoires avant déploiement
+
+- Définir explicitement la politique de boot : zéro RPM, période provisoire bornée ou délai de grâce, puis la tester sur le vrai Deye.
+- Surveiller idéalement les deux ventilateurs de chaque paire par une stratégie distincte; ne jamais mettre leurs tach en parallèle.
+- Pinner le core ESP8266, compiler en CI, inspecter la map IRAM et mesurer jitter/timeout à l'oscilloscope sous WiFi et écriture flash.
+- Tester les deux rails d'alimentation séparément, ensemble, à basse tension et pendant les pointes WiFi.
+
+## 8. Conclusion
+
+Le classement final est dominé par les deux Claude haut de gamme, avec un avantage léger à **claude opus 5 medium (8,8/10)** grâce à une reprise après stall techniquement plus correcte et une électronique viable. **Claude_Opus_5.5_xhigh (8,7/10)** reste la livraison la plus complète. **GPT-5.6_Sol_xhigh (8,0/10)** est la meilleure base de modularité et de tests. Aucun candidat ne doit être installé sans build cible et validation électrique/oscilloscope.

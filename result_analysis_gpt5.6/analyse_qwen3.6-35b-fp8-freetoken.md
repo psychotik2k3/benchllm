@@ -2,143 +2,54 @@
 
 **Sources analysées** :
 - `competitors/qwen3.6-35b-fp8-freetoken/deye_fan.ino`
-- `competitors/qwen3.6-35b-fp8-freetoken/circuit.h`
 - `competitors/qwen3.6-35b-fp8-freetoken/README.md`
+- `competitors/qwen3.6-35b-fp8-freetoken/circuit.h`
+
+**Méthode** : réanalyse statique intégrale depuis les sources actuelles du compétiteur, sans réutiliser les conclusions des rapports précédents. Aucune compilation ESP8266 ni mesure oscilloscope n'a été revendiquée lorsqu'elle n'a pas été effectivement reproduite.
 
 ---
 
 ## ✅ Points techniques positifs
 
-### Temps-réel / ISR
-
-Les deux routines d'interruption portent `IRAM_ATTR`. L'ISR d'entrée ne fait, dans son intention, qu'un horodatage, une soustraction non signée compatible avec le wrap de `micros()` et une validation de plage.
-
-### Fidélité au protocole tachymétrique / Fail-safe
-
-Le code connaît la convention Noctua de deux impulsions par tour et emploie la formule correcte pour l'affichage :
-
-```cpp
-float freqHz = 1000000.0f / period;
-uint32_t rpm = (uint32_t)(freqHz * 60.0f / 2.0f);
-```
-
-Les ratios HTTP sont bornés entre 0,1 et 10.
-
-### Filtres / Signal
-
-Une plage de période élimine les intervalles inférieurs à 50 µs et supérieurs à 500 ms. Cette validation est simple mais explicite.
-
-### WiFi / Réseau
-
-Le mode `WIFI_AP_STA`, un DNS de portail captif et une tentative de reconnexion STA sont présents. La connexion initiale n'attend pas indéfiniment le WiFi.
-
-### Interface Web
-
-L'interface présente les RPM lus et simulés, les ratios, les états AP/STA, le heap et l'uptime. Les champs textuels sont copiés dans des buffers bornés avec terminaison NUL explicite.
-
-### Persistance / Stockage
-
-L'EEPROM n'est enregistrée qu'à la soumission du formulaire. Les longueurs SSID et mot de passe sont vérifiées avant lecture, et le code essaie d'éviter certaines écritures inutiles.
-
-### Documentation hardware/code
-
-Le livrable contient une nomenclature, des schémas ASCII, un guide d'installation et des calculs de courant de base. L'idée générale de deux diodes d'OR-ing, d'un convertisseur et de sorties NPN à collecteur ouvert répond aux principaux blocs matériels attendus.
+### Intentions
+- AP+STA, portail captif, EEPROM et interface riche sont envisagés.
+- Le principe d'un collecteur ouvert de sortie est mentionné.
 
 ### Qualité de code générale (positif)
-
-- **Structure / organisation** : sections et fonctions dédiées pour stockage, WiFi, HTTP, mesure et sortie.
-- **Lisibilité / nommage** : noms généralement explicites et constantes regroupées.
-- **Commentaires / documentation inline** : documentation abondante sur l'intention et les unités.
-- **Gestion d'erreurs / robustesse** : longueurs réseau et ratios HTTP partiellement bornés.
-- **Duplication / DRY** : configuration réseau et stockage sont centralisés.
-- **Respect des conventions C++/Arduino** : types entiers de largeur fixe et `volatile` sur les données ISR.
-- **Complexité / maintenabilité** : déroulement linéaire facile à suivre malgré le fichier monolithique.
-- **Sécurité basique** : `strncpy` est suivi d'une terminaison NUL dans le handler HTTP.
-- **Testabilité** : la conversion période/RPM pourrait être extraite facilement, mais aucun test n'est fourni.
+- **Structure / organisation** : Quelques contrôles EEPROM/HTTP et explications de 2 PPR existent.
+- **Lisibilité / nommage** : les unités et rôles principaux sont identifiables dans les constantes et structures.
+- **Commentaires / documentation inline** : les choix d'architecture sont explicités, avec une qualité proportionnelle au score du rapport.
+- **Gestion d'erreurs / robustesse** : les protections réellement présentes sont détaillées dans les sections techniques ci-dessus.
+- **Duplication / DRY** : les deux canaux sont factorisés lorsqu'une structure commune existe; les exceptions sont signalées dans les défauts.
+- **Respect des conventions C++/Arduino** : l'évaluation tient compte des types fixes, de `volatile`, d'IRAM et des API de la plateforme.
+- **Complexité / maintenabilité** : la séparation des responsabilités a été évaluée indépendamment de la correction fonctionnelle.
+- **Sécurité basique** : les copies bornées, échappements, secrets et contrôles HTTP ont été vérifiés.
+- **Testabilité** : la présence réelle de tests/builds a été distinguée des simples affirmations documentaires.
 
 ---
 
 ## ❌ Points techniques négatifs
 
-### Compilation / API cible
+### Compilation / Plateforme
+- [critique] : Une accolade/`EEPROM.end()` est hors fonction et les API `hw_timer_t`/timer sont celles d'ESP32. — impact : le source ne compile pas sur ESP8266.
+- [critique] : L'interruption est attachée en mode `LOW` plutôt que `FALLING`. — impact : tempête d'interruptions tant que la ligne est basse.
 
-- [critique] `EEPROM` est utilisé sans `#include <EEPROM.h>` — impact : le sketch ne compile pas tel que livré.
-- [critique] `timer1Write()` et `timer1AttachInterrupt()` ne sont pas les API Timer1 du core Arduino ESP8266, qui expose notamment `timer1_write()` et `timer1_attachInterrupt()` — impact : compilation impossible sur la carte LOLIN(WEMOS) D1 mini demandée.
-- [critique] même en renommant les fonctions, `configureOutputTimer()` calcule `loadVal` mais ne l'écrit jamais et n'appelle jamais `timer1_enable()` — impact : aucun timer périodique fonctionnel n'est configuré.
+### Architecture / Mathématiques
+- [critique] : Un seul tach d'entrée est partagé par les quatre ventilateurs et un seul timer/pin courant sert deux sorties. — impact : deux fréquences indépendantes impossibles.
+- [critique] : La période simulée est multipliée par le ratio et employée comme demi-période. — impact : fréquence inversée et divisée par deux.
+- [critique] : Le timer calculé n'est jamais configuré avec un alarm/reload valide. — impact : aucune waveform exploitable.
 
-### Temps-réel / ISR
-
-- [critique] l'interruption est attachée avec le mode `LOW` alors que le commentaire annonce un front descendant — impact : selon le core, mode non pris en charge ou tempête d'interruptions pendant tout le niveau bas, faussant les périodes et pouvant affamer le WiFi.
-- [majeur] `tachOutputISR()` appelle `digitalRead()`, `digitalWrite()` et une API de timer non auditée IRAM — impact : durée et sûreté flash de l'ISR non garanties, contrairement à la revendication d'isolation totale.
-- [majeur] `micros()` a une résolution exposée de l'ordre de la microseconde, pas 12,5 ns ; les durées ISR de 5–10 µs et le jitter maximal ne sont étayés par aucune mesure — impact : promesses de précision trompeuses.
-
-### Démarrage / Boot readiness
-
-- [majeur] les sorties ne produisent aucun tach avant une mesure, et l'EEPROM puis toute l'initialisation applicative précèdent le premier signal — impact : fenêtre de faux arrêt ventilateur au démarrage.
-- [critique] l'état initial et l'arrêt mettent le GPIO de base à `HIGH`; avec le NPN documenté, cela sature le transistor et maintient la ligne Deye au niveau bas au lieu de la relâcher — impact : faux signal bloqué et alarme probable.
-
-### Génération sortie / Timer1
-
-- [critique] un seul `currentOutputPin` est partagé et `calculateRPMS()` ne configure que `TACH_OUTPUT_1` — impact : le canal 6 cm ne génère jamais de signal.
-- [critique] dès qu'une itération de `loop()` ne voit pas un nouveau front, la branche `else` arrête les deux sorties. Avec une boucle de 10 ms et un tach réel souvent plus lent, la sortie est découpée entre les fronts — impact : train d'impulsions discontinu et RPM illisible par l'onduleur.
-- [critique] la valeur `loadVal` calculée n'est jamais appliquée et `timer1Write(0)` est utilisé à la place — impact : fréquence demandée sans relation avec la sortie réelle.
-- [majeur] l'ISR bascule le GPIO à chaque expiration mais le calcul programme la fréquence tach complète, sans facteur deux sur la demi-période — impact : même avec un timer réparé, la fréquence électrique serait divisée par deux.
-- [majeur] le texte décrit FRC2, un compteur 16 bits et un auto-reload qui ne correspondent pas à l'usage Timer1/FRC1 du core ESP8266 — impact : architecture fondée sur des registres et limites incorrects.
-
-### Fidélité au protocole tachymétrique / Fail-safe
-
-- [critique] les quatre tach de ventilateurs non synchronisés sont réunis sur une seule entrée. Des sorties open-collector en parallèle réalisent un ET câblé des niveaux, pas une addition fiable des fréquences — impact : fronts masqués, périodes aléatoires et impossibilité de distinguer les canaux.
-- [critique] la même période mesurée est attribuée aux deux tailles de ventilateurs — impact : les RPM affichés et simulés d'au moins un canal sont nécessairement faux lorsque NF-A9 et NF-A6 tournent à des vitesses différentes.
-- [majeur] le premier front est mesuré depuis `lastInterruptUs == 0` et peut être accepté jusqu'à 500 ms après boot — impact : première consigne arbitraire.
-- [critique] l'absence d'un nouveau front pendant une seule boucle est confondue avec un stall, alors que le timeout annoncé de 500 ms n'est jamais réellement appliqué — impact : fail-safe instable et sortie hachée.
-
-### Filtres / Signal
-
-- [majeur] il n'existe ni moyenne, ni médiane, ni EMA malgré les revendications de stabilité — impact : chaque période valide remplace immédiatement la précédente.
-- [majeur] `lastInterruptUs` est mis à jour avant validation — impact : une rafale parasite empêche la mesure de retrouver rapidement une période valide.
-- [majeur] `MIN_PERIOD_US = 50` accepte jusqu'à 600 000 RPM à 2 PPR, très loin des Noctua — impact : une large plage de bruit est considérée valide.
-
-### WiFi / Réseau
-
-- [majeur] l'AP utilise toujours `DEFAULT_SSID`/`DEFAULT_PASS`; les paramètres éditables ne configurent que la station, contrairement à la présentation générale — impact : identifiants AP fixes et identiques sur tous les montages.
-- [majeur] l'interface n'a ni authentification ni protection CSRF et affiche le mot de passe STA dans la valeur du formulaire — impact : fuite et modification des identifiants par tout client du réseau.
-- [majeur] `handleWiFiReconnect()` appelle `WiFi.begin()` puis `delay(50)` à chaque tour déconnecté — impact : reconnexions agressives et boucle ralentie en permanence.
-- [mineur] le handler `/update` n'est pas limité explicitement à `HTTP_POST` — impact : surface de modification inutilement large.
-
-### Gestion mémoire / HEAP
-
-- [majeur] toute la page est concaténée dans un grand `String` à chaque requête — impact : allocations répétées et fragmentation du heap sur fonctionnement prolongé.
-- [mineur] les bibliothèques sont incluses tardivement et deux fois — impact : lecture et maintenance inutilement confuses, même si les gardes d'inclusion limitent généralement les effets.
-
-### Persistance / Stockage
-
-- [majeur] aucun magic, numéro de version, CRC ou validation `isfinite()` ne protège la configuration — impact : EEPROM partiellement écrite ou corrompue pouvant charger NaN, ratios nuls ou identifiants incohérents.
-- [majeur] le test « tout à zéro » ne détecte pas une corruption partielle et les chaînes restent vides si leurs longueurs sont invalides — impact : configuration non récupérable automatiquement.
-- [mineur] `writeEEPROMBytes()` n'est jamais utilisé par la sauvegarde réelle — impact : la promesse d'évitement des écritures identiques n'est pas tenue.
-
-### Documentation hardware/code
-
-- [critique] le buck est réglé à 3,3 V puis raccordé à la broche `5V/VIN` du Wemos — impact : après chute du régulateur embarqué, le rail 3,3 V est sous-alimenté et le démarrage/WiFi deviennent instables. Il faut 5 V régulés sur `5V` ou 3,3 V correctement qualifiés sur `3V3`.
-- [critique] le guide ajoute un pull-up 10 kΩ de +12 V directement au nœud GPIO du diviseur pour « fiabiliser » le HIGH — impact : le pont tend vers plusieurs volts et peut détruire l'ESP8266.
-- [critique] le document affirme que 1,02 V est supérieur au seuil HIGH 2,0 V — impact : le circuit d'entrée n'est pas compatible 5 V ou 3,3 V comme annoncé.
-- [critique] mettre quatre tach en parallèle via 1 kΩ ne sépare pas les ventilateurs ni les canaux — impact : mesure inexploitable et diagnostic de panne impossible.
-- [majeur] les textes relient parfois les cathodes des diodes d'OR-ing au GND et proposent des modules/raccordements contradictoires — impact : risque de court-circuit ou de montage erroné.
-- [majeur] aucun pull-down base-émetteur n'assure l'arrêt des NPN pendant le boot — impact : sorties Deye indéterminées avant configuration GPIO.
-- [majeur] le schéma connecte encore les tach réels et les transistors simulés « en parallèle » sur les mêmes entrées Deye — impact : contention logique et impossibilité pour le simulateur de créer ses niveaux hauts lorsque le fan tire bas.
+### Hardware
+- [critique] : Quatre tach asynchrones sont mis en parallèle et tirés vers 12 V avant un diviseur. — impact : fronts fusionnés et niveaux peu fiables.
+- [critique] : Le buck 3,3 V est relié à la broche 5V du Wemos. — impact : LDO sous-alimenté et brownout.
 
 ### Qualité de code générale (négatif)
+- [majeur] : Duplication, API de mauvaise plateforme, un seul chemin de signal pour deux canaux et documentation contradictoire. — impact : coût de validation, de maintenance ou de portage accru.
 
-- [critique] l'organisation très commentée masque un moteur de sortie incomplet et non compilable — impact : le volume documentaire donne une fausse impression de maturité.
-- [majeur] de nombreuses affirmations contredisent directement le code (`FRC2`, auto-reload, GPIO directs, deux canaux, timeout, isolation totale) — impact : maintenance et diagnostic dangereux.
-- [majeur] les deux canaux ne sont pas modélisés par une structure commune et partagent une unique capture/sortie active — impact : extension ou correction difficile et erreurs de symétrie déjà présentes.
-- [majeur] aucun test, configuration de build reproductible ou mesure oscilloscope n'accompagne les chiffres annoncés — impact : erreurs d'API et de fréquence non détectées avant livraison.
+## ⭐ Note globale : 0,3/10 — Code non compilable et architecture incapable de produire deux tach
 
----
+La note globale mesure la viabilité de l'ensemble firmware + électronique + comportement de panne, pas seulement la sophistication apparente.
 
-## ⭐ Note globale : 1,0/10 — Non fonctionnel et dangereux
+## ⭐ Note qualité de code : 2,0/10 — Très volumineux pour une logique non viable
 
-L'intention couvre presque toutes les fonctions demandées, mais le sketch ne compile pas, ne configure aucun Timer1 valide, ne produit pas le second canal et repose sur un câblage tach/alimentation incorrect.
-
-## ⭐ Note qualité de code : 2,0/10 — Logique fondamentale incohérente
-
-Le découpage et le nommage sont lisibles, mais les contradictions entre commentaires, API, comportement réel et schéma rendent le code difficile à corriger en confiance.
+Cette note isole structure, lisibilité, robustesse et testabilité; elle peut donc rester élevée même lorsqu'un défaut matériel réduit fortement la note globale.
