@@ -1,0 +1,116 @@
+[
+  {
+    "source": "competitors/claude opus 5 medium/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/claude-sonnet5-free/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/Claude_Opus_5.5_xhigh/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/composer 2.5 prompt from claude/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/deepseek4 flash/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/gemini 3.1 pro/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/gemini-free/gemini-code-1787264142602.cpp",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/Gemini_4_Argon_medium/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/glm5.3/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/GPT-5.6_Sol_xhigh/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/grok 4.6 medium/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/Grok_4.7_medium/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/kimi k3/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/kimi_k3_max/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/muse_wonder_1.0_medium/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/qwen3.6_prompt_from_claude/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/qwen35/firmware_main.cpp",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/strata-qwen3.8-flash-next-iq3-s_medium/deye_fan/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "source": "competitors/strata-qwen3.8-flash-next-iq3-s_medium-cline/deye_fan.ino",
+    "script": 0,
+    "exit_code": 0,
+    "output": ""
+  }
+]

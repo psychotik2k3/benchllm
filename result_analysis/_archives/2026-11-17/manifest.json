@@ -1,0 +1,38 @@
+[
+  {
+    "file": "analyse_claude-sonnet5-free.md",
+    "sha256": "35b541e5a6df36d18165200d3c9f4fb0ecd3bb556c86b7ab3efcb3a3489fcd4a"
+  },
+  {
+    "file": "analyse_deepseek4_flash.md",
+    "sha256": "9e1fd1901cc8bcbdb4e2d4a132b0fd0300cdc00349d957e983094e6b0d65dd70"
+  },
+  {
+    "file": "analyse_gemini-free.md",
+    "sha256": "a4530731e7ff69ab351ba00a612e792391948bdfa7d8da562cf24e0f16c94224"
+  },
+  {
+    "file": "analyse_gemma4.md",
+    "sha256": "ca33b1204c473bb8d50e09b9243bf5612d01de025ed0a544c636cc5e2f553ce3"
+  },
+  {
+    "file": "analyse_gpt-free.md",
+    "sha256": "95b442a5df5599b8f4914f4e0a2e106e303d54b67da6dd59e61d6bbc412b0b00"
+  },
+  {
+    "file": "analyse_qwen3.6.md",
+    "sha256": "1839f19a25c6fd0c7cab490cdb5966afd5ccb122471ff2741a37fb6757814e26"
+  },
+  {
+    "file": "analyse_qwen3.6_prompt_from_claude.md",
+    "sha256": "94beda4cc91942ad1b2ddb051d5d78bf867c99187288342cdbbf2efb1c24e8ea"
+  },
+  {
+    "file": "analyse_qwen35.md",
+    "sha256": "3c6d92352917cb22da295976b2b2a030727da44f63f7bc7f8506d3d41192be1e"
+  },
+  {
+    "file": "RÉCAPITULATIF_2026-09-03.md",
+    "sha256": "72320c7c07d459c8203511f68ab81364cecdf950aab8a3ebf6d7e3e39b872a3a"
+  }
+]

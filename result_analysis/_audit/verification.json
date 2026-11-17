@@ -1,0 +1,498 @@
+{
+  "scope": "Reproductions arithmétiques et modèles de transitions ; ne sont pas des tests du firmware compilé ni du matériel.",
+  "checks": [
+    {
+      "name": "DIV16 : 10 ticks = 2 us",
+      "observed": 2.0,
+      "expected": 2,
+      "pass_": true,
+      "evidence": "composer 2.5 : setupTimer1"
+    },
+    {
+      "name": "DIV16 : 4000 ticks = 800 us",
+      "observed": 800.0,
+      "expected": 800,
+      "pass_": true,
+      "evidence": "gemini-free : onTimerISR"
+    },
+    {
+      "name": "Sonnet : N=10, 11 ticks par demi-période",
+      "observed": 13636.363636363636,
+      "expected": 13636.363636363636,
+      "pass_": true,
+      "evidence": "claude-sonnet5-free : onTimer1ISR"
+    },
+    {
+      "name": "Grok MAX_IN_CYC en uint32",
+      "observed": 2525163,
+      "expected": 2525163,
+      "pass_": true,
+      "evidence": "Grok_4.7_medium : constante MAX_IN_CYC"
+    },
+    {
+      "name": "Grok LOST_CYC en uint32",
+      "observed": 2230196,
+      "expected": 2230196,
+      "pass_": true,
+      "evidence": "Grok_4.7_medium : constante LOST_CYC"
+    },
+    {
+      "name": "GLM : overflow à 1600 RPM",
+      "observed": 13,
+      "expected": 13,
+      "pass_": true,
+      "evidence": "glm_5.2_high : traiterCanal"
+    },
+    {
+      "name": "GLM : quotient maximal après overflow",
+      "observed": 53,
+      "expected": 53,
+      "pass_": true,
+      "evidence": "glm_5.2_high : période minimale exigée =1000 us"
+    },
+    {
+      "name": "Argon : fenêtre périmée redevient récente",
+      "observed": 100000,
+      "expected": 100000,
+      "pass_": true,
+      "evidence": "Gemini_4_Argon_medium : timeout non invalidant"
+    },
+    {
+      "name": "Kimi max : échéance passée devient très lointaine",
+      "observed": 8388607,
+      "expected": 8388607,
+      "pass_": true,
+      "evidence": "kimi_k3_max : scheduleNext"
+    },
+    {
+      "name": "Cline : 7500 RPM, pas NCO",
+      "observed": 409,
+      "expected": 409,
+      "pass_": true,
+      "evidence": "strata cline : outConfigure"
+    },
+    {
+      "name": "Cline : période avec phase suspendue",
+      "observed": 214,
+      "expected": 214,
+      "pass_": true,
+      "evidence": "strata cline : isrTimer1"
+    },
+    {
+      "name": "Cline : RPM physiques avec largeur additionnelle",
+      "observed": 5607.476635514019,
+      "expected": 5607.476635514019,
+      "pass_": true,
+      "evidence": "modèle déterministe du chemin nominal, hors IRQ perdues"
+    },
+    {
+      "name": "Cline : offset négatif devient plafond",
+      "observed": 20000,
+      "expected": 20000,
+      "pass_": true,
+      "evidence": "strata cline : target -= offset puis clamp"
+    },
+    {
+      "name": "Layout ABI 32 bits : Deep",
+      "observed": [
+        206,
+        208
+      ],
+      "expected": [
+        206,
+        208
+      ],
+      "pass_": true,
+      "evidence": "types fixes, alignements 1/2/4 ; modèle ctypes, pas sizeof exécuté sur Xtensa"
+    },
+    {
+      "name": "Layout ABI 32 bits : Muse",
+      "observed": [
+        212,
+        216
+      ],
+      "expected": [
+        212,
+        216
+      ],
+      "pass_": true,
+      "evidence": "types fixes, alignements 1/2/4 ; modèle ctypes, pas sizeof exécuté sur Xtensa"
+    },
+    {
+      "name": "Layout ABI 32 bits : Strata",
+      "observed": [
+        220,
+        224
+      ],
+      "expected": [
+        220,
+        224
+      ],
+      "pass_": true,
+      "evidence": "types fixes, alignements 1/2/4 ; modèle ctypes, pas sizeof exécuté sur Xtensa"
+    },
+    {
+      "name": "Swift : courant max après résistance 100k",
+      "observed": 0.00012,
+      "expected": 0.00012,
+      "pass_": true,
+      "evidence": "schema_electronique.txt : limite supérieure même sans chute LDO"
+    },
+    {
+      "name": "Argon : tension disponible après 33 ohms à 300mA",
+      "observed": 2.0999999999999996,
+      "expected": 2.1,
+      "pass_": true,
+      "evidence": "SCHEMA_ET_ARCHITECTURE.md : borne statique, transitoire non simulé"
+    },
+    {
+      "name": "Outils de compilation",
+      "observed": "arduino-cli, g++, clang++ absents du PATH ; aucune compilation firmware effectuée",
+      "expected": "limite explicitée",
+      "pass_": true,
+      "evidence": "inventaire outils de la session"
+    }
+  ],
+  "sources": [
+    {
+      "path": "competitors/claude opus 5 medium/deye_fan/deye_fan.ino",
+      "bytes": 51354,
+      "sha256": "794556aeb871f4182a12434b68be21bc0e04eef7f729c9c955cd8174f52f4362"
+    },
+    {
+      "path": "competitors/claude opus 5 medium/SCHEMA.md",
+      "bytes": 26997,
+      "sha256": "f198f4920141d6b141ebdd943a562bb61b0179b26413557e6b91fddff10030b6"
+    },
+    {
+      "path": "competitors/claude-sonnet5-free/deye_fan.ino",
+      "bytes": 21444,
+      "sha256": "af8ef4f57c2ccc72cfdef1683c5a7de467f901f3a325149f7b1e28e77eac4c56"
+    },
+    {
+      "path": "competitors/claude-sonnet5-free/schema_electronique.md",
+      "bytes": 11047,
+      "sha256": "9f56c35d307df54d466d36e539c0365876b90e3beff02fc05c39329c0aef1a16"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/deye_fan/deye_fan.ino",
+      "bytes": 53380,
+      "sha256": "2b5b62b31cad4d30ee9e53be6807b472c943898a1c7c199b3fb19b502d55a22c"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/outils/generer_schema.py",
+      "bytes": 10324,
+      "sha256": "66fe7bf75df0152eaf5f904c081658c9994f7e4a8d7e06820951b8b4e25ba16e"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/README.md",
+      "bytes": 9578,
+      "sha256": "c495bee44ae41d153f6c9e89fbcb16c2e6da9c80605692654d26bb9b32375fa0"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/SCHEMA.md",
+      "bytes": 20039,
+      "sha256": "d18b34fe0c850b97cd48439dd6baeac5c59ae41c7f532c89eb97f883c0f6adc7"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/schema_complet.png",
+      "bytes": 328801,
+      "sha256": "de29b671d21a63844b113c48ccee5a30df13c25011bdf807b37b5ef360cf7b13"
+    },
+    {
+      "path": "competitors/Claude_Opus_5.5_xhigh/schema_complet.svg",
+      "bytes": 306057,
+      "sha256": "fb2d55571449a7e81a7b99a5eac373e41ed0f43472fb00127e50df79850758ac"
+    },
+    {
+      "path": "competitors/composer 2.5/deye_fan/deye_fan.ino",
+      "bytes": 17849,
+      "sha256": "629e617f416b8a771cdb10fcdeda5c792c42e71d4076a775483caef314960eb4"
+    },
+    {
+      "path": "competitors/composer 2.5/deye_fan/schema_electronique.md",
+      "bytes": 11549,
+      "sha256": "8e71ce47fdfa6d046f21aec8c907438dbefaa7af6e7aae1f1a1030914d85e5e4"
+    },
+    {
+      "path": "competitors/composer 2.5 prompt from claude/deye_fan.ino",
+      "bytes": 18102,
+      "sha256": "6d186017e406ba7ff9616b0ce2d493f6e31fd506d4eac9ba06361430029e29a1"
+    },
+    {
+      "path": "competitors/composer 2.5 prompt from claude/schema_electronique.md",
+      "bytes": 10192,
+      "sha256": "7b08d1931d6558cce308420d363fe739104c8e60e1354090144c7b15c0a5368a"
+    },
+    {
+      "path": "competitors/deepseek4 flash/deye_fan.ino",
+      "bytes": 35320,
+      "sha256": "1982f772823fd420961f40798cca6850ab92471e2e3133c2996bc4e5ae6483e0"
+    },
+    {
+      "path": "competitors/deepseek4 flash/README.md",
+      "bytes": 2212,
+      "sha256": "ae1263bde2d408a0af61231a2ac1211d8fc723f006862643e3ac88e7d2824580"
+    },
+    {
+      "path": "competitors/deepseek4 flash/SCHEMA_ELECTRONIQUE.md",
+      "bytes": 12656,
+      "sha256": "a5daabc337e68084faac0b5daea92e34f7ac614a15b66c476dcd44da35618635"
+    },
+    {
+      "path": "competitors/gemini 3.1 pro/deye_fan.ino",
+      "bytes": 10201,
+      "sha256": "7aeefdd9b842174ff8f09cc14d298946d2921fbd77948ece4c8b492ee9902825"
+    },
+    {
+      "path": "competitors/gemini 3.1 pro/schema_et_explications.md",
+      "bytes": 5364,
+      "sha256": "705e15020503699edba7c1bf78ea4144a8f99c9296f8e66a52ba8971163223bb"
+    },
+    {
+      "path": "competitors/gemini-free/gemini-code-1787264142602.cpp",
+      "bytes": 9941,
+      "sha256": "faf6c0f2c16e42ebdd0722e7d2ed472cc3a2d0952fc896300e4596d7caf5f903"
+    },
+    {
+      "path": "competitors/Gemini_4_Argon_medium/deye_fan.ino",
+      "bytes": 49059,
+      "sha256": "942f6934084cd9ceed5bba91830ff1f3286841ec5ebd8b816bdb251a290c67fd"
+    },
+    {
+      "path": "competitors/Gemini_4_Argon_medium/SCHEMA_ET_ARCHITECTURE.md",
+      "bytes": 15162,
+      "sha256": "4ab60ac3b092c7f614cbcd0993add43bf63c69930ae3a59856cdb66717a3c8e2"
+    },
+    {
+      "path": "competitors/gemma4/firmware_main.cpp",
+      "bytes": 4277,
+      "sha256": "8b7b34e9db362721a2fc62e0dd8f868991832d2664aee6d51e14f266b47711e9"
+    },
+    {
+      "path": "competitors/gemma4/README.md",
+      "bytes": 2570,
+      "sha256": "e8dc1375feb899109ee5923bfccfdf229c8dd714f49db1d82886b7a97df2527c"
+    },
+    {
+      "path": "competitors/glm5.3/deye_fan/deye_fan.ino",
+      "bytes": 46455,
+      "sha256": "041c6e8373bd5e26f345c123e713289013f9589ff01043d89589b09896be8ccf"
+    },
+    {
+      "path": "competitors/glm5.3/deye_fan/README.md",
+      "bytes": 6743,
+      "sha256": "fb1b75c2181b49ec63a3aef0573fcbff2dc9b97a04c04b98c01adf557c79bbe1"
+    },
+    {
+      "path": "competitors/glm5.3/deye_fan/schema_electronique.md",
+      "bytes": 20015,
+      "sha256": "cddfb96509ecb76b026ca0d597d420ef0e30d023b51ab631f35eba77497c8b3d"
+    },
+    {
+      "path": "competitors/glm_5.2_high/deye_fan.ino",
+      "bytes": 25528,
+      "sha256": "d00fe98fe3b5d807327a022c026f9f13d1a6bc77e0112c86c954d3f788d64759"
+    },
+    {
+      "path": "competitors/glm_5.2_high/schema_electronique.md",
+      "bytes": 14662,
+      "sha256": "c6b98e84fd0c80f4e4107603e29a6d0660b9294c05d8da48f0d21b8a7927648a"
+    },
+    {
+      "path": "competitors/gpt-5.6 sol medium/deye_fan.ino",
+      "bytes": 20032,
+      "sha256": "51faaf5e13e9488a7cc41f5448ab8774a72729123da6798abb9fbc29adf8a6e2"
+    },
+    {
+      "path": "competitors/gpt-5.6 sol medium/SCHEMA_ET_INSTALLATION.md",
+      "bytes": 9147,
+      "sha256": "dd408f9a90ce4f41808e08cd02c2375eaafef6813db2ddd5d56b3533487eb7b4"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/DESIGN.md",
+      "bytes": 3801,
+      "sha256": "244adf855a17c45574fd568b95b58e580be05ec0cc8fe486080949047c424eab"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/deye_fan.ino",
+      "bytes": 19296,
+      "sha256": "bc6ad7a503e2ad7938cd25011dde9897b86374a352b5424d6ed9970cca6f3b3e"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/IMPLEMENTATION_PLAN.md",
+      "bytes": 3514,
+      "sha256": "02688922ed57efcd4ed10b5b03f700fa089ac409cf5380028eb2a6e6cd2c4932"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/SCHEMA_ET_MONTAGE.md",
+      "bytes": 9202,
+      "sha256": "bc1491f5fd68d2aa19d7d8b2d33ed3bd45a724a9276dabbae7da4ad18c2282f3"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/tach_math.h",
+      "bytes": 836,
+      "sha256": "24804a99f96adecca5944758d6466d548907ad8ef4b6512bab38e1bc54447e3e"
+    },
+    {
+      "path": "competitors/GPT-5.6_Sol_xhigh/test_tach_math.cpp",
+      "bytes": 1077,
+      "sha256": "e4d2395b5e7539f22bdc10e551023c9bc91db378d0dd5b4d7c17cc71200047d6"
+    },
+    {
+      "path": "competitors/gpt-free/gpt_deye_fan.ino",
+      "bytes": 29271,
+      "sha256": "7e8a782d7687e329dbd55cb9331ee4a8a22d34d093626d9a35c771421868d140"
+    },
+    {
+      "path": "competitors/grok 4.6 medium/deye_fan/deye_fan.ino",
+      "bytes": 19982,
+      "sha256": "1f3610dde1eb42aa8132afb09c0ea30cdca20380be6e20d8bddc0f90fe5d53f3"
+    },
+    {
+      "path": "competitors/grok 4.6 medium/SCHEMA_ELECTRONIQUE.md",
+      "bytes": 10010,
+      "sha256": "355ec2fb84fa8d235b2e64d20557f215dc4bee49b45a328633777071c7c69406"
+    },
+    {
+      "path": "competitors/Grok_4.7_medium/deye_fan/deye_fan.ino",
+      "bytes": 21349,
+      "sha256": "467f900c617e0c10f35fba5d2924dfbc0da6527609928316b3398e126f1a9662"
+    },
+    {
+      "path": "competitors/Grok_4.7_medium/schema_electronique.md",
+      "bytes": 10748,
+      "sha256": "53bfbde8a58faf28e12e174fc7a7652fa62ffdafa15a0b557abaa674ff75ae72"
+    },
+    {
+      "path": "competitors/kimi k3/deye_fan.ino",
+      "bytes": 16436,
+      "sha256": "2df689b522699487f61040c87d78ef53f83079d66905f25e50a7386afc9bee40"
+    },
+    {
+      "path": "competitors/kimi k3/schema_electronique.md",
+      "bytes": 11735,
+      "sha256": "1ddf041c53fa2b726fd93ed3fad6c771d8bdb0abbd27dae595ddac09516cb59e"
+    },
+    {
+      "path": "competitors/kimi_k3_max/deye_fan.ino",
+      "bytes": 23680,
+      "sha256": "bc81b38dc974e8f30b6bf92a5a77a51b029b05db3f5d8bb2cdee04c5a8046074"
+    },
+    {
+      "path": "competitors/kimi_k3_max/schema_electronique.md",
+      "bytes": 12061,
+      "sha256": "58734a96c751cff685039639c864c72db4f233f10a1bbf288ef1d271133190f4"
+    },
+    {
+      "path": "competitors/muse_wonder_1.0_medium/deye_fan.ino",
+      "bytes": 30179,
+      "sha256": "a642b6ec31d04d7791d1665e5e2d9b8fb80839e6428938bc5f63e594882d1f15"
+    },
+    {
+      "path": "competitors/muse_wonder_1.0_medium/schema_electronique.md",
+      "bytes": 23737,
+      "sha256": "bd3577bce14922ca48f746198f5b0c53b57e79648fcee1299ab2c864946f8fc0"
+    },
+    {
+      "path": "competitors/qwen3.6/deye_fan.ino",
+      "bytes": 42908,
+      "sha256": "86b88e3893b07a74438e51884e4d5be359ff29d44392bd4d3434d947049c1f2f"
+    },
+    {
+      "path": "competitors/qwen3.6/SCHÉMA_CIRCUIT.md",
+      "bytes": 24372,
+      "sha256": "943d478fd5fa0f8c0ad2b31a2fba3d02fafded68cb83718c995eb12b6741b602"
+    },
+    {
+      "path": "competitors/qwen3.6-35b-fp8-freetoken/circuit.h",
+      "bytes": 29240,
+      "sha256": "28189f66f6152bb06c926eb5822f7320979f4acba57c746a31b5727a94b89c02"
+    },
+    {
+      "path": "competitors/qwen3.6-35b-fp8-freetoken/deye_fan.ino",
+      "bytes": 32242,
+      "sha256": "720d97eb760a51002feb21225ea2f7e2743ef2b0a8fe39f928307d284bdb2954"
+    },
+    {
+      "path": "competitors/qwen3.6-35b-fp8-freetoken/README.md",
+      "bytes": 17555,
+      "sha256": "f0f1503f2b75f9a8913f74e9c1f21081c0b1dc1cbbd529ffb3d7b43c5bf35ee4"
+    },
+    {
+      "path": "competitors/qwen3.6_prompt_from_claude/deye_fan.ino",
+      "bytes": 48197,
+      "sha256": "41b38e9ca540a750d2d135a72c58fd7132944afaffc161a50afee83c262f163a"
+    },
+    {
+      "path": "competitors/qwen3.6_prompt_from_claude/SCHEMATIC.md",
+      "bytes": 32035,
+      "sha256": "65e0d76d5e7aa3df33ba08109bfbd99e44abdcfd8ff051f9a68ca91c581d63cf"
+    },
+    {
+      "path": "competitors/qwen35/calibration_guide.md",
+      "bytes": 7976,
+      "sha256": "048bd1b88f0dbaa3c3aaf35f1b8ab0698b26ac5eec3c716301541972b1cf30fa"
+    },
+    {
+      "path": "competitors/qwen35/firmware_main.cpp",
+      "bytes": 29892,
+      "sha256": "956de73059573b63c0999ef6665001a292eb81d4739379b93afabcb1e95ee11d"
+    },
+    {
+      "path": "competitors/qwen35/INDEX.md",
+      "bytes": 1865,
+      "sha256": "eb4fcaa6ad1fb36fc503866afcae2ab62f9cf792d8d808c0f1a82fb91754fef7"
+    },
+    {
+      "path": "competitors/qwen35/memory/anti_rebound_gpio_optimization.md",
+      "bytes": 1437,
+      "sha256": "f18d2ec1fd479cc9d4748fc866ec13414b0f14aaade088b7516de95057ff59df"
+    },
+    {
+      "path": "competitors/qwen35/MEMORY.md",
+      "bytes": 141,
+      "sha256": "4f617a373d8f7d67964ad19bd749f0f7d6a16002e268de1ff2c4f614e6d41bfe"
+    },
+    {
+      "path": "competitors/qwen35/README.md",
+      "bytes": 10223,
+      "sha256": "f116b964e28877ad175f2202f8dce0a70e8e04512dc7370f625346566f52320b"
+    },
+    {
+      "path": "competitors/qwen35/schematic.md",
+      "bytes": 30088,
+      "sha256": "7cd08da2845cf806c1658b8a58d0f28f92e29fda3541c016cf1e888e6694c90a"
+    },
+    {
+      "path": "competitors/qwen35/SUMMARY.md",
+      "bytes": 4307,
+      "sha256": "cb34459c0c2fa17cb9e5e24a824bf4cf923a9ebfe765d8e878cbc30a35d1a170"
+    },
+    {
+      "path": "competitors/strata-qwen3.8-flash-next-iq3-s_medium/deye_fan/deye_fan.ino",
+      "bytes": 46468,
+      "sha256": "a2cff826b5dc7dc4bbabcfa12f7b76d839e6a3b15369e14db3e57c664ab23800"
+    },
+    {
+      "path": "competitors/strata-qwen3.8-flash-next-iq3-s_medium/README.md",
+      "bytes": 27655,
+      "sha256": "8b3f30de6720862894a3d2c9b27562a6098a5d909170a9e1f9e0d119320b2db1"
+    },
+    {
+      "path": "competitors/strata-qwen3.8-flash-next-iq3-s_medium-cline/deye_fan.ino",
+      "bytes": 52774,
+      "sha256": "94a2744128bb2b681f8d976438128faa7e0b6f1d75abe604fe207976e6d10702"
+    },
+    {
+      "path": "competitors/Swift_1.5_Qwen3.8-27B_medium-IQ3S/deye_fan.ino",
+      "bytes": 13698,
+      "sha256": "9475693216f69431772e98bec57f64771bc33af37a5c1d3409125219db24740f"
+    },
+    {
+      "path": "competitors/Swift_1.5_Qwen3.8-27B_medium-IQ3S/schema_electronique.txt",
+      "bytes": 7270,
+      "sha256": "6d9cb398a4cc8893f34983f79b58a392877ef6245b4ecbe5c99a736a10b68780"
+    }
+  ]
+}

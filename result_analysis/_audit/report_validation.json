@@ -1,0 +1,10 @@
+{
+  "individual_reports": 28,
+  "ranked_reports": 27,
+  "unscored_reports": 1,
+  "archive_hashes_verified": 9,
+  "unchanged_source_hashes": 68,
+  "local_links": "all resolve",
+  "arithmetic_checks": 19,
+  "javascript_checks": 19
+}
