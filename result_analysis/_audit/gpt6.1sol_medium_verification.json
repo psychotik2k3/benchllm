@@ -1,0 +1,141 @@
+{
+  "scope": "Empreintes des livrables, modèles arithmétiques et contrôle de syntaxe JS ; aucune recompilation ni exécution firmware.",
+  "checks": [
+    {
+      "name": "SHA256 fourni : deye_fan/deye_fan.ino",
+      "pass_": true,
+      "actual": "9A5B816624CB6346A71F644D95DD963D75544639389A565CAE0D83BB4675CEED",
+      "claimed": "9A5B816624CB6346A71F644D95DD963D75544639389A565CAE0D83BB4675CEED"
+    },
+    {
+      "name": "SHA256 fourni : verification/deye_fan.ino.bin",
+      "pass_": true,
+      "actual": "B1E0DFDA018A96AD46C5B989CABEDA9F336DAC9B30F7E750761AB538339D647D",
+      "claimed": "B1E0DFDA018A96AD46C5B989CABEDA9F336DAC9B30F7E750761AB538339D647D"
+    },
+    {
+      "name": "Produit Q12 maximal + arrondi reste en uint32",
+      "actual": 2048004096,
+      "expected": 2048004096,
+      "pass_": true
+    },
+    {
+      "name": "Timer DIV16 : réveil maximum en microsecondes",
+      "actual": 2000.0,
+      "expected": 2000,
+      "pass_": true
+    },
+    {
+      "name": "Acquisition 4 fronts à 1600 RPM : délai minimal après premier front",
+      "actual": 56.25,
+      "expected": 56.25,
+      "pass_": true
+    },
+    {
+      "name": "Acquisition 4 fronts à 3000 RPM : délai minimal après premier front",
+      "actual": 30.0,
+      "expected": 30,
+      "pass_": true
+    },
+    {
+      "name": "Timeout nominal 1600 RPM",
+      "actual": 300000,
+      "expected": 300000,
+      "pass_": true
+    },
+    {
+      "name": "Timeout maximal",
+      "actual": 1500000,
+      "expected": 1500000,
+      "pass_": true
+    },
+    {
+      "name": "Plafond de sortie à demi-période 250 us",
+      "actual": 60000.0,
+      "expected": 60000,
+      "pass_": true
+    },
+    {
+      "name": "Capture invalidée avant wrap, sans nouveau front",
+      "actual": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "name": "Demi-période p=18750, ratio=2",
+      "actual": 4688,
+      "expected": 4688,
+      "pass_": true
+    },
+    {
+      "name": "Demi-période p=10000, ratio=2",
+      "actual": 2500,
+      "expected": 2500,
+      "pass_": true
+    },
+    {
+      "name": "Demi-période p=10000, ratio=8",
+      "actual": 625,
+      "expected": 625,
+      "pass_": true
+    },
+    {
+      "name": "Syntaxe JavaScript embarqué",
+      "pass_": true,
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "sources": [
+    {
+      "path": "competitors/gpt6.1sol_medium/ARCHITECTURE_STRICTE.md",
+      "bytes": 4914,
+      "sha256": "e073948dda4f9de83b43fa9675808d479d0a18a52e718ba338c3a2235d854a66"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/deye_fan/deye_fan.ino",
+      "bytes": 20291,
+      "sha256": "9a5b816624cb6346a71f644d95dd963d75544639389a565cae0d83bb4675ceed"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/README.md",
+      "bytes": 11490,
+      "sha256": "289bde9fafb9d0ab3dfa4a82390d09da7e8678d286a71ec94a5e79013833027e"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/SCHEMA.md",
+      "bytes": 13844,
+      "sha256": "9e68f8cdae3bf4e6cd17177d3842cbcde184c9c57af5fab25962ebbb87f40bb4"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/verification/arduino-cli.yaml",
+      "bytes": 338,
+      "sha256": "2a5085639fb8bd9ac0846ed056d1929bb6e86cabe4cbf7a1afa01eb773782b26"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/verification/compilation.txt",
+      "bytes": 662,
+      "sha256": "e99bf1a2f4d144c26e4559f6ee5ec57b16f724c277fb63dc7efc86f3f69d77df"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/verification/deye_fan.ino.bin",
+      "bytes": 321904,
+      "sha256": "b1e0dfda018a96ad46c5b989cabeda9f336dac9b30f7e750761ab538339d647d"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/verification/iram-symbols.txt",
+      "bytes": 271,
+      "sha256": "823db59d7e4382541c8b37e4eb77cc3b501adfb7ffbbdbd5a1a5725d3a8e3c90"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/verification/sha256.txt",
+      "bytes": 370,
+      "sha256": "06078c67b6a5b584f944e71dfd82bfedc6ec408ce7ceed745538902eab80ae5c"
+    },
+    {
+      "path": "competitors/gpt6.1sol_medium/VERIFICATION.md",
+      "bytes": 6080,
+      "sha256": "6eaf6578da31d3d91c0607b13851547597fc0efa3421c359fa336d971f405a71"
+    }
+  ]
+}

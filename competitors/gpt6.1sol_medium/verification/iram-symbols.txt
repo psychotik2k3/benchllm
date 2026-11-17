@@ -1,0 +1,6 @@
+4010010c l     F .text1	000000a2 _ZL7captureh
+401001dc g     F .text1	0000020b _Z9tachTimerv
+40100728 g     F .text1	00000006 micros
+40100650 g     F .text1	0000002e timer1_write
+401001bc g     F .text1	00000008 _Z5tach9v
+401001b4 g     F .text1	00000008 _Z5tach6v

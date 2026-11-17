@@ -1,0 +1,8 @@
+board_manager:
+  additional_urls:
+    - https://arduino.esp8266.com/stable/package_esp8266com_index.json
+directories:
+  data: C:/dev/benchllm/competitors/gpt6.1sol_medium/v/d
+  downloads: C:/dev/benchllm/competitors/gpt6.1sol_medium/verification/downloads
+  user: C:/dev/benchllm/competitors/gpt6.1sol_medium/verification/arduino-user
+

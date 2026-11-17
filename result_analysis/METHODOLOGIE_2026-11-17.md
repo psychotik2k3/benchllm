@@ -46,3 +46,12 @@ Les nouvelles notes remplacent les anciennes par une vraie réanalyse des source
 - [Noctua — NF-A9 FLX](https://www.noctua.at/en/products/nf-a9-flx/specifications) : régime nominal de référence ; les caractéristiques réelles du montage doivent être mesurées.
 - [Fiche AEROSEMI MT3608](https://www.olimex.com/Products/Breadboarding/BB-PWR-3608/resources/MT3608.pdf) : convertisseur élévateur, inadapté comme simple abaisseur 12 V→5 V.
 - [Fiche Diodes AP2112](https://www.diodes.com/assets/Datasheets/AP2112.pdf) et [fiche onsemi SS8550](https://www.onsemi.com/pdf/datasheet/ss8550-d.pdf) : caractéristiques du LDO et polarité PNP du transistor.
+
+
+## Ajout ultérieur le 17 novembre 2026 — gpt6.1sol_medium
+
+Le corpus comporte désormais 29 dossiers, 28 firmwares et un dossier vide. Seul le nouveau compétiteur a été analysé ; les 28 rapports précédents et leurs notes sont conservés. L’ancien récapitulatif et l’ancienne méthodologie sont sauvegardés dans `_archives/2026-11-17/avant_gpt6.1sol_medium/`. La comparaison du nouveau avec les autres s’appuie exclusivement sur les rapports.
+
+Le nouveau livre dix fichiers, dont journal, symboles IRAM, instructions de reproduction, binaire et manifeste. Deux empreintes SHA-256 concordent avec le sketch et le binaire présents. Cela vérifie l’intégrité par rapport au manifeste, pas une compilation indépendante ni une correspondance binaire/source démontrée par rebuild. Le journal rapporte un build ESP8266 3.1.2 réussi ; l’auditeur ne l’a pas reproduit. Quatorze contrôles supplémentaires passent : deux empreintes, onze calculs/modèles et un script JavaScript. Voir `_audit/gpt6.1sol_medium_verification.json`. Les 19 contrôles arithmétiques et 19 scripts de la revue initiale restent inchangés.
+
+L’alimentation proposée par le nouveau a été confrontée à la [fiche Pololu S13V10F5](https://www.pololu.com/product/4083). La nature masquable de Timer1 est confrontée au cœur 3.1.2 déjà référencé. Pas d’essai physique. Les 68 empreintes du corpus initial et les dix fichiers du nouvel ajout sont vérifiés séparément.

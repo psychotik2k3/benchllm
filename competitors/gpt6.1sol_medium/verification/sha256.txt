@@ -1,0 +1,9 @@
+
+Algorithm : SHA256
+Hash      : 9A5B816624CB6346A71F644D95DD963D75544639389A565CAE0D83BB4675CEED
+Path      : C:\dev\benchllm\competitors\gpt6.1sol_medium\deye_fan\deye_fan.ino
+
+Algorithm : SHA256
+Hash      : B1E0DFDA018A96AD46C5B989CABEDA9F336DAC9B30F7E750761AB538339D647D
+Path      : C:\dev\benchllm\competitors\gpt6.1sol_medium\verification\deye_fan.ino.bin
+

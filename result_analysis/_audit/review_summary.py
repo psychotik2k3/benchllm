@@ -29,24 +29,24 @@ def brief(s,n=190):
  if len(s)>n:s=s[:n].rsplit(' ',1)[0]+'…'
  return s
 s='# Réanalyse globale — 17 novembre 2026\n\n'
-s+='**28 dossiers examinés : 27 firmwares évalués, 1 dossier vide.** Les 28 rapports individuels remplacent les anciens constats ; huit analyses antérieures et un ancien tableau sont [archivés](./_archives/2026-11-17/). Aucun code compétiteur n’a été modifié.\n\n'
+s+='**29 dossiers examinés : 28 firmwares évalués, 1 dossier vide.** Ajout de `gpt6.1sol_medium` après la réanalyse initiale. Ses sources seules ont été lues ; le classement compare les 29 rapports, sans relire les autres firmwares. Les 28 rapports précédents gardent leurs notes. [État avant cet ajout](./_archives/2026-11-17/avant_gpt6.1sol_medium/) et [archives historiques](./_archives/2026-11-17/). Aucun code compétiteur modifié.\n\n'
 s+='**Meilleure base pour ce projet : '+link(ranked[0])+f' ({num(ranked[0]["global_"])}/10 ; code {num(ranked[0]["quality"])}/10).** Ce choix porte sur la version livrée après revue statique ; aucune qualification sur onduleur n’est affirmée. [Méthode, limites et références primaires](METHODOLOGIE_2026-11-17.md).\n\n'
 s+='## 1. Inventaire des analyses\n\n| Dossier compétiteur | Analyse disponible | Situation avant ce run |\n|---|---|---|\n'
 old={m['file'] for m in manifest if m['file'].startswith('analyse_')}
 existing=[];new=[]
 for r in sorted(records,key=lambda r:r['name'].casefold()):
- was=r['path'] in old or r['name']=='deepseek4 flash' and 'analyse_deepseek4_flash.md' in old
+ was=r['name']!='gpt6.1sol_medium'
  (existing if was else new).append(r)
- s+=f'| {r["name"]} | ✅ [{r["path"]}](<{r["path"]}>)'+(' — constat N/A' if r in na else '')+' | '+('Existait — réécrite' if was else 'Absente — créée')+' |\n'
+ s+=f'| {r["name"]} | ✅ [{r["path"]}](<{r["path"]}>)'+(' — constat N/A' if r in na else '')+' | '+('Existait — conservée' if was else 'Absente — créée')+' |\n'
 s+='\n### ✅ Analyses existantes avant ce run\n\n'+ '\n'.join('- '+link(r) for r in existing)+'\n\n'
-s+='Huit analyses antérieures sont conservées dans l’archive. Pour DeepSeek, l’ancien nom utilisait un underscore (`analyse_deepseek4_flash.md`) ; le nouveau respecte exactement le nom du dossier.\n\n'
+s+='Ces 28 rapports existaient avant cet ajout et sont conservés sans réanalyse des sources. Les huit analyses historiques d’avant la réanalyse initiale restent archivées ; DeepSeek utilise désormais le nom exact du dossier avec espace.\n\n'
 s+='### 🆕 Analyses produites lors de ce run\n\n'
-s+='Les huit analyses ci-dessus ont été entièrement refaites ; vingt fichiers supplémentaires ont été créés :\n\n'+'\n'.join('- '+link(r)+(' — constat sans code, N/A' if r in na else '') for r in new)+'\n\n'
+s+='Un seul nouveau rapport a été créé lors de cet ajout :\n\n'+'\n'.join('- '+link(r)+(' — constat sans code, N/A' if r in na else '') for r in new)+'\n\n'
 s+='### ⚠️ Compétiteurs sans analyse de code disponible\n\n'
 s+='- '+link(na[0])+': dossier vide ; un constat est écrit, mais aucune note n’est inventée. Exclu des tableaux et classements chiffrés.\n\n'
-s+='Tous les fichiers Markdown actifs sont identifiés : 28 rapports individuels, la méthodologie et ce récapitulatif. Les documents de méthode/tableau ne sont pas des concurrents additionnels. Les anciens Markdown sont archivés ; aucun score historique ne se mélange aux notes de ce run.\n\n'
+s+='Tous les fichiers Markdown actifs sont identifiés : 29 rapports individuels, la méthodologie et ce récapitulatif. Les documents de méthode/tableau ne sont pas des concurrents additionnels. Les anciens Markdown sont archivés ; aucun score historique ne se mélange aux notes de ce run.\n\n'
 s+='## 🔍 Notes révisées et justification\n\n'
-s+='Il s’agit de nouvelles analyses des sources, pas d’un recalage à partir des anciennes notes. La comparaison finale relit exclusivement les 28 rapports écrits. Aucun ajustement postérieur de ces nouvelles notes n’a été nécessaire ; aucun astérisque n’est donc ajouté. Une différence avec le classement historique s’explique par les constats documentés, notamment les erreurs Timer1, débordements, arrêts/reprises et circuits d’alimentation. Les tests annoncés par un auteur ne sont pas comptés comme reproduits.\n\n'
+s+='Aucune note existante n’a été modifiée ; pas d’astérisque. La comparaison finale relit uniquement les 29 analyses. Le nouveau [gpt6.1sol_medium](analyse_gpt6.1sol_medium.md), noté 8,0/10 et 8,4/10 en code, gagne la deuxième place dans les deux classements. Son rapport décrit « Authentification HTTP obligatoire et protection CSRF » et un timeout dans l’ISR : deux avantages face aux limites HTTP/arrêt en loop décrites pour [GPT-5.6_Sol_xhigh](analyse_GPT-5.6_Sol_xhigh.md). Il reste derrière [Claude_Opus_5.5_xhigh](analyse_Claude_Opus_5.5_xhigh.md), dont le rapport place « la génération et le timeout » dans la NMI. La sauvegarde indéfiniment différée et l’IRQ masquable du nouveau justifient cet écart. Ces différences de notes restent un jugement d’audit, sans précision métrologique au dixième.\n\n'
 s+='## 2. Tableau récapitulatif\n\n'
 s+='Tri par note globale décroissante ; les puces résument les rapports liés et ne remplacent pas leurs réserves.\n\n'
 s+='| Version | Note globale | Note qualité code | ✅ Points positifs | ❌ Points négatifs |\n|---|---:|---:|---|---|\n'
@@ -65,6 +65,8 @@ for i,r in enumerate(quality_ranked,1):s+=f'{i}. {link(r)} — {num(r["quality"]
 s+='\n## 4. Recommandation de fusion\n\n'
 s+='### Fonctionnalités IoT à emprunter\n\n'
 recommendations=[
+('gpt6.1sol_medium','Authentification et protection des mutations','« protection CSRF »','Reprendre authorized, les mutations POST avec jeton de session et les secrets absents du status. Remplacer la clé initiale déductible du SSID ; HTTP Basic ne chiffre pas le trafic.'),
+('gpt6.1sol_medium','Traçabilité et lecture des erreurs','« Le résultat commit est contrôlé »','Conserver le retour de sauvegarde, les états RAM/en attente/échec et les empreintes de source/binaire. Sa politique de report jusqu’à l’arrêt des deux voies ne satisfait pas une persistance fiable en ventilation continue : ne pas la copier sans autre stockage ou moteur autonome.'),
 ('Claude_Opus_5.5_xhigh','Temps réel, démarrage et perte de signal','« la génération et le timeout »','Le rapport décrit une chaîne entière dans la NMI, amorcée avant WiFi, et un arrêt à 500 ms avec capture réamorcée. C’est la base prioritaire pour éviter que HTTP ou une sauvegarde prolonge une fausse vitesse. Conserver les échéances absolues et les diagnostics, puis mesurer le collecteur sous trafic et pendant sauvegarde.'),
 ('GPT-5.6_Sol_xhigh','Protocole et moteur de sortie','« moteur NMI waveform du cœur réutilisé »','Si la maintenabilité prime sur la NMI personnalisée, ce moteur est l’alternative : il faut choisir un seul propriétaire Timer1. Ne pas brancher ensemble deux moteurs concurrents. Conserver les deux voies et les fonctions PPR/ratio, corriger l’amorçage à très basse vitesse et rendre l’arrêt indépendant du serveur.'),
 ('claude opus 5 medium','PPR, limites et diagnostics','« PPR entrée/sortie séparés, défaut 2 »','Reprendre les paramètres PPR, l’écrêtage de RPM et les compteurs de rejets. Déplacer l’expiration du signal dans le moteur, supprimer les secrets du status et échapper le JSON avant intégration.'),
@@ -80,6 +82,7 @@ for name,title,quote,body in recommendations:
  s+=f'- **{title} — {link(r)}** : {quote}. {body}\n'
 s+='\n### Bonnes pratiques qualité code à intégrer\n\n'
 practices=[
+('gpt6.1sol_medium','« parsing strtof complet »','Réutiliser les validations centralisées, les chaînes bornées, le snapshot et l’invalidation du signal. Ajouter des tests automatisés du scheduler, distincts des journaux de compilation et contrôles de sommes.'),
 ('GPT-5.6_Sol_xhigh','« tach_math.h isole les fonctions pures »','Réutiliser ce découpage et le parsing strict strtof. Les assertions fournies constituent un point de départ ; ajouter les scénarios de wrap, perte/reprise, fréquence CPU, limites d’offset et armement du timer. Aucun test C++ natif n’a été exécuté dans ce run.'),
 ('gpt-5.6 sol medium','« mise à jour transactionnelle des paramètres HTTP »','Valider tous les champs dans une copie avant de publier la configuration, et distinguer « appliqué en RAM » de « sauvegardé avec succès ». Ne pas reprendre son décompte de temps virtuel ni ses timestamps invalidés de façon incomplète.'),
 ('Claude_Opus_5.5_xhigh','« propriété des données »','Garder un seul écrivain par état du moteur et des commandes atomiques vers celui-ci ; isoler le code critique du réseau. Faire produire une map par le build pour confirmer IRAM/DRAM et le coût de la NMI.'),
@@ -90,6 +93,6 @@ for name,quote,body in practices:
  s+=f'- **{link(r)}** : {quote}. {body}\n'
 s+='\n## 5. Vérifications et limites\n\n'
 s+='Les [19 reproductions arithmétiques et modèles](_audit/verification.json) passent, ainsi que les [19 contrôles de syntaxe JavaScript](_audit/javascript_checks.json). Les rapports couvrent notamment les constantes Grok débordantes (timeout 27,877 ms au lieu de 350 ms), le calcul GLM qui rejette toutes les périodes, le facteur ×16 de Gemini-free et les CRC incluant leur propre champ.\n\n'
-s+='Aucune compilation ESP8266 ni mesure sur carte/onduleur réalisée : outil Arduino absent de l’environnement détecté. L’absence de défaut statique repéré ne certifie pas un build. Avant toute utilisation, les correctifs doivent être compilés pour la carte exacte, puis validés au banc : premier signal, deux canaux, arrêt/reprise, débordement des horloges, sauvegarde flash et charge réseau. Les seuils réels de détection Deye restent à mesurer.\n'
+s+='Pour le nouveau compétiteur, [14 contrôles supplémentaires](_audit/gpt6.1sol_medium_verification.json) passent : deux SHA-256, onze vérifications numériques/de transitions et une syntaxe JavaScript. Son journal annonce une compilation core 3.1.2 réussie ; les empreintes source/binaire livrées concordent. Cette compilation n’a pas été reproduite par l’auditeur. Aucune compilation ESP8266 ni mesure sur carte/onduleur réalisée par l’auditeur : outil Arduino absent de l’environnement détecté. L’absence de défaut statique repéré ne certifie pas un build. Avant toute utilisation, les correctifs doivent être compilés pour la carte exacte, puis validés au banc : premier signal, deux canaux, arrêt/reprise, débordement des horloges, sauvegarde flash et charge réseau. Les seuils réels de détection Deye restent à mesurer.\n'
 (OUT/'RECAPITULATIF_2026-11-17.md').write_text(s,encoding='utf-8')
 print(json.dumps(dict(ranked=len(ranked),unscored=len(na),top=[{k:r[k] for k in ('name','global_','quality')} for r in ranked[:3]],bytes=len(s.encode('utf-8'))),ensure_ascii=False))

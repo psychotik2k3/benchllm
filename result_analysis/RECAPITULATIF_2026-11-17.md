@@ -1,6 +1,6 @@
 # Réanalyse globale — 17 novembre 2026
 
-**28 dossiers examinés : 27 firmwares évalués, 1 dossier vide.** Les 28 rapports individuels remplacent les anciens constats ; huit analyses antérieures et un ancien tableau sont [archivés](./_archives/2026-11-17/). Aucun code compétiteur n’a été modifié.
+**29 dossiers examinés : 28 firmwares évalués, 1 dossier vide.** Ajout de `gpt6.1sol_medium` après la réanalyse initiale. Ses sources seules ont été lues ; le classement compare les 29 rapports, sans relire les autres firmwares. Les 28 rapports précédents gardent leurs notes. [État avant cet ajout](./_archives/2026-11-17/avant_gpt6.1sol_medium/) et [archives historiques](./_archives/2026-11-17/). Aucun code compétiteur modifié.
 
 **Meilleure base pour ce projet : [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>) (8,6/10 ; code 8,5/10).** Ce choix porte sur la version livrée après revue statique ; aucune qualification sur onduleur n’est affirmée. [Méthode, limites et références primaires](METHODOLOGIE_2026-11-17.md).
 
@@ -8,82 +8,84 @@
 
 | Dossier compétiteur | Analyse disponible | Situation avant ce run |
 |---|---|---|
-| claude opus 5 medium | ✅ [analyse_claude opus 5 medium.md](<analyse_claude opus 5 medium.md>) | Absente — créée |
-| claude-sonnet5-free | ✅ [analyse_claude-sonnet5-free.md](<analyse_claude-sonnet5-free.md>) | Existait — réécrite |
-| Claude_Opus_5.5_xhigh | ✅ [analyse_Claude_Opus_5.5_xhigh.md](<analyse_Claude_Opus_5.5_xhigh.md>) | Absente — créée |
-| composer 2.5 | ✅ [analyse_composer 2.5.md](<analyse_composer 2.5.md>) | Absente — créée |
-| composer 2.5 prompt from claude | ✅ [analyse_composer 2.5 prompt from claude.md](<analyse_composer 2.5 prompt from claude.md>) | Absente — créée |
-| deepseek4 flash | ✅ [analyse_deepseek4 flash.md](<analyse_deepseek4 flash.md>) | Existait — réécrite |
-| gemini 3.1 pro | ✅ [analyse_gemini 3.1 pro.md](<analyse_gemini 3.1 pro.md>) | Absente — créée |
-| gemini-free | ✅ [analyse_gemini-free.md](<analyse_gemini-free.md>) | Existait — réécrite |
-| Gemini_4_Argon_medium | ✅ [analyse_Gemini_4_Argon_medium.md](<analyse_Gemini_4_Argon_medium.md>) | Absente — créée |
-| gemma4 | ✅ [analyse_gemma4.md](<analyse_gemma4.md>) | Existait — réécrite |
-| glm5.3 | ✅ [analyse_glm5.3.md](<analyse_glm5.3.md>) | Absente — créée |
-| glm_5.2_high | ✅ [analyse_glm_5.2_high.md](<analyse_glm_5.2_high.md>) | Absente — créée |
-| gpt-5.6 sol medium | ✅ [analyse_gpt-5.6 sol medium.md](<analyse_gpt-5.6 sol medium.md>) | Absente — créée |
-| GPT-5.6_Sol_xhigh | ✅ [analyse_GPT-5.6_Sol_xhigh.md](<analyse_GPT-5.6_Sol_xhigh.md>) | Absente — créée |
-| gpt-free | ✅ [analyse_gpt-free.md](<analyse_gpt-free.md>) | Existait — réécrite |
-| grok 4.6 medium | ✅ [analyse_grok 4.6 medium.md](<analyse_grok 4.6 medium.md>) | Absente — créée |
-| Grok_4.7_medium | ✅ [analyse_Grok_4.7_medium.md](<analyse_Grok_4.7_medium.md>) | Absente — créée |
-| kimi k3 | ✅ [analyse_kimi k3.md](<analyse_kimi k3.md>) | Absente — créée |
-| kimi_k3_max | ✅ [analyse_kimi_k3_max.md](<analyse_kimi_k3_max.md>) | Absente — créée |
-| muse_wonder_1.0_medium | ✅ [analyse_muse_wonder_1.0_medium.md](<analyse_muse_wonder_1.0_medium.md>) | Absente — créée |
-| qwen3.6 | ✅ [analyse_qwen3.6.md](<analyse_qwen3.6.md>) | Existait — réécrite |
-| qwen3.6-35b-fp8-freetoken | ✅ [analyse_qwen3.6-35b-fp8-freetoken.md](<analyse_qwen3.6-35b-fp8-freetoken.md>) | Absente — créée |
-| qwen3.6_prompt_from_claude | ✅ [analyse_qwen3.6_prompt_from_claude.md](<analyse_qwen3.6_prompt_from_claude.md>) | Existait — réécrite |
-| qwen3.8-UD-IQ4_XS_KV4-4 | ✅ [analyse_qwen3.8-UD-IQ4_XS_KV4-4.md](<analyse_qwen3.8-UD-IQ4_XS_KV4-4.md>) — constat N/A | Absente — créée |
-| qwen35 | ✅ [analyse_qwen35.md](<analyse_qwen35.md>) | Existait — réécrite |
-| strata-qwen3.8-flash-next-iq3-s_medium | ✅ [analyse_strata-qwen3.8-flash-next-iq3-s_medium.md](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) | Absente — créée |
-| strata-qwen3.8-flash-next-iq3-s_medium-cline | ✅ [analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) | Absente — créée |
-| Swift_1.5_Qwen3.8-27B_medium-IQ3S | ✅ [analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) | Absente — créée |
+| claude opus 5 medium | ✅ [analyse_claude opus 5 medium.md](<analyse_claude opus 5 medium.md>) | Existait — conservée |
+| claude-sonnet5-free | ✅ [analyse_claude-sonnet5-free.md](<analyse_claude-sonnet5-free.md>) | Existait — conservée |
+| Claude_Opus_5.5_xhigh | ✅ [analyse_Claude_Opus_5.5_xhigh.md](<analyse_Claude_Opus_5.5_xhigh.md>) | Existait — conservée |
+| composer 2.5 | ✅ [analyse_composer 2.5.md](<analyse_composer 2.5.md>) | Existait — conservée |
+| composer 2.5 prompt from claude | ✅ [analyse_composer 2.5 prompt from claude.md](<analyse_composer 2.5 prompt from claude.md>) | Existait — conservée |
+| deepseek4 flash | ✅ [analyse_deepseek4 flash.md](<analyse_deepseek4 flash.md>) | Existait — conservée |
+| gemini 3.1 pro | ✅ [analyse_gemini 3.1 pro.md](<analyse_gemini 3.1 pro.md>) | Existait — conservée |
+| gemini-free | ✅ [analyse_gemini-free.md](<analyse_gemini-free.md>) | Existait — conservée |
+| Gemini_4_Argon_medium | ✅ [analyse_Gemini_4_Argon_medium.md](<analyse_Gemini_4_Argon_medium.md>) | Existait — conservée |
+| gemma4 | ✅ [analyse_gemma4.md](<analyse_gemma4.md>) | Existait — conservée |
+| glm5.3 | ✅ [analyse_glm5.3.md](<analyse_glm5.3.md>) | Existait — conservée |
+| glm_5.2_high | ✅ [analyse_glm_5.2_high.md](<analyse_glm_5.2_high.md>) | Existait — conservée |
+| gpt-5.6 sol medium | ✅ [analyse_gpt-5.6 sol medium.md](<analyse_gpt-5.6 sol medium.md>) | Existait — conservée |
+| GPT-5.6_Sol_xhigh | ✅ [analyse_GPT-5.6_Sol_xhigh.md](<analyse_GPT-5.6_Sol_xhigh.md>) | Existait — conservée |
+| gpt-free | ✅ [analyse_gpt-free.md](<analyse_gpt-free.md>) | Existait — conservée |
+| gpt6.1sol_medium | ✅ [analyse_gpt6.1sol_medium.md](<analyse_gpt6.1sol_medium.md>) | Absente — créée |
+| grok 4.6 medium | ✅ [analyse_grok 4.6 medium.md](<analyse_grok 4.6 medium.md>) | Existait — conservée |
+| Grok_4.7_medium | ✅ [analyse_Grok_4.7_medium.md](<analyse_Grok_4.7_medium.md>) | Existait — conservée |
+| kimi k3 | ✅ [analyse_kimi k3.md](<analyse_kimi k3.md>) | Existait — conservée |
+| kimi_k3_max | ✅ [analyse_kimi_k3_max.md](<analyse_kimi_k3_max.md>) | Existait — conservée |
+| muse_wonder_1.0_medium | ✅ [analyse_muse_wonder_1.0_medium.md](<analyse_muse_wonder_1.0_medium.md>) | Existait — conservée |
+| qwen3.6 | ✅ [analyse_qwen3.6.md](<analyse_qwen3.6.md>) | Existait — conservée |
+| qwen3.6-35b-fp8-freetoken | ✅ [analyse_qwen3.6-35b-fp8-freetoken.md](<analyse_qwen3.6-35b-fp8-freetoken.md>) | Existait — conservée |
+| qwen3.6_prompt_from_claude | ✅ [analyse_qwen3.6_prompt_from_claude.md](<analyse_qwen3.6_prompt_from_claude.md>) | Existait — conservée |
+| qwen3.8-UD-IQ4_XS_KV4-4 | ✅ [analyse_qwen3.8-UD-IQ4_XS_KV4-4.md](<analyse_qwen3.8-UD-IQ4_XS_KV4-4.md>) — constat N/A | Existait — conservée |
+| qwen35 | ✅ [analyse_qwen35.md](<analyse_qwen35.md>) | Existait — conservée |
+| strata-qwen3.8-flash-next-iq3-s_medium | ✅ [analyse_strata-qwen3.8-flash-next-iq3-s_medium.md](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) | Existait — conservée |
+| strata-qwen3.8-flash-next-iq3-s_medium-cline | ✅ [analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) | Existait — conservée |
+| Swift_1.5_Qwen3.8-27B_medium-IQ3S | ✅ [analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) | Existait — conservée |
 
 ### ✅ Analyses existantes avant ce run
 
-- [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>)
-- [deepseek4 flash](<analyse_deepseek4 flash.md>)
-- [gemini-free](<analyse_gemini-free.md>)
-- [gemma4](<analyse_gemma4.md>)
-- [gpt-free](<analyse_gpt-free.md>)
-- [qwen3.6](<analyse_qwen3.6.md>)
-- [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>)
-- [qwen35](<analyse_qwen35.md>)
-
-Huit analyses antérieures sont conservées dans l’archive. Pour DeepSeek, l’ancien nom utilisait un underscore (`analyse_deepseek4_flash.md`) ; le nouveau respecte exactement le nom du dossier.
-
-### 🆕 Analyses produites lors de ce run
-
-Les huit analyses ci-dessus ont été entièrement refaites ; vingt fichiers supplémentaires ont été créés :
-
 - [claude opus 5 medium](<analyse_claude opus 5 medium.md>)
+- [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>)
 - [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>)
 - [composer 2.5](<analyse_composer 2.5.md>)
 - [composer 2.5 prompt from claude](<analyse_composer 2.5 prompt from claude.md>)
+- [deepseek4 flash](<analyse_deepseek4 flash.md>)
 - [gemini 3.1 pro](<analyse_gemini 3.1 pro.md>)
+- [gemini-free](<analyse_gemini-free.md>)
 - [Gemini_4_Argon_medium](<analyse_Gemini_4_Argon_medium.md>)
+- [gemma4](<analyse_gemma4.md>)
 - [glm5.3](<analyse_glm5.3.md>)
 - [glm_5.2_high](<analyse_glm_5.2_high.md>)
 - [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>)
 - [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>)
+- [gpt-free](<analyse_gpt-free.md>)
 - [grok 4.6 medium](<analyse_grok 4.6 medium.md>)
 - [Grok_4.7_medium](<analyse_Grok_4.7_medium.md>)
 - [kimi k3](<analyse_kimi k3.md>)
 - [kimi_k3_max](<analyse_kimi_k3_max.md>)
 - [muse_wonder_1.0_medium](<analyse_muse_wonder_1.0_medium.md>)
+- [qwen3.6](<analyse_qwen3.6.md>)
 - [qwen3.6-35b-fp8-freetoken](<analyse_qwen3.6-35b-fp8-freetoken.md>)
-- [qwen3.8-UD-IQ4_XS_KV4-4](<analyse_qwen3.8-UD-IQ4_XS_KV4-4.md>) — constat sans code, N/A
+- [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>)
+- [qwen3.8-UD-IQ4_XS_KV4-4](<analyse_qwen3.8-UD-IQ4_XS_KV4-4.md>)
+- [qwen35](<analyse_qwen35.md>)
 - [strata-qwen3.8-flash-next-iq3-s_medium](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>)
 - [strata-qwen3.8-flash-next-iq3-s_medium-cline](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>)
 - [Swift_1.5_Qwen3.8-27B_medium-IQ3S](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>)
+
+Ces 28 rapports existaient avant cet ajout et sont conservés sans réanalyse des sources. Les huit analyses historiques d’avant la réanalyse initiale restent archivées ; DeepSeek utilise désormais le nom exact du dossier avec espace.
+
+### 🆕 Analyses produites lors de ce run
+
+Un seul nouveau rapport a été créé lors de cet ajout :
+
+- [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>)
 
 ### ⚠️ Compétiteurs sans analyse de code disponible
 
 - [qwen3.8-UD-IQ4_XS_KV4-4](<analyse_qwen3.8-UD-IQ4_XS_KV4-4.md>): dossier vide ; un constat est écrit, mais aucune note n’est inventée. Exclu des tableaux et classements chiffrés.
 
-Tous les fichiers Markdown actifs sont identifiés : 28 rapports individuels, la méthodologie et ce récapitulatif. Les documents de méthode/tableau ne sont pas des concurrents additionnels. Les anciens Markdown sont archivés ; aucun score historique ne se mélange aux notes de ce run.
+Tous les fichiers Markdown actifs sont identifiés : 29 rapports individuels, la méthodologie et ce récapitulatif. Les documents de méthode/tableau ne sont pas des concurrents additionnels. Les anciens Markdown sont archivés ; aucun score historique ne se mélange aux notes de ce run.
 
 ## 🔍 Notes révisées et justification
 
-Il s’agit de nouvelles analyses des sources, pas d’un recalage à partir des anciennes notes. La comparaison finale relit exclusivement les 28 rapports écrits. Aucun ajustement postérieur de ces nouvelles notes n’a été nécessaire ; aucun astérisque n’est donc ajouté. Une différence avec le classement historique s’explique par les constats documentés, notamment les erreurs Timer1, débordements, arrêts/reprises et circuits d’alimentation. Les tests annoncés par un auteur ne sont pas comptés comme reproduits.
+Aucune note existante n’a été modifiée ; pas d’astérisque. La comparaison finale relit uniquement les 29 analyses. Le nouveau [gpt6.1sol_medium](analyse_gpt6.1sol_medium.md), noté 8,0/10 et 8,4/10 en code, gagne la deuxième place dans les deux classements. Son rapport décrit « Authentification HTTP obligatoire et protection CSRF » et un timeout dans l’ISR : deux avantages face aux limites HTTP/arrêt en loop décrites pour [GPT-5.6_Sol_xhigh](analyse_GPT-5.6_Sol_xhigh.md). Il reste derrière [Claude_Opus_5.5_xhigh](analyse_Claude_Opus_5.5_xhigh.md), dont le rapport place « la génération et le timeout » dans la NMI. La sauvegarde indéfiniment différée et l’IRQ masquable du nouveau justifient cet écart. Ces différences de notes restent un jugement d’audit, sans précision métrologique au dixième.
 
 ## 2. Tableau récapitulatif
 
@@ -92,6 +94,7 @@ Tri par note globale décroissante ; les puces résument les rapports liés et n
 | Version | Note globale | Note qualité code | ✅ Points positifs | ❌ Points négatifs |
 |---|---:|---:|---|---|
 | [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>) | 8,6/10 | 8,5/10 | • Temps-réel / ISR : `tachNmi` (433–470) porte l’échantillonnage, le calcul de cible, la génération et le timeout. Helpers forcés inline, arithmétique Q16…<br>• Démarrage / Boot readiness : GPIO relâchés dès 1233–1237, EEPROM puis `engineStart` avant WiFi (1247–1260). Aucune vitesse inventée avant deux fronts. À 1…<br>• Génération sortie / Timer1 : Échéances absolues en cycles, anticipation de 8 µs et attente active bornée avant le front ; les rapports 80/160 MHz sont…<br>• Fidélité au protocole tachymétrique / Fail-safe : PPR=2 des deux côtés, ratio 0,25–8 ; délai de perte 500 ms géré dans le moteur, arrêt à une frontière de…<br>• Filtres / Signal : Trois échantillons à 50 µs, rejet des fronts <2 ms, moyenne adaptative de 1/2/4/8 périodes puis IIR 1/4.  | • [majeur] `authOK` retourne true quand adminPass est vide (850–854), état par défaut. Les clients du LAN peuvent alors configurer, réinitialiser ou redémarrer le contrôleur.…<br>• [mineur] Le cumul moyenne de huit périodes + IIR 1/4 (334–345) ralentit les transitions. À 1 600 RPM, la fenêtre couvre 150 ms et la constante IIR est de l’ordre de 65 ms ;…<br>• [mineur] `EEPROM.commit` n’est pas contrôlé (591–597) ; pas de copie transactionnelle ni de réduction des sauvegardes répétées.<br>• [mineur] Architecture NMI complexe et polling 20 kHz ; les compteurs internes mesurent le retard logiciel, pas la forme électrique au collecteur. Aucun binaire, map IRAM ou essai…<br>• [mineur] `parseRatio` utilise String.toFloat (963–970), qui accepte un préfixe numérique suivi de texte ; par exemple « 2abc » est traité comme 2. La plage est validée, pas la syntaxe… |
+| [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>) | 8,0/10 | 8,4/10 | • Temps-réel / ISR : `capture`, `tach9`, `tach6`, `timeoutUs` et `tachTimer` sont annotées IRAM_ATTR. Pas de flottant, d’allocation ou d’appel réseau dans…<br>• Démarrage / Boot readiness : `setup` met les sorties basses avant de les configurer, charge l’EEPROM puis attache capture et Timer1 avant le réseau…<br>• Génération sortie / Timer1 : Timer1 DIV16 en mode one-shot est initialisé avec les API du cœur, puis rechargé avec `waitUs * 5` (424–427/164). Les unités…<br>• Fidélité au protocole tachymétrique / Fail-safe : Deux canaux indépendants, convention 2 PPR explicitement documentée : RPM = 30 000 000 / période et RPM…<br>• Filtres / Signal : Rejet des fronts espacés de moins de 2 ms sans déplacer l’horodatage accepté ; période maximale 500 ms, soit une plage nominale… | • [majeur] La sauvegarde est interdite tant qu’un canal tourne ou qu’une entrée est récente (385–389). Avec ventilation continue, pendingSave peut rester vrai indéfiniment. Si les deux…<br>• [majeur] Le moteur utilise timer1_attachInterrupt, donc une interruption normale, pas une NMI (424–426). GPIO et génération restent retardables par des sections critiques SDK/flash ;…<br>• [majeur] Le mot de passe initial AP/admin se déduit directement du SSID et du chip ID (184–185). La protection HTTP est active mais les credentials initiaux sont prévisibles ; tout…<br>• [mineur] Un seul bloc EEPROM, sans copie de secours transactionnelle ; coupure pendant commit susceptible de perdre aussi l’ancienne configuration. Après un échec commit,…<br>• [mineur] La fenêtre d’armement minimale de 25 µs peut décaler un front proche d’une autre échéance, avant même les retards SDK. À demi-période minimale 250 µs, 25 µs représentent 10 %… |
 | [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>) | 7,7/10 | 8,2/10 | • Temps-réel / ISR : Capture IRAM limitée aux timestamps et sommes ; accumulation protégée contre overflow ; moteur NMI waveform du cœur réutilisé. <br>• Démarrage / Boot readiness : Sorties relâchées avant EEPROM, WiFi sans attente. La génération démarre au traitement de 200 ms suivant la première période…<br>• Génération sortie / Timer1 : startWaveform avec demi-périodes égales ; retour de démarrage contrôlé et état appliqué mémorisé pour éviter les mises à jour…<br>• Fidélité au protocole tachymétrique / Fail-safe : Deux voies indépendantes, 2 PPR et ratios 0,1–10 ; arrêt après 2 s et remise à zéro de la capture pour…<br>• Filtres / Signal : Moyenne des périodes reçues sur fenêtre 200 ms, puis IIR 1/4 ; rejet des fronts <1 ms et périodes >2 s.  | • [majeur] Tant que lastValidPulseMs=0, consumeChannelSamples réinitialise lastEdgeCycles toutes les 200 ms (338–344). Une entrée de période >200 ms (moins de 150 RPM) ne peut…<br>• [majeur] L’arrêt se décide dans loop toutes les 200 ms et peut être retardé par HTTP ; la capture GPIO n’est pas NMI. Un blocage après les derniers échantillons peut en plus les dater…<br>• [majeur] Configuration et ratios modifiables sans authentification. Le mot de passe AP fixe est partagé par tous les exemplaires.<br>• [mineur] IIR appliqué toutes les 200 ms avec alpha=0,25 : constante de temps ≈695 ms et établissement à 95 % en ≈2,1 s. Bonne stabilité mais suivi lent lors d’un changement brusque.<br>• [mineur] EEPROM.commit non vérifié (236–241), sans sauvegarde de secours. startWaveform est contrôlé mais simulatedRpm reste calculé avant l’écrêtage final de demi-période : aux… |
 | [claude opus 5 medium](<analyse_claude opus 5 medium.md>) | 7,4/10 | 7,7/10 | • Temps-réel / ISR : `fanEngineIsr` (373–425) échantillonne les deux entrées toutes les 40 µs en NMI ; les fonctions critiques sont en IRAM et les échanges…<br>• Démarrage / Boot readiness : `setup` (1087–1119) charge la configuration avant `engineBegin`, puis démarre le réseau sans attente de connexion. Sorties…<br>• Génération sortie / Timer1 : Échéances absolues en cycles, GPOS/GPOC et conversion explicite cycles/ticks à 80 ou 160 MHz. Rattrapage borné à 16 fronts…<br>• Fidélité au protocole tachymétrique / Fail-safe : PPR entrée/sortie séparés, défaut 2 ; ratio entier au millième ; plafonnement configurable.…<br>• Filtres / Signal : Trois échantillons concordants (120 µs), périodes de 2 à 200 ms, EMA 1/8 et compteur de rejets.  | • [majeur] Le timeout de 1 200 ms est évalué dans `updateChannel`, appelé après HTTP dans `loop` (1122–1135). Une requête bloquante retarde l’arrêt d’autant ; le moteur NMI continue la…<br>• [majeur] Aucune authentification des routes (1030–1039) et `/api/status` renvoie `apPass` (927). Un client réseau peut lire le secret AP, modifier les ratios ou redémarrer le module.<br>• [majeur] Les SSID et mots de passe sont concaténés sans échappement JSON (926–931). Un SSID contenant un guillemet casse `/api/status` et son polling.<br>• [mineur] SCHEMA.md (270–302) déduit la saturation jusqu’à 85–120 mA d’un hFE minimal. Avec Ib ≈ 1,16 mA, un gain forcé de 10 ne garantit qu’environ 11,6 mA ; le dimensionnement doit…<br>• [mineur] `configSave` ignore le résultat de `EEPROM.commit` (627), tout en annonçant un enregistrement réussi. Aucun fichier de secours ni limitation des sauvegardes répétées. |
 | [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>) | 6,8/10 | 7,5/10 | • Temps-réel / ISR : Capture IRAM et sortie par registres ; calculs et allocations hors ISR ; instantanés atomiques. <br>• Démarrage / Boot readiness : EEPROM puis setupSignalEngine avant réseau ; sorties basses et deux fronts exigés. À 1 600 RPM, acquisition 18,75–37,5 ms,…<br>• Génération sortie / Timer1 : Timer1 DIV16, conversion explicite 5 ticks/µs et ordonnanceur commun à deux sorties ; saturation des demi-périodes. <br>• Fidélité au protocole tachymétrique / Fail-safe : PPR=2, ratios 0,1–20 et timeout 2 s ; filtre réamorcé à la perte de signal. <br>• Filtres / Signal : Périodes 500 µs–1,5 s ; EMA 1/4 appliquée seulement si le compteur de mesures change (514–523).  | • [majeur] outputTimerIsr décompte `armedTimerTicks` au lieu du temps réel écoulé (205–243), puis recharge le timer après son traitement. Les temps ISR et latences s’ajoutent à chaque…<br>• [majeur] Timer1 et GPIO restent masquables pendant les opérations critiques/flash. Le timeout (500–510) n’est contrôlé que dans loop ; HTTP peut prolonger l’émission d’une ancienne…<br>• [majeur] À la perte, inputLastValidEdgeUs/inputPeriodUs ne sont pas invalidés (504–511). Au wrap de micros après ≈71 min 35 s, l’ancien timestamp redevient récent ; l’EMA est alors à…<br>• [majeur] Pas d’authentification sur la configuration ; toute machine joignable peut modifier la fréquence ou programmer un reboot via changement WiFi.<br>• [mineur] configIsValid ne vérifie pas un NUL dans toutes les chaînes ; les copies HTTP sont sûres, mais une configuration CRC-valide forgée peut être non terminée. Le résultat commit… |
@@ -124,67 +127,71 @@ Tri par note globale décroissante ; les puces résument les rapports liés et n
 ### Classement par note globale
 
 1. [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>) — 8,6/10 — Meilleure base temps réel, validation physique requise.
-2. [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>) — 7,7/10 — Bonne base maintenable, quelques limites de capture.
-3. [claude opus 5 medium](<analyse_claude opus 5 medium.md>) — 7,4/10 — Moteur NMI convaincant, supervision à renforcer.
-4. [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>) — 6,8/10 — Base claire, ordonnanceur et arrêt à consolider.
-5. [gpt-free](<analyse_gpt-free.md>) — 6,1/10 — Moteur waveform pertinent, configuration fragile.
-6. [grok 4.6 medium](<analyse_grok 4.6 medium.md>) — 6,0/10 — NMI simple, surveillance de perte incomplète.
-7. [kimi_k3_max](<analyse_kimi_k3_max.md>) — 5,8/10 — Version structurée, calendrier et vieillissement à corriger.
-8. [kimi k3](<analyse_kimi k3.md>) — 5,7/10 — Simple et exploitable après correction de l’amorçage.
-9. [composer 2.5 prompt from claude](<analyse_composer 2.5 prompt from claude.md>) — 5,5/10 — Base fonctionnelle, robustesse réseau et flash insuffisante.
-10. [Grok_4.7_medium](<analyse_Grok_4.7_medium.md>) — 5,0/10 — Architecture cohérente, constantes de temps débordantes.
-11. [Gemini_4_Argon_medium](<analyse_Gemini_4_Argon_medium.md>) — 4,9/10 — Moteur avancé, perte de signal et alimentation fragiles.
-12. [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>) — 4,1/10 — Firmware lisible, entrée matérielle incomplète.
-13. [gemini-free](<analyse_gemini-free.md>) — 3,4/10 — Erreur Timer1 ×16, validation des ratios absente.
-14. [muse_wonder_1.0_medium](<analyse_muse_wonder_1.0_medium.md>) — 2,7/10 — Moteur NMI non armé au démarrage.
-15. [glm5.3](<analyse_glm5.3.md>) — 2,2/10 — Non compilable, mélange des tach incorrect.
-16. [gemini 3.1 pro](<analyse_gemini 3.1 pro.md>) — 2,0/10 — Compilation bloquée, sécurité mémoire insuffisante.
-17. [glm_5.2_high](<analyse_glm_5.2_high.md>) — 1,8/10 — Conversion de cycles inutilisable.
-18. [deepseek4 flash](<analyse_deepseek4 flash.md>) — 1,8/10 — Accès registres erronés, aucune génération fiable.
-19. [strata-qwen3.8-flash-next-iq3-s_medium-cline](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) — 1,7/10 — Défauts de compilation et fréquence NCO incorrecte.
-20. [composer 2.5](<analyse_composer 2.5.md>) — 1,4/10 — Non compilable et alimentation à corriger.
-21. [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>) — 1,0/10 — Architecture annoncée non exécutable.
-22. [qwen3.6](<analyse_qwen3.6.md>) — 0,9/10 — Mauvaise API de timer et schéma dangereux.
-23. [strata-qwen3.8-flash-next-iq3-s_medium](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) — 0,8/10 — Timer arrêté dans son ISR et sortie jamais amorcée.
-24. [Swift_1.5_Qwen3.8-27B_medium-IQ3S](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) — 0,8/10 — API réseau et timer incompatibles.
-25. [qwen3.6-35b-fp8-freetoken](<analyse_qwen3.6-35b-fp8-freetoken.md>) — 0,6/10 — Une seule entrée, sorties non implémentées correctement.
-26. [gemma4](<analyse_gemma4.md>) — 0,5/10 — Livraison inutilisable pour le projet.
-27. [qwen35](<analyse_qwen35.md>) — 0,4/10 — Source corrompue, génération hors sujet.
+2. [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>) — 8,0/10 — Bonne base fonctionnelle, persistance conditionnelle.
+3. [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>) — 7,7/10 — Bonne base maintenable, quelques limites de capture.
+4. [claude opus 5 medium](<analyse_claude opus 5 medium.md>) — 7,4/10 — Moteur NMI convaincant, supervision à renforcer.
+5. [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>) — 6,8/10 — Base claire, ordonnanceur et arrêt à consolider.
+6. [gpt-free](<analyse_gpt-free.md>) — 6,1/10 — Moteur waveform pertinent, configuration fragile.
+7. [grok 4.6 medium](<analyse_grok 4.6 medium.md>) — 6,0/10 — NMI simple, surveillance de perte incomplète.
+8. [kimi_k3_max](<analyse_kimi_k3_max.md>) — 5,8/10 — Version structurée, calendrier et vieillissement à corriger.
+9. [kimi k3](<analyse_kimi k3.md>) — 5,7/10 — Simple et exploitable après correction de l’amorçage.
+10. [composer 2.5 prompt from claude](<analyse_composer 2.5 prompt from claude.md>) — 5,5/10 — Base fonctionnelle, robustesse réseau et flash insuffisante.
+11. [Grok_4.7_medium](<analyse_Grok_4.7_medium.md>) — 5,0/10 — Architecture cohérente, constantes de temps débordantes.
+12. [Gemini_4_Argon_medium](<analyse_Gemini_4_Argon_medium.md>) — 4,9/10 — Moteur avancé, perte de signal et alimentation fragiles.
+13. [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>) — 4,1/10 — Firmware lisible, entrée matérielle incomplète.
+14. [gemini-free](<analyse_gemini-free.md>) — 3,4/10 — Erreur Timer1 ×16, validation des ratios absente.
+15. [muse_wonder_1.0_medium](<analyse_muse_wonder_1.0_medium.md>) — 2,7/10 — Moteur NMI non armé au démarrage.
+16. [glm5.3](<analyse_glm5.3.md>) — 2,2/10 — Non compilable, mélange des tach incorrect.
+17. [gemini 3.1 pro](<analyse_gemini 3.1 pro.md>) — 2,0/10 — Compilation bloquée, sécurité mémoire insuffisante.
+18. [glm_5.2_high](<analyse_glm_5.2_high.md>) — 1,8/10 — Conversion de cycles inutilisable.
+19. [deepseek4 flash](<analyse_deepseek4 flash.md>) — 1,8/10 — Accès registres erronés, aucune génération fiable.
+20. [strata-qwen3.8-flash-next-iq3-s_medium-cline](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) — 1,7/10 — Défauts de compilation et fréquence NCO incorrecte.
+21. [composer 2.5](<analyse_composer 2.5.md>) — 1,4/10 — Non compilable et alimentation à corriger.
+22. [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>) — 1,0/10 — Architecture annoncée non exécutable.
+23. [qwen3.6](<analyse_qwen3.6.md>) — 0,9/10 — Mauvaise API de timer et schéma dangereux.
+24. [strata-qwen3.8-flash-next-iq3-s_medium](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) — 0,8/10 — Timer arrêté dans son ISR et sortie jamais amorcée.
+25. [Swift_1.5_Qwen3.8-27B_medium-IQ3S](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) — 0,8/10 — API réseau et timer incompatibles.
+26. [qwen3.6-35b-fp8-freetoken](<analyse_qwen3.6-35b-fp8-freetoken.md>) — 0,6/10 — Une seule entrée, sorties non implémentées correctement.
+27. [gemma4](<analyse_gemma4.md>) — 0,5/10 — Livraison inutilisable pour le projet.
+28. [qwen35](<analyse_qwen35.md>) — 0,4/10 — Source corrompue, génération hors sujet.
 
 ### Classement par qualité de code
 
 1. [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>) — 8,5/10 — structure solide.
-2. [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>) — 8,2/10 — structure solide.
-3. [claude opus 5 medium](<analyse_claude opus 5 medium.md>) — 7,7/10 — structure solide.
-4. [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>) — 7,5/10 — structure solide.
-5. [Gemini_4_Argon_medium](<analyse_Gemini_4_Argon_medium.md>) — 6,8/10 — maintenabilité à améliorer.
-6. [grok 4.6 medium](<analyse_grok 4.6 medium.md>) — 6,7/10 — maintenabilité à améliorer.
-7. [Grok_4.7_medium](<analyse_Grok_4.7_medium.md>) — 6,6/10 — maintenabilité à améliorer.
-8. [kimi_k3_max](<analyse_kimi_k3_max.md>) — 6,5/10 — maintenabilité à améliorer.
-9. [gpt-free](<analyse_gpt-free.md>) — 6,4/10 — maintenabilité à améliorer.
-10. [kimi k3](<analyse_kimi k3.md>) — 6,1/10 — maintenabilité à améliorer.
-11. [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>) — 6,0/10 — maintenabilité à améliorer.
-12. [composer 2.5 prompt from claude](<analyse_composer 2.5 prompt from claude.md>) — 5,8/10 — maintenabilité à améliorer.
-13. [muse_wonder_1.0_medium](<analyse_muse_wonder_1.0_medium.md>) — 5,5/10 — maintenabilité à améliorer.
-14. [glm5.3](<analyse_glm5.3.md>) — 5,2/10 — maintenabilité à améliorer.
-15. [gemini-free](<analyse_gemini-free.md>) — 4,4/10 — qualité insuffisante.
-16. [glm_5.2_high](<analyse_glm_5.2_high.md>) — 4,4/10 — qualité insuffisante.
-17. [strata-qwen3.8-flash-next-iq3-s_medium-cline](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) — 4,1/10 — qualité insuffisante.
-18. [deepseek4 flash](<analyse_deepseek4 flash.md>) — 4,0/10 — qualité insuffisante.
-19. [composer 2.5](<analyse_composer 2.5.md>) — 3,8/10 — qualité insuffisante.
-20. [gemini 3.1 pro](<analyse_gemini 3.1 pro.md>) — 3,5/10 — qualité insuffisante.
-21. [strata-qwen3.8-flash-next-iq3-s_medium](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) — 3,1/10 — qualité insuffisante.
-22. [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>) — 2,9/10 — qualité insuffisante.
-23. [qwen3.6](<analyse_qwen3.6.md>) — 2,8/10 — qualité insuffisante.
-24. [Swift_1.5_Qwen3.8-27B_medium-IQ3S](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) — 2,5/10 — qualité insuffisante.
-25. [qwen3.6-35b-fp8-freetoken](<analyse_qwen3.6-35b-fp8-freetoken.md>) — 1,9/10 — qualité insuffisante.
-26. [gemma4](<analyse_gemma4.md>) — 1,3/10 — qualité insuffisante.
-27. [qwen35](<analyse_qwen35.md>) — 1,2/10 — qualité insuffisante.
+2. [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>) — 8,4/10 — structure solide.
+3. [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>) — 8,2/10 — structure solide.
+4. [claude opus 5 medium](<analyse_claude opus 5 medium.md>) — 7,7/10 — structure solide.
+5. [gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>) — 7,5/10 — structure solide.
+6. [Gemini_4_Argon_medium](<analyse_Gemini_4_Argon_medium.md>) — 6,8/10 — maintenabilité à améliorer.
+7. [grok 4.6 medium](<analyse_grok 4.6 medium.md>) — 6,7/10 — maintenabilité à améliorer.
+8. [Grok_4.7_medium](<analyse_Grok_4.7_medium.md>) — 6,6/10 — maintenabilité à améliorer.
+9. [kimi_k3_max](<analyse_kimi_k3_max.md>) — 6,5/10 — maintenabilité à améliorer.
+10. [gpt-free](<analyse_gpt-free.md>) — 6,4/10 — maintenabilité à améliorer.
+11. [kimi k3](<analyse_kimi k3.md>) — 6,1/10 — maintenabilité à améliorer.
+12. [claude-sonnet5-free](<analyse_claude-sonnet5-free.md>) — 6,0/10 — maintenabilité à améliorer.
+13. [composer 2.5 prompt from claude](<analyse_composer 2.5 prompt from claude.md>) — 5,8/10 — maintenabilité à améliorer.
+14. [muse_wonder_1.0_medium](<analyse_muse_wonder_1.0_medium.md>) — 5,5/10 — maintenabilité à améliorer.
+15. [glm5.3](<analyse_glm5.3.md>) — 5,2/10 — maintenabilité à améliorer.
+16. [gemini-free](<analyse_gemini-free.md>) — 4,4/10 — qualité insuffisante.
+17. [glm_5.2_high](<analyse_glm_5.2_high.md>) — 4,4/10 — qualité insuffisante.
+18. [strata-qwen3.8-flash-next-iq3-s_medium-cline](<analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md>) — 4,1/10 — qualité insuffisante.
+19. [deepseek4 flash](<analyse_deepseek4 flash.md>) — 4,0/10 — qualité insuffisante.
+20. [composer 2.5](<analyse_composer 2.5.md>) — 3,8/10 — qualité insuffisante.
+21. [gemini 3.1 pro](<analyse_gemini 3.1 pro.md>) — 3,5/10 — qualité insuffisante.
+22. [strata-qwen3.8-flash-next-iq3-s_medium](<analyse_strata-qwen3.8-flash-next-iq3-s_medium.md>) — 3,1/10 — qualité insuffisante.
+23. [qwen3.6_prompt_from_claude](<analyse_qwen3.6_prompt_from_claude.md>) — 2,9/10 — qualité insuffisante.
+24. [qwen3.6](<analyse_qwen3.6.md>) — 2,8/10 — qualité insuffisante.
+25. [Swift_1.5_Qwen3.8-27B_medium-IQ3S](<analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md>) — 2,5/10 — qualité insuffisante.
+26. [qwen3.6-35b-fp8-freetoken](<analyse_qwen3.6-35b-fp8-freetoken.md>) — 1,9/10 — qualité insuffisante.
+27. [gemma4](<analyse_gemma4.md>) — 1,3/10 — qualité insuffisante.
+28. [qwen35](<analyse_qwen35.md>) — 1,2/10 — qualité insuffisante.
 
 ## 4. Recommandation de fusion
 
 ### Fonctionnalités IoT à emprunter
 
+- **Authentification et protection des mutations — [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>)** : « protection CSRF ». Reprendre authorized, les mutations POST avec jeton de session et les secrets absents du status. Remplacer la clé initiale déductible du SSID ; HTTP Basic ne chiffre pas le trafic.
+- **Traçabilité et lecture des erreurs — [gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>)** : « Le résultat commit est contrôlé ». Conserver le retour de sauvegarde, les états RAM/en attente/échec et les empreintes de source/binaire. Sa politique de report jusqu’à l’arrêt des deux voies ne satisfait pas une persistance fiable en ventilation continue : ne pas la copier sans autre stockage ou moteur autonome.
 - **Temps réel, démarrage et perte de signal — [Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>)** : « la génération et le timeout ». Le rapport décrit une chaîne entière dans la NMI, amorcée avant WiFi, et un arrêt à 500 ms avec capture réamorcée. C’est la base prioritaire pour éviter que HTTP ou une sauvegarde prolonge une fausse vitesse. Conserver les échéances absolues et les diagnostics, puis mesurer le collecteur sous trafic et pendant sauvegarde.
 - **Protocole et moteur de sortie — [GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>)** : « moteur NMI waveform du cœur réutilisé ». Si la maintenabilité prime sur la NMI personnalisée, ce moteur est l’alternative : il faut choisir un seul propriétaire Timer1. Ne pas brancher ensemble deux moteurs concurrents. Conserver les deux voies et les fonctions PPR/ratio, corriger l’amorçage à très basse vitesse et rendre l’arrêt indépendant du serveur.
 - **PPR, limites et diagnostics — [claude opus 5 medium](<analyse_claude opus 5 medium.md>)** : « PPR entrée/sortie séparés, défaut 2 ». Reprendre les paramètres PPR, l’écrêtage de RPM et les compteurs de rejets. Déplacer l’expiration du signal dans le moteur, supprimer les secrets du status et échapper le JSON avant intégration.
@@ -194,6 +201,7 @@ Tri par note globale décroissante ; les puces résument les rapports liés et n
 
 ### Bonnes pratiques qualité code à intégrer
 
+- **[gpt6.1sol_medium](<analyse_gpt6.1sol_medium.md>)** : « parsing strtof complet ». Réutiliser les validations centralisées, les chaînes bornées, le snapshot et l’invalidation du signal. Ajouter des tests automatisés du scheduler, distincts des journaux de compilation et contrôles de sommes.
 - **[GPT-5.6_Sol_xhigh](<analyse_GPT-5.6_Sol_xhigh.md>)** : « tach_math.h isole les fonctions pures ». Réutiliser ce découpage et le parsing strict strtof. Les assertions fournies constituent un point de départ ; ajouter les scénarios de wrap, perte/reprise, fréquence CPU, limites d’offset et armement du timer. Aucun test C++ natif n’a été exécuté dans ce run.
 - **[gpt-5.6 sol medium](<analyse_gpt-5.6 sol medium.md>)** : « mise à jour transactionnelle des paramètres HTTP ». Valider tous les champs dans une copie avant de publier la configuration, et distinguer « appliqué en RAM » de « sauvegardé avec succès ». Ne pas reprendre son décompte de temps virtuel ni ses timestamps invalidés de façon incomplète.
 - **[Claude_Opus_5.5_xhigh](<analyse_Claude_Opus_5.5_xhigh.md>)** : « propriété des données ». Garder un seul écrivain par état du moteur et des commandes atomiques vers celui-ci ; isoler le code critique du réseau. Faire produire une map par le build pour confirmer IRAM/DRAM et le coût de la NMI.
@@ -204,4 +212,4 @@ Tri par note globale décroissante ; les puces résument les rapports liés et n
 
 Les [19 reproductions arithmétiques et modèles](_audit/verification.json) passent, ainsi que les [19 contrôles de syntaxe JavaScript](_audit/javascript_checks.json). Les rapports couvrent notamment les constantes Grok débordantes (timeout 27,877 ms au lieu de 350 ms), le calcul GLM qui rejette toutes les périodes, le facteur ×16 de Gemini-free et les CRC incluant leur propre champ.
 
-Aucune compilation ESP8266 ni mesure sur carte/onduleur réalisée : outil Arduino absent de l’environnement détecté. L’absence de défaut statique repéré ne certifie pas un build. Avant toute utilisation, les correctifs doivent être compilés pour la carte exacte, puis validés au banc : premier signal, deux canaux, arrêt/reprise, débordement des horloges, sauvegarde flash et charge réseau. Les seuils réels de détection Deye restent à mesurer.
+Pour le nouveau compétiteur, [14 contrôles supplémentaires](_audit/gpt6.1sol_medium_verification.json) passent : deux SHA-256, onze vérifications numériques/de transitions et une syntaxe JavaScript. Son journal annonce une compilation core 3.1.2 réussie ; les empreintes source/binaire livrées concordent. Cette compilation n’a pas été reproduite par l’auditeur. Aucune compilation ESP8266 ni mesure sur carte/onduleur réalisée par l’auditeur : outil Arduino absent de l’environnement détecté. L’absence de défaut statique repéré ne certifie pas un build. Avant toute utilisation, les correctifs doivent être compilés pour la carte exacte, puis validés au banc : premier signal, deux canaux, arrêt/reprise, débordement des horloges, sauvegarde flash et charge réseau. Les seuils réels de détection Deye restent à mesurer.

@@ -1,10 +1,11 @@
 {
-  "individual_reports": 28,
-  "ranked_reports": 27,
+  "individual_reports": 29,
+  "ranked_reports": 28,
   "unscored_reports": 1,
-  "archive_hashes_verified": 9,
-  "unchanged_source_hashes": 68,
+  "archive_hashes_verified": 12,
+  "unchanged_source_hashes": 78,
   "local_links": "all resolve",
-  "arithmetic_checks": 19,
-  "javascript_checks": 19
+  "initial_checks": 19,
+  "initial_javascript_checks": 19,
+  "new_competitor_checks": 14
 }
