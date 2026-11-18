@@ -1,0 +1,184 @@
+{
+  "scope": "Modèle Python des transitions tick/NBA, contrôles de protocole, brochage, syntaxe JS et empreintes. Aucun compilateur Verilog ni build bitstream/Arduino exécuté. Synchroniseurs 12 MHz et délais physiques non simulés.",
+  "checks": [
+    {
+      "name": "50 Hz, ratio 2.50 : périodes numériques",
+      "pass_": true,
+      "detail": {
+        "period": 2500,
+        "half_ticks": [
+          500
+        ],
+        "generated": 1000,
+        "rpm": 3750.0
+      }
+    },
+    {
+      "name": "100 Hz, ratio 1.75 : accumulateur fractionnaire",
+      "pass_": true,
+      "detail": {
+        "period": 1250,
+        "half_ticks": [
+          357,
+          358
+        ],
+        "generated": 714
+      }
+    },
+    {
+      "name": "Perte entrée figée à 0",
+      "pass_": true,
+      "detail": {
+        "age": 62500,
+        "period": 0,
+        "drive": 0
+      }
+    },
+    {
+      "name": "Perte entrée figée à 1",
+      "pass_": true,
+      "detail": {
+        "age": 62500,
+        "period": 0,
+        "drive": 0
+      }
+    },
+    {
+      "name": "Glitch bas de 1 ticks rejeté",
+      "pass_": true,
+      "detail": {
+        "armed": 0,
+        "period": 0
+      }
+    },
+    {
+      "name": "Glitch bas de 2 ticks rejeté",
+      "pass_": true,
+      "detail": {
+        "armed": 0,
+        "period": 0
+      }
+    },
+    {
+      "name": "Largeur arithmétique : seuil maximal",
+      "pass_": true,
+      "detail": {
+        "target_max": 6249900,
+        "bits": 23
+      }
+    },
+    {
+      "name": "Plage RPM entrée / synthèse théorique",
+      "pass_": true,
+      "detail": {
+        "max_input_rpm": 15000,
+        "max_output_rpm": 120000,
+        "min_half_us": 125
+      }
+    },
+    {
+      "name": "Trame commande nominale acceptée",
+      "pass_": true,
+      "detail": [
+        165,
+        0,
+        250,
+        0,
+        175,
+        240,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Erreur de bit isolée détectée par XOR",
+      "pass_": true,
+      "detail": [
+        165,
+        0,
+        251,
+        0,
+        175,
+        240,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Limite du XOR : deux erreurs peuvent passer",
+      "pass_": true,
+      "detail": {
+        "packet": [
+          165,
+          0,
+          251,
+          0,
+          174,
+          240,
+          0,
+          0,
+          0
+        ],
+        "ratios": [
+          251,
+          174
+        ]
+      }
+    },
+    {
+      "name": "Moteur séparé des signaux SPI dans le modèle",
+      "pass_": true,
+      "detail": "Le RTL channel ne reçoit que clk, tick, tach et ratio ; r9/r6 sont mémorisés dans top."
+    },
+    {
+      "name": "Syntaxe JavaScript embarqué",
+      "pass_": true,
+      "detail": ""
+    },
+    {
+      "name": "Brochage PCF confronté à la référence iCEBreaker",
+      "pass_": true,
+      "detail": {
+        "clk": 35,
+        "tach9": 4,
+        "tach6": 2,
+        "q9": 47,
+        "q6": 45,
+        "cs": 43,
+        "sck": 38,
+        "mosi": 34,
+        "miso": 31,
+        "led_n": 37
+      }
+    }
+  ],
+  "sources": [
+    {
+      "path": "competitors/gpt6.2_astra_medium/deye_fan/deye_fan.ino",
+      "bytes": 8192,
+      "sha256": "c0b0cfbe68bea32172d1a6cf73667180acf11934bbd57481ce4bf26ae6dc87e6"
+    },
+    {
+      "path": "competitors/gpt6.2_astra_medium/fpga/icebreaker.pcf",
+      "bytes": 143,
+      "sha256": "6a92d958a31699e23cb1a1d3adb5558c048cb184d8a0723933230d80b7947c39"
+    },
+    {
+      "path": "competitors/gpt6.2_astra_medium/fpga/tach.bin",
+      "bytes": 104090,
+      "sha256": "526833eb8189e3e9142828bc9fcfb1f282819186efe014f7161ba5717cb713da"
+    },
+    {
+      "path": "competitors/gpt6.2_astra_medium/fpga/tach.v",
+      "bytes": 3627,
+      "sha256": "b0c2c520c626db9759dddcf56bb6cbe6ae280611f1719bb38971b34108415106"
+    },
+    {
+      "path": "competitors/gpt6.2_astra_medium/SCHEMA.md",
+      "bytes": 11523,
+      "sha256": "a8cb421f84796813d3a938c0e0242f84b5263b0447799ea7a535fc84cf97d92c"
+    }
+  ]
+}

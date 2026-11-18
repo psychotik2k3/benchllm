@@ -1,0 +1,118 @@
+[
+  {
+    "file": "analyse_claude opus 5 medium.md",
+    "sha256": "fe4308a289c3916cf76c36b51829b8f1f3995d101420925f2d5dd10f2eccb3f2"
+  },
+  {
+    "file": "analyse_claude-sonnet5-free.md",
+    "sha256": "3e2575ef48baa4323b465b26b52d69596960843b49de8d3f2cc3e5f384a10d8e"
+  },
+  {
+    "file": "analyse_Claude_Opus_5.5_xhigh.md",
+    "sha256": "36c5d83d944317b7a96789c79ae7697f3fa3244c85e736446530fc9e9cfd49c2"
+  },
+  {
+    "file": "analyse_composer 2.5 prompt from claude.md",
+    "sha256": "2ca39509bcd2b50aba7c4730de4b7414d8a66ea7b92017996ff713302a343b7e"
+  },
+  {
+    "file": "analyse_composer 2.5.md",
+    "sha256": "5f44f796dcca9ff63493b5a752951c94dcec3971f41399badc79578ae1b7dfc9"
+  },
+  {
+    "file": "analyse_deepseek4 flash.md",
+    "sha256": "2b506f38c407f82787f22e8cba3d9d31d960bf6d48ae748f89eac777e76d7bce"
+  },
+  {
+    "file": "analyse_gemini 3.1 pro.md",
+    "sha256": "bdbe75f8147ed37332939eb41ed1d665d0e32f2b5d514ea6583cdb0ad7e81cc6"
+  },
+  {
+    "file": "analyse_gemini-free.md",
+    "sha256": "859dcd393e2b617287d9ba313025ad05eb6b8bcf6b15e3322f058443b7037421"
+  },
+  {
+    "file": "analyse_Gemini_4_Argon_medium.md",
+    "sha256": "b9adf739c2efec69bf5f4ac7d6414394def7b6526a2d2335522add5616153f63"
+  },
+  {
+    "file": "analyse_gemma4.md",
+    "sha256": "2e772ced10a565326cc7e28b86df8b90734d48f04b457d4e12060bddb5a117d4"
+  },
+  {
+    "file": "analyse_glm5.3.md",
+    "sha256": "66b2dee65c038a92f28e525b251bfb884cd28fb7ffcf0b5b1989b4ed23d44e97"
+  },
+  {
+    "file": "analyse_glm_5.2_high.md",
+    "sha256": "9de036b4f8c780f9f8ed943fa23eafba6ed13cf999fcddaa5ebe9bef8e4a67fb"
+  },
+  {
+    "file": "analyse_gpt-5.6 sol medium.md",
+    "sha256": "0ecbad679a932bc783c08dd96eaf731e256adffd5117cb95326d09e16969d1c9"
+  },
+  {
+    "file": "analyse_GPT-5.6_Sol_xhigh.md",
+    "sha256": "a4aae53c3cc481ff7236257bc92bcc7d04901b954cbca6ecdc9fe10c1151a11f"
+  },
+  {
+    "file": "analyse_gpt-free.md",
+    "sha256": "6ea8b0a2cfec9e7b894aeca8d82b94d611fad4cd649c56f8eb75c42f04c7d6ff"
+  },
+  {
+    "file": "analyse_gpt6.1sol_medium.md",
+    "sha256": "86dd7c742ae6a4dd8662830fd5b12a660408d01810c17b0d023b6d0be0b0b6b6"
+  },
+  {
+    "file": "analyse_grok 4.6 medium.md",
+    "sha256": "a608e2c6a33d3ff5b8ea6c043d014587d8a3a519453e52399c61b51c76a703f4"
+  },
+  {
+    "file": "analyse_Grok_4.7_medium.md",
+    "sha256": "d9b77c1d084c9d756d28e831d806604cf5d329501979f0a7a7b46159d0398bb8"
+  },
+  {
+    "file": "analyse_kimi k3.md",
+    "sha256": "c6e0b65b1e59b59eec6ca64f4dfb01a07b17c9b017a19bf282ce71aee6e8e996"
+  },
+  {
+    "file": "analyse_kimi_k3_max.md",
+    "sha256": "5cbcd41d1d3977d57ebc42f2c078a71229c93687e76ca713767bb8a92385a7a4"
+  },
+  {
+    "file": "analyse_muse_wonder_1.0_medium.md",
+    "sha256": "26aa291557fd3dfe046283cde062584b042d6b3923085db0b47ed6f658f031f7"
+  },
+  {
+    "file": "analyse_qwen3.6-35b-fp8-freetoken.md",
+    "sha256": "4f8cc6653705c0f5f1e607cba8a6d4aaa894c65269e6ffcff9b94333b359bc34"
+  },
+  {
+    "file": "analyse_qwen3.6.md",
+    "sha256": "422dd49e37440e70d9544f4ee93a3b95392c5fea9af8f25d2091afe458a3ab78"
+  },
+  {
+    "file": "analyse_qwen3.6_prompt_from_claude.md",
+    "sha256": "f4db82ab255192222c6905674d671051757dc4599d4a9bdfdb2659e9e06b70d6"
+  },
+  {
+    "file": "analyse_qwen3.8-UD-IQ4_XS_KV4-4.md",
+    "sha256": "66a0cf2d2129fc8527b70c380eff7a37baa57b8ba3daaec6e823aad25e4dda80"
+  },
+  {
+    "file": "analyse_qwen35.md",
+    "sha256": "a20cfa797abf298fddf50bce027690f77c63a2a4de30290974d2acffc68e92cc"
+  },
+  {
+    "file": "analyse_strata-qwen3.8-flash-next-iq3-s_medium-cline.md",
+    "sha256": "01dbaefcdef87e322b740b30b2ecff0cac6cc103b4db1fe5887ccd31a12f2d42"
+  },
+  {
+    "file": "analyse_strata-qwen3.8-flash-next-iq3-s_medium.md",
+    "sha256": "c9bd0d79f9658ed060f250d297ccebf63f04e604c046af7976b1e7f5cfa6a0c7"
+  },
+  {
+    "file": "analyse_Swift_1.5_Qwen3.8-27B_medium-IQ3S.md",
+    "sha256": "9fd1ffcc81fd9409e5d16aaf40077db468e47761fc57687bd74d8c071bd9f0f0"
+  }
+]
