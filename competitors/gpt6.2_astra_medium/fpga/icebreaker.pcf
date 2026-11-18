@@ -1,0 +1,10 @@
+set_io clk 35
+set_io tach9 4
+set_io tach6 2
+set_io q9 47
+set_io q6 45
+set_io cs 43
+set_io sck 38
+set_io mosi 34
+set_io miso 31
+set_io led_n 37
